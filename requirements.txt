@@ -1,0 +1,17 @@
+black==25.1.0
+click==8.1.8
+flake8==7.1.1
+flake8-html==0.4.3
+Jinja2==3.1.5
+MarkupSafe==3.0.2
+mccabe==0.7.0
+mypy-extensions==1.0.0
+packaging==24.2
+pathspec==0.12.1
+pipdeptree==2.25.0
+platformdirs==4.3.6
+pycodestyle==2.12.1
+pyflakes==3.2.0
+Pygments==2.19.1
+tomli==2.2.1
+typing_extensions==4.12.2

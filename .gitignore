@@ -1,1 +1,7 @@
 env/
+dependencies.txt
+
+# Ignorer les fichiers Python compilés
+*.pyc
+*.pyo
+__pycache__/
