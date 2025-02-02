@@ -1,4 +1,4 @@
-from controllers import TournoiControleur
+# from controllers import TournoiControleur
 
 
 class TournoiVue:
