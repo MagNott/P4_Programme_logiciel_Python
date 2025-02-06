@@ -5,16 +5,12 @@ from controllers import (
     TourControleur,
     TournoiControleur,
 )
-
 # from views import JoueurVue, MatchVue, TourVue, TournoiVue
 import questionary
 
 MENU_AJOUTER_JOUEUR = "Ajouter un joueur"
 MENU_LISTER_JOUEURS = "Lister les joueurs"
 MENU_QUITTER = "Quitter"
-
-
-
 
 print("Bienvenue dans Let's Roque, le super logiciel de gestion de tournoi d'échec !")
 
