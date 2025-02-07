@@ -1,6 +1,4 @@
 class Joueur:
-    liste_joueur = []
-
     def __init__(self, p_nom_famille, p_prenom):
         self.identifiant_national_echec = 0  # A définir
         self.nom_famille = p_nom_famille
