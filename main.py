@@ -12,6 +12,7 @@ import questionary
 
 MENU_AJOUTER_JOUEUR = "Ajouter un joueur"
 MENU_LISTER_JOUEURS = "Lister les joueurs"
+MENU_AJOUTER_TOURNOI = "Ajouter un tournoi"
 MENU_QUITTER = "Quitter"
 
 console = Console()
@@ -34,6 +35,7 @@ def menu_principal():
         choices=[
             MENU_AJOUTER_JOUEUR,  # Option 1
             MENU_LISTER_JOUEURS,  # Option 2
+            MENU_AJOUTER_TOURNOI,
             "Ce menu ne sert à rien",
             MENU_QUITTER,  # Option pour quitter
         ],
@@ -46,6 +48,7 @@ if __name__ == "__main__":
 
     # Instanciation des controlleurs
     joueur_controleur = JoueurControleur()
+    tournoi_controleur = TournoiControleur()
 
     while True:
         choix = (
@@ -56,6 +59,8 @@ if __name__ == "__main__":
             joueur_controleur.ajouter_joueur()
         elif choix == MENU_LISTER_JOUEURS:
             joueur_controleur.lister_joueurs()
+        elif choix == MENU_AJOUTER_TOURNOI:
+            tournoi_controleur.ajouter_tournoi()
         elif choix == MENU_QUITTER:
             console.print("[bold blue] \n Fermeture du programme. \n [/bold blue]")
             break
