@@ -4,18 +4,17 @@ from rich.table import Table
 
 
 class JoueurVue:
-    console = Console()
+    def __init__(self):
+        self.console = Console()
 
-    @classmethod
-    def render_confirm_ajout_joueur(cls, s_nom, s_classement):
+    def render_confirm_ajout_joueur(self, s_nom, s_classement):
         print(f"Joueur ajouté avec succès : {s_nom}, classement {s_classement}\n")
 
     def voir_joueur(self):
         # Aimplémenter
         pass
 
-    @classmethod
-    def render_lister_joueur(cls, liste_joueur):
+    def render_lister_joueur(self, liste_joueur):
 
         print("La liste des joueurs sont : \n")
 
@@ -36,4 +35,4 @@ class JoueurVue:
                 f"[{couleur}]{o_joueur.prenom}[/{couleur}]"
             )
 
-        cls.console.print(table)
+        self.console.print(table)

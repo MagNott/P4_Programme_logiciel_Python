@@ -19,7 +19,7 @@ class JoueurControleur:
         # Joueur.liste_joueur.append(o_joueur_modele)
         self.db.insert({'nom_famille': o_joueur_modele.nom_famille, 'prenom': o_joueur_modele.prenom})
 
-        JoueurVue.render_confirm_ajout_joueur(s_nom, s_prenom)
+        self.o_joueur_vue.render_confirm_ajout_joueur(s_nom, s_prenom)
 
     def lister_joueurs(self):
         # JoueurVue.render_lister_joueur(Joueur.liste_joueur)
