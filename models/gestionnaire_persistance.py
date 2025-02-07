@@ -14,7 +14,6 @@ class GestionnairePersistance:
             "nom_famille": p_joueur_modele.nom_famille,
             "prenom": p_joueur_modele.prenom,
         }
-
         self.db.insert(donnees_joueur)
 
     def charger(self):

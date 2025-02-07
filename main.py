@@ -5,14 +5,26 @@ from controllers import (
     TourControleur,
     TournoiControleur,
 )
-# from views import JoueurVue, MatchVue, TourVue, TournoiVue
+from rich.console import Console
+from rich.panel import Panel
+
 import questionary
 
 MENU_AJOUTER_JOUEUR = "Ajouter un joueur"
 MENU_LISTER_JOUEURS = "Lister les joueurs"
 MENU_QUITTER = "Quitter"
 
-print("Bienvenue dans Let's Roque, le super logiciel de gestion de tournoi d'échec !")
+console = Console()
+
+texte = "[bold blue]\n Bienvenue dans Let's Roque, le super logiciel de gestion de tournoi d'échec ! \n[/bold blue]"
+console.print(
+    Panel(
+        texte,
+        border_style="blue", width=len(texte)
+    )
+)
+
+print("\n")
 
 
 def menu_principal():
@@ -22,6 +34,7 @@ def menu_principal():
         choices=[
             MENU_AJOUTER_JOUEUR,  # Option 1
             MENU_LISTER_JOUEURS,  # Option 2
+            "Ce menu ne sert à rien",
             MENU_QUITTER,  # Option pour quitter
         ],
     ).ask()  # L’utilisateur choisit et la réponse est retournée
@@ -44,7 +57,7 @@ if __name__ == "__main__":
         elif choix == MENU_LISTER_JOUEURS:
             joueur_controleur.lister_joueurs()
         elif choix == MENU_QUITTER:
-            print("Fermeture du programme.")
+            console.print("[bold blue] \n Fermeture du programme. \n [/bold blue]")
             break
         else:
-            print("Choix inconnu")
+            console.print("[bold red]\n Choix inconnu \n[/bold red]")

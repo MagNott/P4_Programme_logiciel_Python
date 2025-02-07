@@ -1,14 +1,15 @@
 # from controllers import JoueurControleur
 from rich.console import Console
 from rich.table import Table
+from rich.panel import Panel
 
 
 class JoueurVue:
     def __init__(self):
         self.console = Console()
 
-    def render_confirm_ajout_joueur(self, s_nom, s_classement):
-        print(f"Joueur ajouté avec succès : {s_nom}, classement {s_classement}\n")
+    def render_confirm_ajout_joueur(self, s_nom, s_prenom):
+        self.console.print(f"\n[bold green]Joueur ajouté avec succès : {s_nom}, {s_prenom}[/bold green]\n")
 
     def voir_joueur(self):
         # Aimplémenter
@@ -16,7 +17,7 @@ class JoueurVue:
 
     def render_lister_joueur(self, liste_joueur):
 
-        print("La liste des joueurs sont : \n")
+        print("\n La liste des joueurs sont : \n")
 
         # Création de la table
         table = Table(title="Liste des joueurs")
