@@ -1,4 +1,5 @@
 from tinydb import TinyDB, Query
+import os
 
 
 class GestionnairePersistance:
@@ -36,3 +37,22 @@ class GestionnairePersistance:
         }
         self.db_tournois = TinyDB(f"data/tournaments/tournoi_{p_tournoi_modele.identifiant}.json")
         self.db_tournois.insert(donnees_tournoi)
+
+    def sauvegarder_joueurs_tournoi(self, p_tournoi_modele):
+        donnees_joueurs = {
+            "liste_joueurs": p_tournoi_modele.liste_joueurs,
+        }
+        self.db_tournois = TinyDB(f"data/tournaments/tournoi_{p_tournoi_modele.identifiant}.json")
+        self.db_tournois.update(donnees_joueurs, doc_ids=[int(1)])
+
+    def charger_tournoi(self, p_identifiant_tournoi):
+        self.db_tournois = TinyDB(f"data/tournaments/tournoi_{p_identifiant_tournoi}.json")
+        return self.db_tournois.all()
+
+    def lister_tournois(self):
+        "Liste tous les fichiers dans le dossier tournaments."
+        chemin_dossier = "data/tournaments"
+        fichiers_tournois = []
+        for tournoi in os.listdir(chemin_dossier):
+            fichiers_tournois.append(tournoi)
+        return fichiers_tournois

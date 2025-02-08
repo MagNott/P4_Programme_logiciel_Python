@@ -4,6 +4,7 @@ import re
 class Tournoi:
     def __init__(
         self,
+        p_identifiant,
         p_nom_tournoi,
         p_lieu_tournoi,
         p_date_debut_tournoi,
@@ -11,7 +12,7 @@ class Tournoi:
         p_nombre_tours=4,
         p_description=None,
     ):
-        self.identifiant = self.generer_identifiant()
+        self.identifiant = p_identifiant
         self.nom_tournoi = p_nom_tournoi
         self.lieu_tournoi = p_lieu_tournoi
         self.date_debut_tournoi = p_date_debut_tournoi
@@ -19,13 +20,14 @@ class Tournoi:
         self.nombre_tours = p_nombre_tours
         self.numero_tour_actuel = 1
         self.liste_tours = []
-        self.liste_joueur = []
+        self.liste_joueurs = []
         self.description = p_description
 
     # Fonctionnalités prévues dans le diagramme de classe qu'il faudra mettre dans les bonnes parties modèle,
     # vue ou controleur
 
-    def generer_identifiant(self):
+    @classmethod
+    def generer_identifiant(cls):
         regex = r"tournoi_(\d+)\.json"
         a_fichiers = os.listdir('data/tournaments')
         identifiants = []
@@ -43,7 +45,6 @@ class Tournoi:
 
         return identifiant_a_attribuer
 
-    
     def lister_joueur_tournoi(self):
         # Logique à implémenter plus tard
         pass
