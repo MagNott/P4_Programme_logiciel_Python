@@ -6,9 +6,7 @@ class GestionnairePersistance:
     def __init__(self):
         self.db_joueurs = TinyDB("data/players/joueurs_db.json")
 
-    def sauvegarder(self):
-        # Logique à implémenter plus tard
-        pass
+# SAUVEGARDE ET CHARGEMENT DES JOUEURS
 
     def sauvegarder_joueur(self, p_joueur_modele):
         donnees_joueur = {
@@ -19,12 +17,21 @@ class GestionnairePersistance:
         }
         self.db_joueurs.insert(donnees_joueur)
 
-    def charger(self):
-        # Logique à implémenter plus tard
-        pass
-
     def charger_joueurs(self):
-        return self.db_joueurs.all()
+        joueurs = self.db_joueurs.table('_default').all()
+        joueurs_avec_ids = []
+
+        for joueur in joueurs:
+            # Récupérer le doc_id lié à chaque joueur
+            doc_id = joueur.doc_id
+            joueurs_avec_ids.append({
+                "id_tinydb": doc_id,  # ID interne à TinyDB
+                **joueur  # Les autres données du joueur
+            })
+
+        return joueurs_avec_ids
+
+# SAUVEGARDE ET CHARGEMENT DES TOURNOIS
 
     def sauvegarder_tournoi(self, p_tournoi_modele):
         donnees_tournoi = {
@@ -35,18 +42,35 @@ class GestionnairePersistance:
             "nombre_tours": p_tournoi_modele.nombre_tours,
             "description": p_tournoi_modele.description,
         }
-        self.db_tournois = TinyDB(f"data/tournaments/tournoi_{p_tournoi_modele.identifiant}.json")
+        self.db_tournois = TinyDB(
+            f"data/tournaments/tournoi_{p_tournoi_modele.identifiant}.json"
+        )
         self.db_tournois.insert(donnees_tournoi)
 
     def sauvegarder_joueurs_tournoi(self, p_tournoi_modele):
+        """Sauvegarde des joueurs pour un tournoi.
+
+        Args:
+            p_tournoi_modele (Tournoi): Objet tournoi
+        """
         donnees_joueurs = {
             "liste_joueurs": p_tournoi_modele.liste_joueurs,
         }
-        self.db_tournois = TinyDB(f"data/tournaments/tournoi_{p_tournoi_modele.identifiant}.json")
+        self.db_tournois = TinyDB(
+            f"data/tournaments/tournoi_{p_tournoi_modele.identifiant}.json"
+        )
         self.db_tournois.update(donnees_joueurs, doc_ids=[int(1)])
 
     def charger_tournoi(self, p_identifiant_tournoi):
-        self.db_tournois = TinyDB(f"data/tournaments/tournoi_{p_identifiant_tournoi}.json")
+        """Charger les données d'un tournoi.
+        Args:
+            p_identifiant_tournoi (string): identifiant du tournoi
+        Returns:
+            dictionnaire: Contenu du fichier json du tournoi
+        """
+        self.db_tournois = TinyDB(
+            f"data/tournaments/tournoi_{p_identifiant_tournoi}.json"
+        )
         return self.db_tournois.all()
 
     def lister_tournois(self):
