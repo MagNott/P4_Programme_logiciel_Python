@@ -1,1 +1,1 @@
-{"_default": {"1": {"nom_tournoi": "fdfsd", "lieu_tournoi": "dfdfd", "date_debut_tournoi": "dfsfdsf", "date_fin_tournoi": "sfdsfsd", "nombre_tours": "sfdfsf", "description": "dffdsf", "liste_joueurs": ["12"]}}}
+{"_default": {"1": {"nom_tournoi": "fdfsd", "lieu_tournoi": "dfdfd", "date_debut_tournoi": "dfsfdsf", "date_fin_tournoi": "sfdsfsd", "nombre_tours": "sfdfsf", "description": "dffdsf", "liste_joueurs": [["13", "1", "12", "14"]]}}}

@@ -47,13 +47,13 @@ class TournoiControleur:
         )
 
     def inscrire_joueur(self):
-        liste_tournois = self.o_gestionnaire_persistance.lister_tournois()
-        identifiant_tournoi = self.o_tournoi_vue.render_choix_tournoi(liste_tournois)
+        l_liste_tournois = self.o_gestionnaire_persistance.lister_tournois()
+        i_identifiant_tournoi = self.o_tournoi_vue.render_choix_tournoi(l_liste_tournois)
         a_tournoi_choisi_data = self.o_gestionnaire_persistance.charger_tournoi(
-            identifiant_tournoi
+            i_identifiant_tournoi
         )
         o_tournoi_choisi = Tournoi(
-            p_identifiant=identifiant_tournoi,
+            p_identifiant=i_identifiant_tournoi,
             p_nom_tournoi=a_tournoi_choisi_data[0]["nom_tournoi"],
             p_lieu_tournoi=a_tournoi_choisi_data[0]["lieu_tournoi"],
             p_date_debut_tournoi=a_tournoi_choisi_data[0]["date_debut_tournoi"],
@@ -62,8 +62,8 @@ class TournoiControleur:
             p_description=a_tournoi_choisi_data[0]["description"],
         )
 
-        liste_joueurs = self.o_gestionnaire_persistance.charger_joueurs()
-        choix_joueur = self.o_tournoi_vue.render_choix_joueur(liste_joueurs)
+        l_liste_joueurs = self.o_gestionnaire_persistance.charger_joueurs()
+        l_choix_joueur = self.o_tournoi_vue.render_choix_joueur(l_liste_joueurs)
 
-        o_tournoi_choisi.liste_joueurs.append(choix_joueur)
+        o_tournoi_choisi.liste_joueurs.append(l_choix_joueur)
         self.o_gestionnaire_persistance.sauvegarder_joueurs_tournoi(o_tournoi_choisi)

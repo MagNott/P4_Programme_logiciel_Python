@@ -53,10 +53,15 @@ class TournoiVue:
                 joueur["prenom"],
                 joueur["date_naissance"],
             )
-
         self.console.print(table)
-        # récupérer le choix de l'utilisateur
-        return questionary.text("Veuillez choisir un joueur par son identifiant : ").ask()
+
+        l_choix_joueur = []
+        compteur = 0
+        while compteur < 4:
+            joueur = questionary.text("Veuillez choisir un joueur par son identifiant : ").ask()
+            l_choix_joueur.append(joueur)
+            compteur += 1
+        return l_choix_joueur
 
     def lister_tournois():
         # Logique à implémenter plus tard
