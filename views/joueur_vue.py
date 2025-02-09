@@ -12,9 +12,9 @@ class JoueurVue:
         self, s_identifiant, s_nom, s_prenom, s_date_naissance
     ):
         self.console.print(f"""\n[bold green]Joueur ajouté avec succès : 
-            {s_identifiant}, 
-            {s_nom}, 
-            {s_prenom}, 
+            {s_identifiant},
+            {s_nom},
+            {s_prenom} 
             {s_date_naissance}[/bold green]\n"""
         )
 
