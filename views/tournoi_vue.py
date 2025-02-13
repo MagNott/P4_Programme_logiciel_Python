@@ -43,6 +43,21 @@ class TournoiVue:
             [/bold green]\n"""
         )
 
+    def render_lister_tournois(self, p_liste_tournois: list[dict[str, str]]) -> None:
+        """Affiche la liste des tournois enregistrés dans la base de données.
+
+        Args:
+            p_liste_tournois (list[dict[str, str]]): Liste de dictionnaires contenant les informations des tournois.
+        """
+
+        table = Table(title="Liste des tournois")
+        table.add_column("nom du tournoi")
+
+        for tournoi in p_liste_tournois:
+            table.add_row(tournoi)
+
+        self.console.print(table)
+
     #
     def render_choix_tournoi(self, p_liste_tournois: list[str]) -> str:
         """Permet à l'utilisateur de choisir un tournoi parmi une liste.
@@ -54,13 +69,8 @@ class TournoiVue:
             str: Identifiant du tournoi choisi par l'utilisateur, saisi via l'interface interactive.
         """
 
-        table = Table(title="Liste des tournois")
-        table.add_column("nom du tournoi")
+        self.render_lister_tournois(p_liste_tournois)
 
-        for tournoi in p_liste_tournois:
-            table.add_row(tournoi)
-
-        self.console.print(table)
         # récupérer le choix de l'utilisateur
         return questionary.text(
             "Veuillez choisir un tournoi par son identifiant : "
@@ -114,7 +124,7 @@ class TournoiVue:
             compteur += 1
         return l_choix_joueur
 
-    #
+#
     def render_visualiser_tournoi(
         self, p_tournoi: list[dict[str, str]], p_joueurs_db: list[dict[str, str]]
     ) -> None:

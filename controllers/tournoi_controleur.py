@@ -1,7 +1,6 @@
 from models.tournoi import Tournoi
 from models.gestionnaire_persistance import GestionnairePersistance
 from views.tournoi_vue import TournoiVue
-import questionary
 
 
 class TournoiControleur:
@@ -78,6 +77,18 @@ class TournoiControleur:
 
         o_tournoi_choisi.liste_joueurs = l_choix_joueur
         self.o_gestionnaire_persistance.sauvegarder_joueurs_tournoi(o_tournoi_choisi)
+
+#
+    def lister_tournois(self) -> None:
+        """Affiche la liste des tournois enregistrés dans la base de données.
+
+        Cette méthode suit les étapes suivantes :
+        1. Charge la liste des tournois existants.
+        2. Affiche les informations de chaque tournoi dans la console.
+        """
+
+        l_liste_tournois = self.o_gestionnaire_persistance.lister_tournois()
+        self.o_tournoi_vue.render_lister_tournois(l_liste_tournois)
 
 #
     def visualiser_tournoi(self) -> None:
