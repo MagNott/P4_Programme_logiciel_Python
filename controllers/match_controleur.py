@@ -1,4 +1,4 @@
-from models import Match
+from models.match import Match
 
 
 class MatchControleur:

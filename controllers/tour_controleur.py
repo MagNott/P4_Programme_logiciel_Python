@@ -1,4 +1,4 @@
-from models import Tour
+from models.tour import Tour
 
 
 class TourControleur:
