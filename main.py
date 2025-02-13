@@ -1,10 +1,5 @@
-# from models import Joueur, Match, Tour, Tournoi
-from controllers import (
-    JoueurControleur,
-    MatchControleur,
-    TourControleur,
-    TournoiControleur,
-)
+from controllers.joueur_controleur import JoueurControleur
+from controllers.tournoi_controleur import TournoiControleur
 from rich.console import Console
 from rich.panel import Panel
 
@@ -18,6 +13,8 @@ MENU_VISUALISER_TOURNOI = "Visualiser un tournoi"
 MENU_QUITTER = "Quitter"
 
 console = Console()
+
+print("Début de l'exécution du script (vérification)")
 
 texte = "[bold blue]\n Bienvenue dans Let's Roque, le super logiciel de gestion de tournoi d'échec ! \n[/bold blue]"
 console.print(
