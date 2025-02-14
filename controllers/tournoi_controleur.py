@@ -58,18 +58,21 @@ class TournoiControleur:
         i_identifiant_tournoi = self.o_tournoi_vue.render_choix_tournoi(
             l_liste_tournois
         )
-        a_tournoi_choisi_data = self.o_gestionnaire_persistance.charger_tournoi(
-            i_identifiant_tournoi
-        )
+        # a_tournoi_choisi_data = self.o_gestionnaire_persistance.charger_tournoi(
+        #     i_identifiant_tournoi
+        # )
 
-        o_tournoi_choisi = Tournoi(
-            p_identifiant=i_identifiant_tournoi,
-            p_nom_tournoi=a_tournoi_choisi_data[0]["nom_tournoi"],
-            p_lieu_tournoi=a_tournoi_choisi_data[0]["lieu_tournoi"],
-            p_date_debut_tournoi=a_tournoi_choisi_data[0]["date_debut_tournoi"],
-            p_date_fin_tournoi=a_tournoi_choisi_data[0]["date_fin_tournoi"],
-            p_nombre_tours=a_tournoi_choisi_data[0]["nombre_tours"],
-            p_description=a_tournoi_choisi_data[0]["description"],
+        # o_tournoi_choisi = Tournoi(
+        #     p_identifiant=i_identifiant_tournoi,
+        #     p_nom_tournoi=a_tournoi_choisi_data[0]["nom_tournoi"],
+        #     p_lieu_tournoi=a_tournoi_choisi_data[0]["lieu_tournoi"],
+        #     p_date_debut_tournoi=a_tournoi_choisi_data[0]["date_debut_tournoi"],
+        #     p_date_fin_tournoi=a_tournoi_choisi_data[0]["date_fin_tournoi"],
+        #     p_nombre_tours=a_tournoi_choisi_data[0]["nombre_tours"],
+        #     p_description=a_tournoi_choisi_data[0]["description"],
+        # )
+        o_tournoi_choisi = self.o_gestionnaire_persistance.recuperer_objet_tournoi(
+            i_identifiant_tournoi
         )
 
         l_liste_joueurs = self.o_gestionnaire_persistance.charger_joueurs()

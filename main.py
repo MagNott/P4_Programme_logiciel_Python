@@ -1,5 +1,6 @@
 from controllers.joueur_controleur import JoueurControleur
 from controllers.tournoi_controleur import TournoiControleur
+from controllers.tour_controleur import TourControleur
 from rich.console import Console
 from rich.panel import Panel
 import questionary
@@ -14,12 +15,12 @@ MENU_CREER_TOURNOI = "Créer un tournoi"
 MENU_INSCRIRE_JOUEUR = "Inscrire un joueur"
 MENU_LISTER_TOURNOI = "Lister les tournois"
 MENU_VISUALISER_TOURNOI = "Visualiser un tournoi"
+MENU_CREER_TOUR = "Créer un tour"
 RETOUR_MENU_PRINCIPAL = "Retour au menu principal"
 MENU_QUITTER = "Quitter"
 
 console = Console()
 
-print("Début de l'exécution du script (vérification)")
 
 texte = "[bold blue]\n Bienvenue dans Let's Roque, le super logiciel de gestion de tournoi d'échec ! \n[/bold blue]"
 console.print(Panel(texte, border_style="blue", width=len(texte)))
@@ -61,6 +62,7 @@ def menu_tournoi():
         choices=[
             MENU_CREER_TOURNOI,
             MENU_INSCRIRE_JOUEUR,
+            MENU_CREER_TOUR,
             RETOUR_MENU_PRINCIPAL,
         ],
     ).ask()  # L’utilisateur choisit et la réponse est retournée
@@ -87,6 +89,7 @@ if __name__ == "__main__":
     # Instanciation des controlleurs
     joueur_controleur = JoueurControleur()
     tournoi_controleur = TournoiControleur()
+    tour_controleur = TourControleur()
 
     while True:
         choix = (
@@ -107,6 +110,8 @@ if __name__ == "__main__":
                     tournoi_controleur.ajouter_tournoi()
                 elif choix_tournoi == MENU_INSCRIRE_JOUEUR:
                     tournoi_controleur.inscrire_joueur()
+                elif choix_tournoi == MENU_CREER_TOUR:
+                    tour_controleur.creer_tour()
                 elif choix_tournoi == RETOUR_MENU_PRINCIPAL:
                     break
         elif choix == MENU_GESTION_RAPPORTS:

@@ -1,6 +1,7 @@
 from tinydb import TinyDB
 from models.tournoi import Tournoi
 from models.joueur import Joueur
+from models.tour import Tour
 import os
 
 
@@ -103,6 +104,44 @@ class GestionnairePersistance:
         return self.db_tournois.all()
 
 #
+    def recuperer_objet_tournoi(self, p_identifiant_tournoi: str) -> Tournoi:
+        """Récupère un tournoi sous forme d'objet Tournoi à partir de TinyDB.
+
+        Args:
+            p_identifiant_tournoi (str): L'identifiant du tournoi.
+
+        Returns:
+            Tournoi: L'objet Tournoi correspondant.
+        """
+        self.db_tournois = TinyDB(f"data/tournaments/tournoi_{p_identifiant_tournoi}.json")
+
+        d_tournoi = self.db_tournois.all()[0]  # Récupérer les données
+
+        o_tournoi = Tournoi(
+            p_identifiant=p_identifiant_tournoi,
+            p_nom_tournoi=d_tournoi["nom_tournoi"],
+            p_lieu_tournoi=d_tournoi["lieu_tournoi"],
+            p_date_debut_tournoi=d_tournoi["date_debut_tournoi"],
+            p_date_fin_tournoi=d_tournoi["date_fin_tournoi"],
+            p_nombre_tours=d_tournoi["nombre_tours"],
+            p_description=d_tournoi["description"],
+        )
+
+        for tour in d_tournoi["liste_tours"]:
+            # Créer un objet Tour pour chaque tour et l'ajouter à la liste des tours du tournoi
+            p_tour = Tour(
+                p_identifiant=tour["identifiant"],
+                p_nom=tour["nom"],
+                p_tournoi=o_tournoi,
+                p_statut=tour["statut"],
+                p_date_heure_debut=tour["date_heure_debut"],
+                p_date_heure_fin=tour["date_heure_fin"],
+            )
+            o_tournoi.liste_tours.append(p_tour)
+
+        return o_tournoi
+
+#
     def lister_tournois(self) -> list[str]:
         """Liste tous les fichiers JSON présents dans le dossier des tournois.
 
@@ -116,3 +155,36 @@ class GestionnairePersistance:
             fichiers_tournois.append(tournoi)
 
         return fichiers_tournois
+
+#
+    def enregistrer_tour_tournoi(self, p_tour: Tour, p_tournoi: Tournoi) -> None:
+        """Ajoute un tour à un tournoi existant dans TinyDB.
+
+        Args:
+            p_tour (Tour): L'objet Tour à ajouter.
+            p_tournoi (Tournoi): L'objet Tournoi dans lequel ajouter le tour.
+        """
+        self.db_tournois = TinyDB(f"data/tournaments/tournoi_{p_tournoi.identifiant}.json")
+
+        # Charger les données actuelles du tournoi
+        d_tournoi = self.db_tournois.all()[0]
+
+        # Vérifier si "liste_tours" existe, sinon l'initialiser
+        if "liste_tours" not in d_tournoi:
+            d_tournoi["liste_tours"] = []
+
+        # Transformer l'objet Tour en dictionnaire
+        d_nouveau_tour = {
+            "identifiant": p_tour.identifiant,
+            "nom": p_tour.nom,
+            "statut": p_tour.statut,
+            "liste_matchs": [],  # Vide au début
+            "date_heure_debut": p_tour.date_heure_debut,
+            "date_heure_fin": p_tour.date_heure_fin,
+        }
+
+        # Ajouter ce tour aux données du tournoi
+        d_tournoi["liste_tours"].append(d_nouveau_tour)
+
+        # Mettre à jour le tournoi dans TinyDB
+        self.db_tournois.update(d_tournoi, doc_ids=[1])
