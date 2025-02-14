@@ -62,3 +62,13 @@ class TourVue:
             f"[bold red]{p_nom_tour}[/bold red].\n"
             f"Veuillez d'abord saisir les résultats des matchs avant de continuer.\n"
         )
+
+#
+    def render_visualiser_matchs(self, p_tournoi_choisi, p_numero_tour, p_joueur_blanc, p_joueur_noir) -> None:
+        """Affiche les matchs générés pour un tour donné.
+
+        Args:
+            p_tour (Tour): Objet contenant les informations du tour et la liste des matchs.
+        """
+        self.console.print(f"\n[bold cyan] Pour le Tour : {p_numero_tour} du Tournoi : {p_tournoi_choisi}[/bold cyan]\n")
+        self.console.print(f"\n[bold magenta] Match entre : {p_joueur_blanc} VS {p_joueur_noir})[/bold magenta]\n")

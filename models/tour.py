@@ -26,11 +26,3 @@ class Tour:
         self.date_heure_debut = p_date_heure_debut
         self.date_heure_fin = p_date_heure_fin
         self.tournoi = p_tournoi
-
-    def creer_tour(self):
-        # Logique à implémenter plus tard
-        pass
-
-    def terminer_tour(self):
-        # Logique à implémenter plus tard
-        pass

@@ -2,6 +2,7 @@ from tinydb import TinyDB
 from models.tournoi import Tournoi
 from models.joueur import Joueur
 from models.tour import Tour
+from models.match import Match
 import os
 
 
@@ -125,6 +126,7 @@ class GestionnairePersistance:
             p_date_fin_tournoi=d_tournoi["date_fin_tournoi"],
             p_nombre_tours=d_tournoi["nombre_tours"],
             p_description=d_tournoi["description"],
+            p_liste_joueurs=d_tournoi["liste_joueurs"]
         )
 
         for tour in d_tournoi["liste_tours"]:
@@ -173,12 +175,26 @@ class GestionnairePersistance:
         if "liste_tours" not in d_tournoi:
             d_tournoi["liste_tours"] = []
 
+        # Vérifier si "liste_tours" existe, sinon l'initialiser
+        if "liste_tours" not in d_tournoi:
+            d_tournoi["liste_tours"] = []
+
+        # Transformer chaque match en dictionnaire
+        l_matchs_dictionnaire = []
+        for o_match in p_tour.liste_matchs:
+            d_match = {
+                "nom_match": o_match.nom_match,
+                "joueur_blanc": o_match.joueur_blanc,
+                "joueur_noir": o_match.joueur_noir,
+            }
+            l_matchs_dictionnaire.append(d_match)
+
         # Transformer l'objet Tour en dictionnaire
         d_nouveau_tour = {
             "identifiant": p_tour.identifiant,
             "nom": p_tour.nom,
             "statut": p_tour.statut,
-            "liste_matchs": [],  # Vide au début
+            "liste_matchs": l_matchs_dictionnaire,
             "date_heure_debut": p_tour.date_heure_debut,
             "date_heure_fin": p_tour.date_heure_fin,
         }
@@ -186,5 +202,38 @@ class GestionnairePersistance:
         # Ajouter ce tour aux données du tournoi
         d_tournoi["liste_tours"].append(d_nouveau_tour)
 
+        print("Données de liste_matchs avant enregistrement :", d_tournoi["liste_tours"][-1]["liste_matchs"])
+
         # Mettre à jour le tournoi dans TinyDB
         self.db_tournois.update(d_tournoi, doc_ids=[1])
+
+#
+    def recuperer_liste_objets_matchs(self, p_identifiant_tournoi: str) -> list[Match]:
+        """Récupère les matchs sous forme d'objets Match à partir du fichier JSON d'un tournoi.
+
+        Args:
+            p_identifiant_tournoi (str): L'identifiant du tournoi dont on veut récupérer les matchs.
+
+        Returns:
+            list[Match]: Liste d'objets Match correspondant aux matchs enregistrés.
+        """
+        self.db_tournois = TinyDB(f"data/tournaments/tournoi_{p_identifiant_tournoi}.json")
+
+        d_tournoi = self.db_tournois.all()[0]  # Charger les données du tournoi
+        l_matchs = []  # Liste des objets Match
+
+        # Parcourir tous les tours du tournoi
+        for d_tour in d_tournoi.get("liste_tours", []):
+            for d_match in d_tour.get("liste_matchs", []):
+                # Création de l'objet Match
+                o_match = Match(
+                    p_identifiant=d_match["identifiant"],
+                    p_nom_match=f"{d_match['identifiant']} - {d_match['joueur_blanc']} VS {d_match['joueur_noir']}",
+                    p_joueur_noir=d_match["joueur_noir"],
+                    p_score_blanc=d_match["score_blanc"],
+                    p_score_noir=d_match["score_noir"],
+                    p_statut=d_match["statut"]
+                )
+                l_matchs.append(o_match)  # Ajouter l'objet Match à la liste
+
+        return l_matchs  # Retourner la liste des matchs

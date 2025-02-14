@@ -13,6 +13,7 @@ class Tournoi:
         p_nombre_tours: int = 4,
         p_description: str | None = None,
         p_liste_tours: list = [],
+        p_liste_joueurs: list = [],
     ) -> None:
         """Initialise un tournoi avec ses détails.
 
@@ -31,7 +32,7 @@ class Tournoi:
         self.date_debut_tournoi = p_date_debut_tournoi
         self.date_fin_tournoi = p_date_fin_tournoi
         self.nombre_tours = p_nombre_tours
-        self.liste_joueurs = []
+        self.liste_joueurs = p_liste_joueurs
         self.description = p_description
         self.liste_tours = p_liste_tours
 
