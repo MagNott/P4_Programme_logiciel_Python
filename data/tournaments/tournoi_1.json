@@ -1,1 +1,39 @@
-{"_default": {"1": {"nom_tournoi": "Dans la mer", "lieu_tournoi": "Village de bob", "date_debut_tournoi": "10/02/2025", "date_fin_tournoi": "10/02/2025", "nombre_tours": "4", "description": "ca va etre sympa", "liste_joueurs": ["3", "1", "2", "4"]}}}
+{
+    "_default": {
+        "1": {
+            "nom_tournoi": "Dans la mer",
+            "lieu_tournoi": "Village de bob",
+            "date_debut_tournoi": "10/02/2025",
+            "date_fin_tournoi": "10/02/2025",
+            "nombre_tours": "4",
+            "description": "ca va etre sympa",
+            "liste_joueurs": [
+                "2",
+                "3",
+                "4",
+                "1"
+            ],
+            "liste_tours": [
+                {
+                    "identifiant": 1,
+                    "nom": "Round 1",
+                    "statut": "En cours",
+                    "liste_matchs": [
+                        {
+                            "nom_match": "Match 1 - 2 VS 4",
+                            "joueur_blanc": "2",
+                            "joueur_noir": "4"
+                        },
+                        {
+                            "nom_match": "Match 2 - 3 VS 1",
+                            "joueur_blanc": "3",
+                            "joueur_noir": "1"
+                        }
+                    ],
+                    "date_heure_debut": null,
+                    "date_heure_fin": null
+                }
+            ]
+        }
+    }
+}
