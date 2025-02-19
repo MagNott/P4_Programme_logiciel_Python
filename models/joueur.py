@@ -16,3 +16,4 @@ class Joueur:
         self.nom_famille = p_nom_famille
         self.prenom = p_prenom
         self.date_naissance = p_date_naissance
+        self.score = 0

@@ -60,16 +60,11 @@ class TourControleur:
         )  # copy() sinon on passe par référence et on modifie la liste du tournoi
         random.shuffle(l_joueurs)  # Mélange aléatoire
 
-        print(o_tournoi_choisi.liste_joueurs)
-        print(l_joueurs)
-
         identifiant_match = 1
         # Créer les paires de joueurs et générer les matchs
         while len(l_joueurs) >= 2:
             p_joueur_blanc = l_joueurs.pop()
             p_joueur_noir = l_joueurs.pop()
-
-            print(f"Tentative de création d'un match entre {p_joueur_blanc} et {p_joueur_noir}")
 
             o_nouveau_match = Match(
                 identifiant_match,
@@ -88,10 +83,21 @@ class TourControleur:
         # Ajouter le tour à la liste des tours du tournoi
         o_tournoi_choisi.liste_tours.append(o_nouveau_tour)
 
-        print("Matchs dans o_nouveau_tour.liste_matchs :", o_nouveau_tour.liste_matchs)
-
         # Enregistrer le tour dans le tournoi
         self.o_gestionnaire_persistance.enregistrer_tour_tournoi(
             o_nouveau_tour, o_tournoi_choisi
         )
         self.o_tour_vue.render_confirmation_ajout_tour(i_numero_tour, o_tournoi_choisi)
+
+#
+    def terminer_tour(self):
+
+        # Lister les tournois existants
+        l_liste_tournois = self.o_gestionnaire_persistance.lister_tournois()
+        i_identifiant_tournoi = self.o_tour_vue.render_choix_tournoi(l_liste_tournois)
+
+        l_matchs = self.o_gestionnaire_persistance.recuperer_liste_objets_matchs_dernier_tour(i_identifiant_tournoi)
+
+        l_resultats = self.o_tour_vue.render_matchs_pour_saisie(l_matchs)
+
+        self.o_gestionnaire_persistance.enregistrer_resultat_match(l_resultats, i_identifiant_tournoi)

@@ -16,6 +16,7 @@ MENU_INSCRIRE_JOUEUR = "Inscrire un joueur"
 MENU_LISTER_TOURNOI = "Lister les tournois"
 MENU_VISUALISER_TOURNOI = "Visualiser un tournoi"
 MENU_CREER_TOUR = "Créer un tour"
+MENU_TERMINER_TOUR = "Terminer un tour"
 RETOUR_MENU_PRINCIPAL = "Retour au menu principal"
 MENU_QUITTER = "Quitter"
 
@@ -63,6 +64,7 @@ def menu_tournoi():
             MENU_CREER_TOURNOI,
             MENU_INSCRIRE_JOUEUR,
             MENU_CREER_TOUR,
+            MENU_TERMINER_TOUR,
             RETOUR_MENU_PRINCIPAL,
         ],
     ).ask()  # L’utilisateur choisit et la réponse est retournée
@@ -112,6 +114,8 @@ if __name__ == "__main__":
                     tournoi_controleur.inscrire_joueur()
                 elif choix_tournoi == MENU_CREER_TOUR:
                     tour_controleur.creer_tour()
+                elif choix_tournoi == MENU_TERMINER_TOUR:
+                    tour_controleur.terminer_tour()
                 elif choix_tournoi == RETOUR_MENU_PRINCIPAL:
                     break
         elif choix == MENU_GESTION_RAPPORTS:
