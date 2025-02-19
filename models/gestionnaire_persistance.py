@@ -4,6 +4,8 @@ from models.joueur import Joueur
 from models.tour import Tour
 from models.match import Match
 import os
+from icecream import ic
+from tinydb import Query
 
 
 class GestionnairePersistance:
@@ -26,6 +28,7 @@ class GestionnairePersistance:
             "nom_famille": p_joueur_modele.nom_famille,
             "prenom": p_joueur_modele.prenom,
             "date_naissance": p_joueur_modele.date_naissance,
+            "score": p_joueur_modele.score,
         }
         self.db_joueurs.insert(d_donnees_joueur)
 
@@ -56,6 +59,19 @@ class GestionnairePersistance:
 
         return joueurs_avec_ids
 
+#
+    def mettre_a_jour_joueur(self, p_id_tinydb, p_score_gagne):
+
+        # Vérifier si le joueur existe dans TinyDB
+        joueur_trouve = self.db_joueurs.get(doc_id=p_id_tinydb)
+
+        if joueur_trouve:
+            # Ajouter le score au total existant
+            score_final = joueur_trouve["score"] + p_score_gagne
+
+            # Mettre à jour le score du joueur dans TinyDB
+            self.db_joueurs.update({"score": score_final}, doc_ids=[int(p_id_tinydb)])
+
     # SAUVEGARDE ET CHARGEMENT DES TOURNOIS
 
     def sauvegarder_tournoi(self, p_tournoi_modele: Tournoi) -> None:
@@ -71,6 +87,8 @@ class GestionnairePersistance:
             "date_fin_tournoi": p_tournoi_modele.date_fin_tournoi,
             "nombre_tours": p_tournoi_modele.nombre_tours,
             "description": p_tournoi_modele.description,
+            "liste_joueurs": p_tournoi_modele.liste_joueurs,
+            "liste_tours": p_tournoi_modele.liste_tours,
         }
         self.db_tournois = TinyDB(
             f"data/tournaments/tournoi_{p_tournoi_modele.identifiant}.json"
@@ -264,6 +282,10 @@ class GestionnairePersistance:
             d_liste_match = d_tournoi["liste_tours"][-1]["liste_matchs"][i]
             d_nouvelle_liste_match = {**d_liste_match, **d_match}
             d_tournoi["liste_tours"][-1]["liste_matchs"][i] = d_nouvelle_liste_match
+
+            # Mise à jour des scores des joueurs
+            self.mettre_a_jour_joueur(d_liste_match["joueur_blanc"], d_resultat["score_blanc"])
+            self.mettre_a_jour_joueur(d_liste_match["joueur_blanc"], d_resultat["score_noir"])
 
         d_tournoi["liste_tours"][-1]["statut"] = "Terminé"
 

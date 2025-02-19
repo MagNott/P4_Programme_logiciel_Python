@@ -1,17 +1,17 @@
 {
     "_default": {
         "1": {
-            "nom_tournoi": "Dans la mer",
-            "lieu_tournoi": "Village de bob",
-            "date_debut_tournoi": "10/02/2025",
-            "date_fin_tournoi": "10/02/2025",
+            "nom_tournoi": "Tournoi des courses",
+            "lieu_tournoi": "Cagnes-sur-mer",
+            "date_debut_tournoi": "14/03/2025",
+            "date_fin_tournoi": "14/03/2025",
             "nombre_tours": "4",
-            "description": "ca va etre sympa",
+            "description": "Pour le fun",
             "liste_joueurs": [
-                "2",
+                "1",
                 "3",
                 "4",
-                "1"
+                "2"
             ],
             "liste_tours": [
                 {
@@ -21,18 +21,18 @@
                     "liste_matchs": [
                         {
                             "identifiant": 1,
-                            "nom_match": "Match 1 - 4 VS 1",
+                            "nom_match": "Match 1 - 4 VS 3",
                             "joueur_blanc": "4",
-                            "joueur_noir": "1",
+                            "joueur_noir": "3",
                             "statut": "Termin\u00e9",
                             "score_blanc": 1,
                             "score_noir": 0
                         },
                         {
                             "identifiant": 2,
-                            "nom_match": "Match 2 - 2 VS 3",
+                            "nom_match": "Match 2 - 2 VS 1",
                             "joueur_blanc": "2",
-                            "joueur_noir": "3",
+                            "joueur_noir": "1",
                             "statut": "Termin\u00e9",
                             "score_blanc": 0,
                             "score_noir": 1
@@ -48,18 +48,18 @@
                     "liste_matchs": [
                         {
                             "identifiant": 1,
-                            "nom_match": "Match 1 - 1 VS 3",
+                            "nom_match": "Match 1 - 1 VS 4",
                             "joueur_blanc": "1",
-                            "joueur_noir": "3",
+                            "joueur_noir": "4",
                             "statut": "Termin\u00e9",
                             "score_blanc": 0,
                             "score_noir": 1
                         },
                         {
                             "identifiant": 2,
-                            "nom_match": "Match 2 - 4 VS 2",
-                            "joueur_blanc": "4",
-                            "joueur_noir": "2",
+                            "nom_match": "Match 2 - 2 VS 3",
+                            "joueur_blanc": "2",
+                            "joueur_noir": "3",
                             "statut": "Termin\u00e9",
                             "score_blanc": 1,
                             "score_noir": 0

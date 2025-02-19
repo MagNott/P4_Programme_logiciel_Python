@@ -16,8 +16,8 @@ MENU_INSCRIRE_JOUEUR = "Inscrire un joueur"
 MENU_LISTER_TOURNOI = "Lister les tournois"
 MENU_VISUALISER_TOURNOI = "Visualiser un tournoi"
 MENU_CREER_TOUR = "Créer un tour"
-RETOUR_MENU_PRINCIPAL = "Retour au menu principal"
 MENU_TERMINER_TOUR = "Terminer un tour"
+RETOUR_MENU_PRINCIPAL = "Retour au menu principal"
 MENU_QUITTER = "Quitter"
 
 console = Console()
