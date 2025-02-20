@@ -5,6 +5,7 @@ from models.match import Match
 import random
 
 
+
 class TourControleur:
     """Contrôleur gérant les interactions entre la vue et le modèle pour les tours."""
 

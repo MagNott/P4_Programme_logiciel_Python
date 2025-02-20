@@ -1,4 +1,5 @@
 from models.tournoi import Tournoi
+from datetime import datetime
 
 
 class Tour:
@@ -10,7 +11,7 @@ class Tour:
         p_nom: str,
         p_tournoi: Tournoi,
         p_statut="En cours",
-        p_date_heure_debut=None,
+        p_date_heure_debut=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         p_date_heure_fin=None,
     ):
         """Initialise un tour avec son identifiant, nom et statut.

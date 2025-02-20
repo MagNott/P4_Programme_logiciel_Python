@@ -6,6 +6,7 @@ from models.match import Match
 import os
 from icecream import ic
 from tinydb import Query
+from datetime import datetime
 
 
 class GestionnairePersistance:
@@ -288,6 +289,7 @@ class GestionnairePersistance:
             self.mettre_a_jour_joueur(d_liste_match["joueur_blanc"], d_resultat["score_noir"])
 
         d_tournoi["liste_tours"][-1]["statut"] = "Terminé"
+        d_tournoi["liste_tours"][-1]["date_heure_fin"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         # Mettre à jour le tournoi dans TinyDB
         self.db_tournois.update(d_tournoi, doc_ids=[1])
