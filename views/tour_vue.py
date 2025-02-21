@@ -1,6 +1,8 @@
 from rich.console import Console
 from rich.table import Table
+from rich.panel import Panel
 import questionary
+from models.tournoi import Tournoi
 
 
 class TourVue:
@@ -71,44 +73,113 @@ class TourVue:
 
     #
     def render_visualiser_matchs(
-        self, p_tournoi_choisi, p_numero_tour, p_joueur_blanc, p_joueur_noir
+        self,
+        p_tournoi_choisi,
+        p_numero_tour,
+        p_identifiant_match,
+        p_joueur_blanc,
+        p_joueur_noir,
     ) -> None:
         """Affiche les matchs générés pour un tour donné.
 
         Args:
             p_tour (Tour): Objet contenant les informations du tour et la liste des matchs.
         """
+        # self.console.print(
+        #     f"\n[bold cyan] Pour le Tour : {p_numero_tour} du Tournoi : {p_tournoi_choisi}[/bold cyan]\n"
+        # )
+        # self.console.print(
+        #     f"\n[bold magenta] Match entre : {p_joueur_blanc} VS {p_joueur_noir})[/bold magenta]\n"
+        # )
         self.console.print(
-            f"\n[bold cyan] Pour le Tour : {p_numero_tour} du Tournoi : {p_tournoi_choisi}[/bold cyan]\n"
+            Panel(
+                f"[bold cyan] Match n°{p_identifiant_match} du Round n°{p_numero_tour} du tournoi : {p_tournoi_choisi} [/bold cyan]",
+                border_style="cyan",
+                expand=False,
+            )
         )
-        self.console.print(
-            f"\n[bold magenta] Match entre : {p_joueur_blanc} VS {p_joueur_noir})[/bold magenta]\n"
+
+        # Création d’un tableau pour l’affichage des joueurs
+        table = Table(show_header=True, header_style="bold magenta")
+        table.add_column("🔹 Joueur Blanc", style="bold white", justify="center")
+        table.add_column("VS", style="bold yellow", justify="center")
+        table.add_column("🔹 Joueur Noir", style="bold white", justify="center")
+
+        table.add_row(
+            f"[cyan]{p_joueur_blanc}[/cyan]",
+            "[yellow]⚔️[/yellow]",
+            f"[cyan]{p_joueur_noir}[/cyan]",
         )
+
+        self.console.print(table)
 
     #
-    def render_matchs_pour_saisie(self, l_matchs):
+    def render_matchs_pour_saisie(self, p_objet_tournoi: Tournoi, p_dernier_tour, p_matchs):
 
+        s_dernier_tour_nom = p_dernier_tour["nom"]
+        s_tournoi_nom = p_objet_tournoi.nom_tournoi
         l_resultats = []
-        for match in l_matchs:
+        for match in p_matchs:
             self.console.print(
-                f"\n[bold cyan] pour le match {match.nom_match} merci de saisir les résultats"
+                Panel(
+                    f"[bold cyan] Match N°{match.identifiant} : {match.joueur_blanc} ⚔️ {match.joueur_noir} du {s_dernier_tour_nom} du tournoi : {s_tournoi_nom}[/bold cyan]",
+                    border_style="cyan",
+                    expand=False,
+                )
             )
-            self.console.print(
-                f"\n[bold cyan] Si {match.joueur_blanc} a gagner merci de taper 1"
-            )
-            self.console.print(
-                f"\n[bold cyan] Si {match.joueur_noir} a gagner merci de taper 2"
-            )
-            self.console.print("\n[bold cyan] Si le match est nul merci de taper 0")
 
-            resultat_match = questionary.text("Veuillez saisir votre choix: ").ask()
+            # self.console.print(
+            #     f"\n[bold cyan] Si {match.joueur_blanc} a gagner merci de taper 1"
+            # )
+            # self.console.print(
+            #     f"\n[bold cyan] Si {match.joueur_noir} a gagner merci de taper 2"
+            # )
+            # self.console.print("\n[bold cyan] Si le match est nul merci de taper 0")
 
-            if resultat_match == "1":
-                resultat_score = {"score_blanc": 1, "score_noir": 0, "statut": "Terminé"}
-            elif resultat_match == "2":
-                resultat_score = {"score_blanc": 0, "score_noir": 1, "statut": "Terminé"}
-            elif resultat_match == "3":
-                resultat_score = {"score_blanc": 0.5, "score_noir": 0.5, "statut": "Terminé"}
+            # resultat_match = questionary.text("Veuillez saisir votre choix: ").ask()
+
+            # if resultat_match == "1":
+            #     resultat_score = {
+            #         "score_blanc": 1,
+            #         "score_noir": 0,
+            #         "statut": "Terminé",
+            #     }
+            # elif resultat_match == "2":
+            #     resultat_score = {
+            #         "score_blanc": 0,
+            #         "score_noir": 1,
+            #         "statut": "Terminé",
+            #     }
+            # elif resultat_match == "3":
+            #     resultat_score = {
+            #         "score_blanc": 0.5,
+            #         "score_noir": 0.5,
+            #         "statut": "Terminé",
+            #     }
+
+            # Création du tableau des choix
+            table = Table(show_header=False, header_style="bold magenta")
+            table.add_column("🏆 Choix", style="bold yellow", justify="center")
+            table.add_column("📋 Explication", style="bold white", justify="left")
+
+            table.add_row("[1]", f"Victoire de [cyan]{match.joueur_blanc}[/cyan]")
+            table.add_row("[2]", f"Victoire de [cyan]{match.joueur_noir}[/cyan]")
+            table.add_row("[0]", "Match nul")
+
+            self.console.print(table)
+
+            # Demander le choix utilisateur avec `questionary`
+            resultat_match = questionary.select(
+                "Veuillez choisir une option",
+                choices=["1", "2", "0"],
+            ).ask()
+
+            # Associer les scores en fonction du choix utilisateur
+            resultat_score = {
+                "1": {"score_blanc": 1, "score_noir": 0, "statut": "Terminé"},
+                "2": {"score_blanc": 0, "score_noir": 1, "statut": "Terminé"},
+                "0": {"score_blanc": 0.5, "score_noir": 0.5, "statut": "Terminé"},
+            }[resultat_match]
 
             l_resultats.append(resultat_score)
 

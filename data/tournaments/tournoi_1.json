@@ -21,9 +21,9 @@
                     "liste_matchs": [
                         {
                             "identifiant": 1,
-                            "nom_match": "Match 1 - 1 VS 4",
-                            "joueur_blanc": "1",
-                            "joueur_noir": "4",
+                            "nom_match": "Match 1 - 4 VS 1",
+                            "joueur_blanc": "4",
+                            "joueur_noir": "1",
                             "statut": "Termin\u00e9",
                             "score_blanc": 1,
                             "score_noir": 0
@@ -38,8 +38,8 @@
                             "score_noir": 1
                         }
                     ],
-                    "date_heure_debut": "2025-02-20 16:20:18",
-                    "date_heure_fin": "2025-02-20 16:20:41"
+                    "date_heure_debut": "2025-02-21 17:55:50",
+                    "date_heure_fin": "2025-02-21 18:09:20"
                 },
                 {
                     "identifiant": 2,
@@ -48,25 +48,25 @@
                     "liste_matchs": [
                         {
                             "identifiant": 1,
-                            "nom_match": "Match 1 - 1 VS 3",
-                            "joueur_blanc": "1",
-                            "joueur_noir": "3",
+                            "nom_match": "Match 1 - 2 VS 4",
+                            "joueur_blanc": "2",
+                            "joueur_noir": "4",
                             "statut": "Termin\u00e9",
-                            "score_blanc": 0,
-                            "score_noir": 1
+                            "score_blanc": 0.5,
+                            "score_noir": 0.5
                         },
                         {
                             "identifiant": 2,
-                            "nom_match": "Match 2 - 4 VS 2",
-                            "joueur_blanc": "4",
-                            "joueur_noir": "2",
+                            "nom_match": "Match 2 - 1 VS 3",
+                            "joueur_blanc": "1",
+                            "joueur_noir": "3",
                             "statut": "Termin\u00e9",
                             "score_blanc": 1,
                             "score_noir": 0
                         }
                     ],
-                    "date_heure_debut": "2025-02-20 16:20:18",
-                    "date_heure_fin": "2025-02-20 16:23:49"
+                    "date_heure_debut": "2025-02-21 18:58:05",
+                    "date_heure_fin": "2025-02-21 18:58:28"
                 }
             ]
         }

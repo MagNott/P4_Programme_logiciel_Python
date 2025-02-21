@@ -5,7 +5,6 @@ from models.match import Match
 import random
 
 
-
 class TourControleur:
     """Contrôleur gérant les interactions entre la vue et le modèle pour les tours."""
 
@@ -74,9 +73,23 @@ class TourControleur:
             )
             identifiant_match += 1
 
+            o_joueur_blanc = self.o_gestionnaire_persistance.recuperer_objet_joueur(
+                p_joueur_blanc
+            )
+            o_joueur_blanc_nom = f"{o_joueur_blanc.nom_famille} {o_joueur_blanc.prenom}"
+
+            o_joueur_noir = self.o_gestionnaire_persistance.recuperer_objet_joueur(
+                p_joueur_noir
+            )
+            o_joueur_noir_nom = f"{o_joueur_noir.nom_famille} {o_joueur_noir.prenom}"
+
             # l_objets_match = self.o_gestionnaire_persistance.recuperer_liste_objets_matchs(i_identifiant_tournoi)
             self.o_tour_vue.render_visualiser_matchs(
-                i_identifiant_tournoi, i_numero_tour, p_joueur_blanc, p_joueur_noir
+                i_identifiant_tournoi,
+                i_numero_tour,
+                identifiant_match - 1,
+                o_joueur_blanc_nom,
+                o_joueur_noir_nom,
             )
 
             o_nouveau_tour.liste_matchs.append(o_nouveau_match)
@@ -90,15 +103,32 @@ class TourControleur:
         )
         self.o_tour_vue.render_confirmation_ajout_tour(i_numero_tour, o_tournoi_choisi)
 
-#
+    #
     def terminer_tour(self):
 
         # Lister les tournois existants
         l_liste_tournois = self.o_gestionnaire_persistance.lister_tournois()
         i_identifiant_tournoi = self.o_tour_vue.render_choix_tournoi(l_liste_tournois)
 
-        l_matchs = self.o_gestionnaire_persistance.recuperer_liste_objets_matchs_dernier_tour(i_identifiant_tournoi)
+        o_tournoi = self.o_gestionnaire_persistance.recuperer_objet_tournoi(i_identifiant_tournoi)
 
-        l_resultats = self.o_tour_vue.render_matchs_pour_saisie(l_matchs)
+        d_dernier_tour = self.o_gestionnaire_persistance.recuperer_dernier_tour(
+                i_identifiant_tournoi
+            )
 
-        self.o_gestionnaire_persistance.enregistrer_resultat_match(l_resultats, i_identifiant_tournoi)
+        l_objets_matchs = (
+            self.o_gestionnaire_persistance.recuperer_liste_objets_matchs(d_dernier_tour)
+        )
+
+        for match in l_objets_matchs:
+            o_joueur_blanc = self.o_gestionnaire_persistance.recuperer_objet_joueur(match.joueur_blanc)
+            o_joueur_noir = self.o_gestionnaire_persistance.recuperer_objet_joueur(match.joueur_noir)
+
+            match.joueur_blanc = f"{o_joueur_blanc.prenom} {o_joueur_blanc.nom_famille}"
+            match.joueur_noir = f"{o_joueur_noir.prenom} {o_joueur_noir.nom_famille}"
+
+        l_resultats = self.o_tour_vue.render_matchs_pour_saisie(o_tournoi, d_dernier_tour, l_objets_matchs)
+
+        self.o_gestionnaire_persistance.enregistrer_resultat_match(
+            l_resultats, i_identifiant_tournoi
+        )

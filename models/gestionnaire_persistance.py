@@ -4,9 +4,8 @@ from models.joueur import Joueur
 from models.tour import Tour
 from models.match import Match
 import os
-from icecream import ic
-from tinydb import Query
 from datetime import datetime
+from icecream import ic
 
 
 class GestionnairePersistance:
@@ -60,7 +59,24 @@ class GestionnairePersistance:
 
         return joueurs_avec_ids
 
-#
+    def recuperer_objet_joueur(self, p_identifiant_joueur: str) -> Joueur:
+
+        d_joueurs = self.db_joueurs.get(
+            doc_id=int(p_identifiant_joueur)
+        )  # Récupérer les données
+
+        o_joueur = Joueur(
+            p_identifiant_national_echec=d_joueurs["identifiant_national_echec"],
+            p_nom_famille=d_joueurs["nom_famille"],
+            p_prenom=d_joueurs["prenom"],
+            p_date_naissance=d_joueurs["date_naissance"],
+            p_identifiant_tinydb=p_identifiant_joueur,
+            p_score=d_joueurs["score"],
+        )
+
+        return o_joueur
+
+    #
     def mettre_a_jour_joueur(self, p_id_tinydb, p_score_gagne):
 
         # Vérifier si le joueur existe dans TinyDB
@@ -229,27 +245,24 @@ class GestionnairePersistance:
         self.db_tournois.update(d_tournoi, doc_ids=[1])
 
     #
-    def recuperer_liste_objets_matchs_dernier_tour(
-        self, p_identifiant_tournoi: str
-    ) -> list[Match]:
-        """Récupère les matchs sous forme d'objets Match à partir du fichier JSON d'un tournoi.
-
-        Args:
-            p_identifiant_tournoi (str): L'identifiant du tournoi dont on veut récupérer les matchs.
-
-        Returns:
-            list[Match]: Liste d'objets Match correspondant aux matchs enregistrés.
-        """
+    def recuperer_dernier_tour(self, p_identifiant_tournoi: str) -> dict:
         self.db_tournois = TinyDB(
             f"data/tournaments/tournoi_{p_identifiant_tournoi}.json"
         )
 
         d_tournoi = self.db_tournois.all()[0]  # Charger les données du tournoi
-        l_matchs = []  # Liste des objets Match
 
         # Parcourir tous les tours du tournoi
         d_dernier_tour = d_tournoi.get("liste_tours")[-1]
-        for d_match in d_dernier_tour.get("liste_matchs", []):
+
+        return d_dernier_tour
+
+    #
+    def recuperer_liste_objets_matchs(self, p_dernier_tour: dict) -> list[Match]:
+
+        l_matchs = []  # Liste des objets Match
+
+        for d_match in p_dernier_tour.get("liste_matchs", []):
             # Création de l'objet Match
             o_match = Match(
                 p_identifiant=d_match["identifiant"],
@@ -285,11 +298,17 @@ class GestionnairePersistance:
             d_tournoi["liste_tours"][-1]["liste_matchs"][i] = d_nouvelle_liste_match
 
             # Mise à jour des scores des joueurs
-            self.mettre_a_jour_joueur(d_liste_match["joueur_blanc"], d_resultat["score_blanc"])
-            self.mettre_a_jour_joueur(d_liste_match["joueur_blanc"], d_resultat["score_noir"])
+            self.mettre_a_jour_joueur(
+                d_liste_match["joueur_blanc"], d_resultat["score_blanc"]
+            )
+            self.mettre_a_jour_joueur(
+                d_liste_match["joueur_blanc"], d_resultat["score_noir"]
+            )
 
         d_tournoi["liste_tours"][-1]["statut"] = "Terminé"
-        d_tournoi["liste_tours"][-1]["date_heure_fin"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        d_tournoi["liste_tours"][-1]["date_heure_fin"] = datetime.now().strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
 
         # Mettre à jour le tournoi dans TinyDB
         self.db_tournois.update(d_tournoi, doc_ids=[1])
