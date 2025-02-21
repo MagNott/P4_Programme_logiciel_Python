@@ -1,8 +1,16 @@
+
+
 class Joueur:
     """Représente un joueur d'échecs avec son identité et son identifiant national d'échec."""
 
     def __init__(
-        self, p_identifiant_national_echec: str, p_nom_famille: str, p_prenom: str, p_date_naissance: str
+        self,
+        p_identifiant_national_echec: str,
+        p_nom_famille: str,
+        p_prenom: str,
+        p_date_naissance: str,
+        p_identifiant_tinydb: int = None,
+        p_score: float = 0,
     ) -> None:
         """Initialise un joueur avec ses informations.
 
@@ -16,4 +24,5 @@ class Joueur:
         self.nom_famille = p_nom_famille
         self.prenom = p_prenom
         self.date_naissance = p_date_naissance
-        self.score = 0
+        self.identifiant_tinydb = p_identifiant_tinydb
+        self.score = p_score

@@ -5,28 +5,35 @@
             "nom_famille": "DUPONT",
             "prenom": "Jean",
             "date_naissance": "18/04/85",
-            "score": 3
+            "score": 11
         },
         "2": {
             "identifiant_national_echec": "DA15354",
             "nom_famille": "MARTIN",
             "prenom": "Florence",
             "date_naissance": "14/05/1989",
-            "score": 2
+            "score": 8.0
         },
         "3": {
             "identifiant_national_echec": "GH12489",
             "nom_famille": "RIVIERE",
             "prenom": "Pierre",
             "date_naissance": "16/07/1995",
-            "score": 1
+            "score": 4
         },
         "4": {
             "identifiant_national_echec": "HY14875",
             "nom_famille": "ALLARD",
             "prenom": "Martine",
             "date_naissance": "17/09/2001",
-            "score": 2
+            "score": 7
+        },
+        "5": {
+            "identifiant_national_echec": "AD13545",
+            "nom_famille": "COCHI",
+            "prenom": "Henry",
+            "date_naissance": "05/05/1999",
+            "score": 0
         }
     }
 }
