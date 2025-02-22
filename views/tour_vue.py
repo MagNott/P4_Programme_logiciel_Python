@@ -36,12 +36,22 @@ class TourVue:
 
     #
     def render_confirmation_ajout_tour(
-        self, p_numero_tour: str, p_tournoi_choisi
+        self,
+        p_numero_tour: str,
+        p_tournoi_choisi: Tournoi
     ) -> None:
-        """Affiche un message à l'utilisateur.
+        """
+        Affiche un message confirmant l'ajout d'un tour à un tournoi.
+
+        Cette fonction affiche un message de confirmation en console lorsque
+        l'utilisateur ajoute un nouveau round à un tournoi existant.
 
         Args:
-            p_message (str): Message à afficher.
+            p_numero_tour (str): Numéro du round ajouté.
+            p_tournoi_choisi (Tournoi): Objet Tournoi auquel le round a été ajouté.
+
+        Returns:
+            None: Cette fonction affiche uniquement un message en console.
         """
         self.console.print(
             f"\n[bold green] Le round {p_numero_tour} ajouté au tournoi {p_tournoi_choisi.nom_tournoi}. [/bold green]\n"
@@ -74,23 +84,27 @@ class TourVue:
     #
     def render_visualiser_matchs(
         self,
-        p_tournoi_choisi,
-        p_numero_tour,
-        p_identifiant_match,
-        p_joueur_blanc,
-        p_joueur_noir,
+        p_tournoi_choisi: str,
+        p_numero_tour: int,
+        p_identifiant_match: int,
+        p_joueur_blanc: str,
+        p_joueur_noir: str,
     ) -> None:
-        """Affiche les matchs générés pour un tour donné.
+        """
+        Affiche les informations d'un match généré pour un tour donné.
+
+        Cette fonction affiche le match et leur joueurs sous forme de tableau avec `rich`.
 
         Args:
-            p_tour (Tour): Objet contenant les informations du tour et la liste des matchs.
+            p_tournoi_choisi (str): Nom du tournoi en cours.
+            p_numero_tour (int): Numéro du round en cours.
+            p_identifiant_match (int): Identifiant unique du match.
+            p_joueur_blanc (str): Nom du joueur ayant les pièces blanches.
+            p_joueur_noir (str): Nom du joueur ayant les pièces noires.
+
+        Returns:
+            None: Cette fonction affiche le match en console et ne retourne rien.
         """
-        # self.console.print(
-        #     f"\n[bold cyan] Pour le Tour : {p_numero_tour} du Tournoi : {p_tournoi_choisi}[/bold cyan]\n"
-        # )
-        # self.console.print(
-        #     f"\n[bold magenta] Match entre : {p_joueur_blanc} VS {p_joueur_noir})[/bold magenta]\n"
-        # )
         self.console.print(
             Panel(
                 f"[bold cyan] Match n°{p_identifiant_match} du Round n°{p_numero_tour} du tournoi : {p_tournoi_choisi} [/bold cyan]",
@@ -114,48 +128,41 @@ class TourVue:
         self.console.print(table)
 
     #
-    def render_matchs_pour_saisie(self, p_objet_tournoi: Tournoi, p_dernier_tour, p_matchs):
+    def render_matchs_pour_saisie(
+        self,
+        p_objet_tournoi: Tournoi,
+        p_dernier_tour: dict,
+        p_matchs: list
+    ) -> list[dict]:
+        """
+        Affiche les matchs en attente de saisie des résultats et recueille la saisie utilisateur du résultat.
+
+        Cette fonction affiche chaque match du tour actuel avec une mise en forme `rich`,
+        en indiquant les joueurs et le numéro du match. L'utilisateur peut saisir le résultat
+        du match via un choix interactif.
+
+        Args:
+            p_objet_tournoi (Tournoi): Objet contenant les informations du tournoi.
+            p_dernier_tour (dict): Dictionnaire contenant les informations du dernier tour en cours.
+            p_matchs (list): Liste des objets Match correspondant aux matchs du tour actuel.
+
+        Returns:
+            list[dict]: Une liste de dictionnaires contenant les résultats des matchs.
+                        Chaque dictionnaire contient:
+                        - "score_blanc" (float): Score attribué au joueur blanc.
+                        - "score_noir" (float): Score attribué au joueur noir.
+                        - "statut" (str): Indique si le match est terminé.
+        """
 
         s_dernier_tour_nom = p_dernier_tour["nom"]
         s_tournoi_nom = p_objet_tournoi.nom_tournoi
         l_resultats = []
         for match in p_matchs:
-            self.console.print(
-                Panel(
-                    f"[bold cyan] Match N°{match.identifiant} : {match.joueur_blanc} ⚔️ {match.joueur_noir} du {s_dernier_tour_nom} du tournoi : {s_tournoi_nom}[/bold cyan]",
-                    border_style="cyan",
-                    expand=False,
-                )
-            )
 
-            # self.console.print(
-            #     f"\n[bold cyan] Si {match.joueur_blanc} a gagner merci de taper 1"
-            # )
-            # self.console.print(
-            #     f"\n[bold cyan] Si {match.joueur_noir} a gagner merci de taper 2"
-            # )
-            # self.console.print("\n[bold cyan] Si le match est nul merci de taper 0")
+            texte = (f"[bold cyan] Match N°{match.identifiant} : {match.joueur_blanc} ⚔️  {match.joueur_noir}\n"
+                     f"du {s_dernier_tour_nom} du tournoi : {s_tournoi_nom}[/bold cyan]",)
 
-            # resultat_match = questionary.text("Veuillez saisir votre choix: ").ask()
-
-            # if resultat_match == "1":
-            #     resultat_score = {
-            #         "score_blanc": 1,
-            #         "score_noir": 0,
-            #         "statut": "Terminé",
-            #     }
-            # elif resultat_match == "2":
-            #     resultat_score = {
-            #         "score_blanc": 0,
-            #         "score_noir": 1,
-            #         "statut": "Terminé",
-            #     }
-            # elif resultat_match == "3":
-            #     resultat_score = {
-            #         "score_blanc": 0.5,
-            #         "score_noir": 0.5,
-            #         "statut": "Terminé",
-            #     }
+            self.console.print(Panel(texte, border_style="cyan", expand=False,))
 
             # Création du tableau des choix
             table = Table(show_header=False, header_style="bold magenta")

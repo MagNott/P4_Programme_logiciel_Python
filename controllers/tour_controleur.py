@@ -15,25 +15,38 @@ class TourControleur:
 
     #
     def creer_tour(self) -> None:
-        """Crée un tour pour un tournoi choisi par l'utilisateur et l'enregistre."""
+        """
+        Crée un tour pour un tournoi sélectionné et génère les matchs.
 
-        # Lister les tournois existants
+        Cette fonction permet à l'utilisateur de créer un nouveau tour pour un tournoi existant.
+        Elle s'assure que le tournoi n'a pas atteint son nombre maximal de tours, génère aléatoirement
+        des paires de joueurs, et enregistre le tour dans la base de données.
+
+        Args:
+            None
+
+        Returns:
+            None: Cette fonction enregistre un tour et affiche des informations, 
+                mais ne retourne pas de valeur.
+        """
+
+        # Liste les tournois existants et demande à l'utilisateur d'en choisir un.
         l_liste_tournois = self.o_gestionnaire_persistance.lister_tournois()
         i_identifiant_tournoi = self.o_tour_vue.render_choix_tournoi(l_liste_tournois)
 
-        # Récupérer l'objet Tournoi
+        # Récupère l'objet Tournoi
         o_tournoi_choisi = self.o_gestionnaire_persistance.recuperer_objet_tournoi(
             i_identifiant_tournoi
         )
 
-        # Vérifier s'il y a de la place pour un nouveau tour
+        # Vérifie que le tournoi peut accueillir un nouveau tour.
         if len(o_tournoi_choisi.liste_tours) >= int(o_tournoi_choisi.nombre_tours):
             self.o_tour_vue.render_verification_tour_max(
                 "Ce tournoi a atteint son nombre maximal de tours."
             )
             return
 
-            # Vérifier si des tours existent déjà et si le dernier est en cours ou terminé
+        # Vérifie si des tours existent déjà et si le dernier est en cours ou terminé
         if o_tournoi_choisi.liste_tours:
             d_dernier_tour = o_tournoi_choisi.liste_tours[-1]
             # Vérifier si le dernier tour est encore "En cours"
@@ -53,11 +66,9 @@ class TourControleur:
             p_nom=f"Round {i_numero_tour}",
             p_tournoi=o_tournoi_choisi,
         )
-
-        # Récupérer les joueurs du tournoi et les mélanger
-        l_joueurs = (
-            o_tournoi_choisi.liste_joueurs.copy()
-        )  # copy() sinon on passe par référence et on modifie la liste du tournoi
+        # Mélange les joueurs du tournoi et forme des paires pour les matchs.
+        l_joueurs = (o_tournoi_choisi.liste_joueurs.copy())
+        # On utilise copy() sinon on passe par référence et on modifie la liste du tournoi
         random.shuffle(l_joueurs)  # Mélange aléatoire
 
         identifiant_match = 1
@@ -73,6 +84,7 @@ class TourControleur:
             )
             identifiant_match += 1
 
+            # Associe chaque joueur à son nom complet pour l'affichage.
             o_joueur_blanc = self.o_gestionnaire_persistance.recuperer_objet_joueur(
                 p_joueur_blanc
             )
@@ -83,7 +95,7 @@ class TourControleur:
             )
             o_joueur_noir_nom = f"{o_joueur_noir.nom_famille} {o_joueur_noir.prenom}"
 
-            # l_objets_match = self.o_gestionnaire_persistance.recuperer_liste_objets_matchs(i_identifiant_tournoi)
+            # Affiche les matchs du tour à l'utilisateur via la console.
             self.o_tour_vue.render_visualiser_matchs(
                 i_identifiant_tournoi,
                 i_numero_tour,
@@ -92,12 +104,13 @@ class TourControleur:
                 o_joueur_noir_nom,
             )
 
+            # Enregistre le tour et ses matchs dans la base de données.
             o_nouveau_tour.liste_matchs.append(o_nouveau_match)
 
-        # Ajouter le tour à la liste des tours du tournoi
+        # Ajoute le tour à la liste des tours du tournoi
         o_tournoi_choisi.liste_tours.append(o_nouveau_tour)
 
-        # Enregistrer le tour dans le tournoi
+        # Enregistre le tour dans le tournoi
         self.o_gestionnaire_persistance.enregistrer_tour_tournoi(
             o_nouveau_tour, o_tournoi_choisi
         )
@@ -105,17 +118,34 @@ class TourControleur:
 
     #
     def terminer_tour(self):
+        """
+        Termine le tour en cours d'un tournoi et enregistre les résultats des matchs.
 
-        # Lister les tournois existants
+        Cette fonction permet à l'utilisateur de saisir les résultats des matchs d'un tour en cours.
+        Elle met à jour les informations des matchs en remplaçant les identifiants des joueurs par leurs noms
+        pour l'affichage en console et enregistre les résultats dans la base de données.
+
+        Args:
+            None
+
+        Returns:
+            None: Cette fonction effectue des mises à jour dans les fichiers JSON et affiche des informations,
+                mais ne retourne aucune valeur.
+        """
+
+        # Liste les tournois disponibles et demande à l'utilisateur de choisir un tournoi.
         l_liste_tournois = self.o_gestionnaire_persistance.lister_tournois()
         i_identifiant_tournoi = self.o_tour_vue.render_choix_tournoi(l_liste_tournois)
 
         o_tournoi = self.o_gestionnaire_persistance.recuperer_objet_tournoi(i_identifiant_tournoi)
 
+        # Récupère l'objet Tournoi et le dernier tour en cours.
         d_dernier_tour = self.o_gestionnaire_persistance.recuperer_dernier_tour(
                 i_identifiant_tournoi
             )
 
+        # Récupère les matchs du tour et remplace les identifiants des joueurs par leurs noms
+        # pour l'affichage en console.
         l_objets_matchs = (
             self.o_gestionnaire_persistance.recuperer_liste_objets_matchs(d_dernier_tour)
         )
@@ -127,8 +157,10 @@ class TourControleur:
             match.joueur_blanc = f"{o_joueur_blanc.prenom} {o_joueur_blanc.nom_famille}"
             match.joueur_noir = f"{o_joueur_noir.prenom} {o_joueur_noir.nom_famille}"
 
+        # Affiche les matchs et demande à l'utilisateur de saisir les résultats.
         l_resultats = self.o_tour_vue.render_matchs_pour_saisie(o_tournoi, d_dernier_tour, l_objets_matchs)
 
+        # Met à jour et enregistre les résultats des matchs dans le JSON.
         self.o_gestionnaire_persistance.enregistrer_resultat_match(
             l_resultats, i_identifiant_tournoi
         )
