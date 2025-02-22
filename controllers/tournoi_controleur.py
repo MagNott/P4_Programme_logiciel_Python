@@ -13,19 +13,22 @@ class TournoiControleur:
 
 #
     def ajouter_tournoi(self) -> None:
-        """Gère l'ajout d'un nouveau tournoi en collectant les informations et en les sauvegardant.
+        """
+        Gère l'ajout d'un nouveau tournoi en collectant les informations et en les sauvegardant.
+            Args:
+                None
 
-        Cette méthode :
-        1. Génère un identifiant unique pour le tournoi.
-        2. Demande à l'utilisateur de saisir les informations du tournoi via la vue.
-        3. Crée un objet `Tournoi` avec ces informations.
-        4. Sauvegarde le tournoi dans le gestionnaire de persistance.
-        5. Affiche un message de confirmation avec les informations du tournoi.
+            Returns:
+                None
         """
 
+        # Génère un identifiant unique pour le tournoi.
         identifiant_tournoi = Tournoi.generer_identifiant()
 
+        # Demande à l'utilisateur de saisir les informations du tournoi via la vue.
         d_infos_tournoi = self.o_tournoi_vue.render_saisie_tournoi()
+
+        # Crée un objet `Tournoi` avec ces informations.
         o_tournoi_modele = Tournoi(
             identifiant_tournoi,
             d_infos_tournoi["p_nom_tournoi"],
@@ -36,81 +39,90 @@ class TournoiControleur:
             d_infos_tournoi["p_description_tournoi"],
         )
 
+        # Sauvegarde le tournoi dans le gestionnaire de persistance.
         self.o_gestionnaire_persistance.sauvegarder_tournoi(o_tournoi_modele)
-        # Les ** permettent de déballer le dictionnaire
+        
+        # Affiche un message de confirmation avec les informations du tournoi.
         self.o_tournoi_vue.render_confirm_ajout_tournoi(**d_infos_tournoi)
+        # Les ** permettent de déballer le dictionnaire
 
 #
     def inscrire_joueur(self) -> None:
         """Permet d'inscrire un ou plusieurs joueurs à un tournoi existant.
 
-        Cette méthode suit les étapes suivantes :
-        1. Récupère la liste des tournois existants depuis le fichier JSON.
-        2. Affiche les tournois disponibles et demande à l'utilisateur d'en choisir un.
-        3. Charge les données du tournoi sélectionné.
-        4. Récupère la liste des joueurs disponibles.
-        5. Affiche les joueurs et demande à l'utilisateur de sélectionner ceux à inscrire.
-        6. Met à jour la liste des joueurs du tournoi.
-        7. Sauvegarde la mise à jour du tournoi dans la base de données.
+        Args:
+            None
+
+        Returns:
+            None
         """
 
+        # Récupère la liste des tournois existants depuis le fichier JSON.
         l_liste_tournois = self.o_gestionnaire_persistance.lister_tournois()
+
+        # # Affiche les tournois disponibles et demande à l'utilisateur d'en choisir un.
         i_identifiant_tournoi = self.o_tournoi_vue.render_choix_tournoi(
             l_liste_tournois
         )
-        # a_tournoi_choisi_data = self.o_gestionnaire_persistance.charger_tournoi(
-        #     i_identifiant_tournoi
-        # )
-
-        # o_tournoi_choisi = Tournoi(
-        #     p_identifiant=i_identifiant_tournoi,
-        #     p_nom_tournoi=a_tournoi_choisi_data[0]["nom_tournoi"],
-        #     p_lieu_tournoi=a_tournoi_choisi_data[0]["lieu_tournoi"],
-        #     p_date_debut_tournoi=a_tournoi_choisi_data[0]["date_debut_tournoi"],
-        #     p_date_fin_tournoi=a_tournoi_choisi_data[0]["date_fin_tournoi"],
-        #     p_nombre_tours=a_tournoi_choisi_data[0]["nombre_tours"],
-        #     p_description=a_tournoi_choisi_data[0]["description"],
-        # )
+        # Charge les données du tournoi sélectionné.
         o_tournoi_choisi = self.o_gestionnaire_persistance.recuperer_objet_tournoi(
             i_identifiant_tournoi
         )
-
+        # Récupère la liste des joueurs disponibles.
         l_liste_joueurs = self.o_gestionnaire_persistance.charger_joueurs()
+
+        # Affiche les joueurs et demande à l'utilisateur de sélectionner ceux à inscrire.
         l_choix_joueur = self.o_tournoi_vue.render_choix_joueur(l_liste_joueurs)
 
+        # Met à jour la liste des joueurs du tournoi.
         o_tournoi_choisi.liste_joueurs = l_choix_joueur
+
+        # Sauvegarde la mise à jour du tournoi dans la base de données.
         self.o_gestionnaire_persistance.sauvegarder_joueurs_tournoi(o_tournoi_choisi)
 
 #
     def lister_tournois(self) -> None:
         """Affiche la liste des tournois enregistrés dans la base de données.
 
-        Cette méthode suit les étapes suivantes :
-        1. Charge la liste des tournois existants.
-        2. Affiche les informations de chaque tournoi dans la console.
+        Args:
+            None
+
+        Returns:
+            None
         """
 
+        # Charge la liste des tournois existants.
         l_liste_tournois = self.o_gestionnaire_persistance.lister_tournois()
+
+        # Affiche les informations de chaque tournoi dans la console.
         self.o_tournoi_vue.render_lister_tournois(l_liste_tournois)
 
 #
     def visualiser_tournoi(self) -> None:
         """Affiche les détails d'un tournoi sélectionné par l'utilisateur.
 
-        Cette méthode suit les étapes suivantes :
-        1. Charge la liste des joueurs enregistrés.
-        2. Charge la liste des tournois existants.
-        3. Affiche les tournois disponibles et demande à l'utilisateur d'en choisir un.
-        4. Récupère les données du tournoi sélectionné.
-        5. Affiche les informations détaillées du tournoi, y compris les joueurs inscrits àce tournoi.
+        Args:
+            None
+
+        Returns:
+            None
         """
 
+        # Charge la liste des joueurs enregistrés.
         l_liste_joueurs = self.o_gestionnaire_persistance.charger_joueurs()
+
+        # Charge la liste des tournois existants.
         l_liste_tournois = self.o_gestionnaire_persistance.lister_tournois()
+
+        # Affiche les tournois disponibles et demande à l'utilisateur d'en choisir un.
         i_identifiant_tournoi = self.o_tournoi_vue.render_choix_tournoi(
             l_liste_tournois
         )
+
+        # Récupère les données du tournoi sélectionné.
         d_tournoi = self.o_gestionnaire_persistance.charger_tournoi(
             i_identifiant_tournoi
         )
+
+        # Affiche les informations détaillées du tournoi, y compris les joueurs inscrits àce tournoi.
         self.o_tournoi_vue.render_visualiser_tournoi(d_tournoi, l_liste_joueurs)

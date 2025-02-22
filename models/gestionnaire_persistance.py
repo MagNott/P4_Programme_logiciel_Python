@@ -209,14 +209,14 @@ class GestionnairePersistance:
             f"data/tournaments/tournoi_{p_tournoi.identifiant}.json"
         )
 
-        # Charger les données actuelles du tournoi
+        # Charge les données actuelles du tournoi
         d_tournoi = self.db_tournois.all()[0]
 
-        # Vérifier si "liste_tours" existe, sinon l'initialiser
+        # Vérifie si "liste_tours" existe, sinon l'initialise
         if "liste_tours" not in d_tournoi:
             d_tournoi["liste_tours"] = []
 
-        # Transformer chaque match en dictionnaire
+        # Transforme chaque match en dictionnaire
         l_matchs_dictionnaire = []
         for o_match in p_tour.liste_matchs:
             d_match = {
@@ -228,7 +228,7 @@ class GestionnairePersistance:
             }
             l_matchs_dictionnaire.append(d_match)
 
-        # Transformer l'objet Tour en dictionnaire
+        # Transforme l'objet Tour en dictionnaire
         d_nouveau_tour = {
             "identifiant": p_tour.identifiant,
             "nom": p_tour.nom,
@@ -238,29 +238,45 @@ class GestionnairePersistance:
             "date_heure_fin": p_tour.date_heure_fin,
         }
 
-        # Ajouter ce tour aux données du tournoi
+        # Ajoute ce tour aux données du tournoi
         d_tournoi["liste_tours"].append(d_nouveau_tour)
 
-        # Mettre à jour le tournoi dans TinyDB
+        # Met à jour le tournoi dans TinyDB
         self.db_tournois.update(d_tournoi, doc_ids=[1])
 
     #
     def recuperer_dernier_tour(self, p_identifiant_tournoi: str) -> dict:
+        """
+        Récupère le dernier tour d'un tournoi à partir de la base de données.
+
+        Args:
+            p_identifiant_tournoi (str): L'identifiant du tournoi dont on veut récupérer le dernier tour.
+
+        Returns:
+            dict: Un dictionnaire contenant les informations du dernier tour du tournoi.
+        """
         self.db_tournois = TinyDB(
             f"data/tournaments/tournoi_{p_identifiant_tournoi}.json"
         )
+        d_tournoi = self.db_tournois.all()[0]
 
-        d_tournoi = self.db_tournois.all()[0]  # Charger les données du tournoi
-
-        # Parcourir tous les tours du tournoi
         d_dernier_tour = d_tournoi.get("liste_tours")[-1]
 
         return d_dernier_tour
 
     #
     def recuperer_liste_objets_matchs(self, p_dernier_tour: dict) -> list[Match]:
+        """
+        Convertit une liste de dictionnaires représentant des matchs en une liste d'objets Match.
 
-        l_matchs = []  # Liste des objets Match
+        Args:
+            p_dernier_tour (dict): Un dictionnaire contenant les informations du dernier tour,
+                                y compris la liste des matchs sous forme de dictionnaires.
+
+        Returns:
+            list[Match]: Une liste d'objets Match reconstitués à partir des données du dernier tour.
+        """
+        l_objects_matchs = []
 
         for d_match in p_dernier_tour.get("liste_matchs", []):
             # Création de l'objet Match
@@ -272,21 +288,38 @@ class GestionnairePersistance:
                 p_score_noir=d_match.get("score_noir", 0),
                 p_statut=d_match["statut"],
             )
-            l_matchs.append(o_match)  # Ajouter l'objet Match à la liste
+            l_objects_matchs.append(o_match)
 
-        return l_matchs  # Retourner la liste des matchs
+        return l_objects_matchs
 
     #
     def enregistrer_resultat_match(self, p_resultats, p_identifiant_tournoi):
+        """
+        Enregistre les résultats des matchs d'un tour et met à jour les scores des joueurs.
 
+        Cette fonction met à jour les informations du dernier tour d'un tournoi en enregistrant
+        les résultats des matchs, en mettant à jour les scores des joueurs, et en clôturant le tour
+        en ajoutant la date et l'heure de fin.
+
+        Args:
+            p_resultats (list[dict]): Liste des résultats des matchs sous forme de dictionnaires,
+                                    contenant `score_blanc`, `score_noir`, et `statut`.
+            p_identifiant_tournoi (str): Identifiant unique du tournoi concerné.
+
+        Returns:
+            None: Met à jour la base de données, mais ne retourne pas de valeur.
+        """
+
+        # Charge les données du tournoi depuis la base de données JSON avec TinyDB.
         self.db_tournois = TinyDB(
             f"data/tournaments/tournoi_{p_identifiant_tournoi}.json"
         )
 
-        # Charger les données actuelles du tournoi
+        # Charge les données actuelles du tournoi
         d_tournoi = self.db_tournois.all()[0]
 
-        # Transformer chaque match en dictionnaire
+        # Met à jour les informations des matchs (scores et statut).
+        # Transforme chaque match en dictionnaire
         for i, d_resultat in enumerate(p_resultats):
             d_match = {
                 "score_blanc": d_resultat["score_blanc"],
@@ -294,10 +327,12 @@ class GestionnairePersistance:
                 "statut": d_resultat["statut"],
             }
             d_liste_match = d_tournoi["liste_tours"][-1]["liste_matchs"][i]
+            # Pour insérer les données au bon endroit dans le JSON, fusion des 2 dictionnaires
+            # avec ** pour déballer les informations
             d_nouvelle_liste_match = {**d_liste_match, **d_match}
             d_tournoi["liste_tours"][-1]["liste_matchs"][i] = d_nouvelle_liste_match
 
-            # Mise à jour des scores des joueurs
+            # Met à jour les scores des joueurs dans la base de données.
             self.mettre_a_jour_joueur(
                 d_liste_match["joueur_blanc"], d_resultat["score_blanc"]
             )
@@ -305,10 +340,11 @@ class GestionnairePersistance:
                 d_liste_match["joueur_blanc"], d_resultat["score_noir"]
             )
 
+        # Marque le tour comme "Terminé" et enregistre l'heure de fin.
         d_tournoi["liste_tours"][-1]["statut"] = "Terminé"
         d_tournoi["liste_tours"][-1]["date_heure_fin"] = datetime.now().strftime(
             "%Y-%m-%d %H:%M:%S"
         )
 
-        # Mettre à jour le tournoi dans TinyDB
+        # Sauvegarde les modifications dans TinyDB.
         self.db_tournois.update(d_tournoi, doc_ids=[1])

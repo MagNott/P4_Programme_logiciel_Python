@@ -5,7 +5,9 @@ from rich.console import Console
 from rich.panel import Panel
 import questionary
 
-
+# Définition des options du menu
+# Ces constantes représentent les différentes options disponibles dans les menus de l'application.
+# Elles sont utilisées pour afficher les choix dans les menus et faciliter la navigation de l'utilisateur.
 MENU_GESTION_JOUEUR = "Gestion des joueurs"
 MENU_GESTION_TOURNOI = "Gestion des tournois"
 MENU_GESTION_RAPPORTS = "Gestion des rapports"
@@ -22,7 +24,9 @@ MENU_QUITTER = "Quitter"
 
 console = Console()
 
-
+# Affichage du message de bienvenue
+# Ce message est affiché à l'utilisateur lorsqu'il lance l'application.
+# Il est stylisé avec `rich`.
 texte = "[bold blue]\n Bienvenue dans Let's Roque, le super logiciel de gestion de tournoi d'échec ! \n[/bold blue]"
 console.print(Panel(texte, border_style="blue", width=len(texte)))
 
@@ -30,36 +34,53 @@ print("\n")
 
 
 def menu_principal():
-    # Création du menu principal
+    """
+    Affiche le menu principal et récupère le choix de l'utilisateur.
+
+    Returns:
+        str: L'option sélectionnée par l'utilisateur.
+    """
+
     choix = questionary.select(
-        "Que souhaitez-vous faire ?",  # La question affichée
+        "Que souhaitez-vous faire ?",
         choices=[
-            MENU_GESTION_JOUEUR,  # Option 1
+            MENU_GESTION_JOUEUR,
             MENU_GESTION_TOURNOI,
             MENU_GESTION_RAPPORTS,
-            "Ce menu ne sert à rien",
-            MENU_QUITTER,  # Option pour quitter
+            MENU_QUITTER,
         ],
     ).ask()  # L’utilisateur choisit et la réponse est retournée
     return choix
 
 
 def menu_joueur():
-    # Création du menu joueur
+    """
+    Affiche le menu de gestion des joueurs et récupère le choix de l'utilisateur.
+
+    Returns:
+        str: L'option sélectionnée par l'utilisateur.
+    """
+
     choix_joueur = questionary.select(
-        "Que souhaitez-vous faire ?",  # La question affichée
+        "Que souhaitez-vous faire ?",
         choices=[
             MENU_AJOUTER_JOUEUR,
             RETOUR_MENU_PRINCIPAL,
         ],
-    ).ask()  # L’utilisateur choisit et la réponse est retournée
+    ).ask()
     return choix_joueur
 
 
 def menu_tournoi():
-    # Création du menu joueur
+    """
+    Affiche le menu de gestion des tournois et récupère le choix de l'utilisateur.
+
+    Returns:
+        str: L'option sélectionnée par l'utilisateur.
+    """
+
     choix_tournoi = questionary.select(
-        "Que souhaitez-vous faire ?",  # La question affichée
+        "Que souhaitez-vous faire ?",
         choices=[
             MENU_CREER_TOURNOI,
             MENU_INSCRIRE_JOUEUR,
@@ -67,25 +88,32 @@ def menu_tournoi():
             MENU_TERMINER_TOUR,
             RETOUR_MENU_PRINCIPAL,
         ],
-    ).ask()  # L’utilisateur choisit et la réponse est retournée
+    ).ask()
     return choix_tournoi
 
 
 def menu_rapports():
-    # Création du menu joueur
+    """
+    Affiche le menu de gestion des rapports et récupère le choix de l'utilisateur.
+
+    Returns:
+        str: L'option sélectionnée par l'utilisateur.
+    """
     choix_rapports = questionary.select(
-        "Que souhaitez-vous faire ?",  # La question affichée
+        "Que souhaitez-vous faire ?",
         choices=[
             MENU_LISTER_JOUEURS,
             MENU_LISTER_TOURNOI,
             MENU_VISUALISER_TOURNOI,
             RETOUR_MENU_PRINCIPAL,
         ],
-    ).ask()  # L’utilisateur choisit et la réponse est retournée
+    ).ask()
     return choix_rapports
 
 
-# Programme principal
+# Point d'entrée principal du programme
+# Ce code s'exécute uniquement si ce fichier est lancé directement (et non importé).
+# Il initialise les contrôleurs et lance la boucle du menu principal.
 if __name__ == "__main__":
 
     # Instanciation des controlleurs
@@ -93,11 +121,12 @@ if __name__ == "__main__":
     tournoi_controleur = TournoiControleur()
     tour_controleur = TourControleur()
 
+    # Pour réafficher systématiquement le menu tant que quitter n'est pas choisi
     while True:
+        # Affiche le menu et récupère le choix de l’utilisateur
         choix = (
             menu_principal()
-        )  # Affiche le menu et récupère le choix de l’utilisateur
-
+        )
         if choix == MENU_GESTION_JOUEUR:
             while True:
                 choix_joueur = menu_joueur()
@@ -130,7 +159,13 @@ if __name__ == "__main__":
                 elif choix_rapports == RETOUR_MENU_PRINCIPAL:
                     break
         elif choix == MENU_QUITTER:
-            console.print("[bold blue] \n Fermeture du programme. \n [/bold blue]")
+            console.print(
+                Panel(
+                    "[bold blue]🔚 Fermeture du programme. Merci d'avoir utilisé Let's Roque ![/bold blue]",
+                    border_style="blue",
+                    expand=False,
+                )
+            )
             break
         else:
             console.print("[bold red]\n Choix inconnu \n[/bold red]")
