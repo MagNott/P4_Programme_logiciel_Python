@@ -2,6 +2,7 @@ from rich.console import Console
 from rich.table import Table
 import questionary
 from typing import List
+from models.tournoi import Tournoi
 
 
 class TournoiVue:
@@ -77,7 +78,15 @@ class TournoiVue:
         ).ask()
 
     #
-    def render_choix_joueur(self, p_liste_joueurs: List[dict]) -> List[str]:
+    def render_impossible_inscription(self, p_nom_tournoi: Tournoi):
+        self.console.print(
+                f"\n [bold red] Le tournoi {p_nom_tournoi} a déjà commencé, il n'est pas possible d'y inscrire des joueurs !\n[/bold red]"
+            )
+
+    #
+    def render_choix_joueur(
+        self, p_liste_joueurs: List[dict], p_objet_tournoi: Tournoi
+    ) -> List[str]:
         """Affiche la liste des joueurs disponibles et permet à l'utilisateur d'en choisir 4.
 
         Args:
@@ -89,42 +98,44 @@ class TournoiVue:
         Returns:
             List[str]: Liste contenant les identifiants des joueurs sélectionnés par l'utilisateur.
         """
-        table = Table(title="Liste des joueurs")
-        table.add_column("Choix", justify="center")
-        table.add_column("Id echec", justify="center")
-        table.add_column("Nom de famille", justify="center")
-        table.add_column("Prénom", justify="center")
-        table.add_column("Date de naissance", justify="center")
 
-        # Liste de couleurs alternées pour chaque ligne de présentation en tableau
-        couleurs_lignes = ["dim cyan", "dim magenta"]
+        # Trie par ordre alphabétique de nom et prénom
+        joueurs_trie_nom_prenom = sorted(
+            p_liste_joueurs,
+            key=lambda joueur: (joueur["nom_famille"], joueur["prenom"]),
+        )
 
-        for i, joueur in enumerate(p_liste_joueurs):
-            couleur = couleurs_lignes[i % len(couleurs_lignes)]  # Alterner les couleurs
-            table.add_row(
-                f"[{couleur}]{str(joueur['id_tinydb'])}[/{couleur}]",
-                f"[{couleur}]{str(joueur['identifiant_national_echec'])}[/{couleur}]",
-                f"[{couleur}]{joueur['nom_famille']}[/{couleur}]",
-                f"[{couleur}]{joueur['prenom']}[/{couleur}]",
-                f"[{couleur}]{joueur['date_naissance']}[/{couleur}]",
+        liste_choix = []
+
+        for i, joueur in enumerate(joueurs_trie_nom_prenom):
+
+            liste_choix.append(
+                f"{i+1} - {joueur['nom_famille']} {joueur['prenom']} {joueur['identifiant_national_echec']}"
             )
-
-        self.console.print(table)
 
         l_choix_joueur = []
-        compteur = 0
-        while compteur < 4:
-            joueur = questionary.text(
-                "\n Veuillez choisir un joueur par son identifiant : "
+
+        for _ in range(4):
+            joueur = questionary.select(
+                "Veuillez choisir un joueur parmi la liste :", choices=liste_choix
             ).ask()
-            l_choix_joueur.append(joueur)
+            joueur_sans_numero = joueur.split(" - ", 1)[1]
+
             self.console.print(
-                f"\n [bold green] Joueur {joueur} ajouté à la liste.\n[/bold green]"
+                f"\n [bold green] {joueur_sans_numero} ajouté au tournoi {p_objet_tournoi.nom_tournoi}!\n[/bold green]"
             )
-            compteur += 1
+
+            identifiant_choisi = joueur.split(" - ")[0]
+            print(identifiant_choisi)
+
+            l_choix_joueur.append(identifiant_choisi)
+
+            # Enleve le joueur qui vient d'être choisi pour éviter qu'il ne soit choisi à nouveau
+            liste_choix.remove(joueur)
+
         return l_choix_joueur
 
-#
+    #
     def render_visualiser_tournoi(
         self, p_tournoi: list[dict[str, str]], p_joueurs_db: list[dict[str, str]]
     ) -> None:

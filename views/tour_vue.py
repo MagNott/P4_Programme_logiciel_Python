@@ -160,7 +160,7 @@ class TourVue:
         for match in p_matchs:
 
             texte = (f"[bold cyan] Match N°{match.identifiant} : {match.joueur_blanc} ⚔️  {match.joueur_noir}\n"
-                     f"du {s_dernier_tour_nom} du tournoi : {s_tournoi_nom}[/bold cyan]",)
+                     f"du {s_dernier_tour_nom} du tournoi : {s_tournoi_nom}[/bold cyan]")
 
             self.console.print(Panel(texte, border_style="cyan", expand=False,))
 
