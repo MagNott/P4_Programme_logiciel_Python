@@ -37,11 +37,13 @@ class TournoiControleur:
             d_infos_tournoi["p_date_fin_tournoi"],
             d_infos_tournoi["p_nombre_tour_tournoi"],
             d_infos_tournoi["p_description_tournoi"],
+            [],  # initialise à liste tour vide
+            []  # initialise à liste joueur vide
         )
 
         # Sauvegarde le tournoi dans le gestionnaire de persistance.
         self.o_gestionnaire_persistance.sauvegarder_tournoi(o_tournoi_modele)
-        
+
         # Affiche un message de confirmation avec les informations du tournoi.
         self.o_tournoi_vue.render_confirm_ajout_tournoi(**d_infos_tournoi)
         # Les ** permettent de déballer le dictionnaire
@@ -68,11 +70,16 @@ class TournoiControleur:
         o_tournoi_choisi = self.o_gestionnaire_persistance.recuperer_objet_tournoi(
             i_identifiant_tournoi
         )
+
+        if not len(o_tournoi_choisi.liste_tours) == 0:
+            self.o_tournoi_vue.render_impossible_inscription(o_tournoi_choisi.nom_tournoi)
+            return
+
         # Récupère la liste des joueurs disponibles.
         l_liste_joueurs = self.o_gestionnaire_persistance.charger_joueurs()
 
         # Affiche les joueurs et demande à l'utilisateur de sélectionner ceux à inscrire.
-        l_choix_joueur = self.o_tournoi_vue.render_choix_joueur(l_liste_joueurs)
+        l_choix_joueur = self.o_tournoi_vue.render_choix_joueur(l_liste_joueurs, o_tournoi_choisi)
 
         # Met à jour la liste des joueurs du tournoi.
         o_tournoi_choisi.liste_joueurs = l_choix_joueur

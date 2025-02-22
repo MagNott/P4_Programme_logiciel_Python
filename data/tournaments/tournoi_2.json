@@ -1,0 +1,74 @@
+{
+    "_default": {
+        "1": {
+            "nom_tournoi": "test",
+            "lieu_tournoi": "test",
+            "date_debut_tournoi": "20/03/2025",
+            "date_fin_tournoi": "20/03/2025",
+            "nombre_tours": "4",
+            "description": "test",
+            "liste_joueurs": [
+                "2",
+                "5",
+                "6",
+                "7"
+            ],
+            "liste_tours": [
+                {
+                    "identifiant": 1,
+                    "nom": "Round 1",
+                    "statut": "Termin\u00e9",
+                    "liste_matchs": [
+                        {
+                            "identifiant": 1,
+                            "nom_match": "Match 1 - 7 VS 5",
+                            "joueur_blanc": "7",
+                            "joueur_noir": "5",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 1,
+                            "score_noir": 0
+                        },
+                        {
+                            "identifiant": 2,
+                            "nom_match": "Match 2 - 2 VS 6",
+                            "joueur_blanc": "2",
+                            "joueur_noir": "6",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0,
+                            "score_noir": 1
+                        }
+                    ],
+                    "date_heure_debut": "2025-02-22 20:07:21",
+                    "date_heure_fin": "2025-02-22 20:09:15"
+                },
+                {
+                    "identifiant": 2,
+                    "nom": "Round 2",
+                    "statut": "Termin\u00e9",
+                    "liste_matchs": [
+                        {
+                            "identifiant": 1,
+                            "nom_match": "Match 1 - 5 VS 2",
+                            "joueur_blanc": "5",
+                            "joueur_noir": "2",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 1,
+                            "score_noir": 0
+                        },
+                        {
+                            "identifiant": 2,
+                            "nom_match": "Match 2 - 7 VS 6",
+                            "joueur_blanc": "7",
+                            "joueur_noir": "6",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0.5,
+                            "score_noir": 0.5
+                        }
+                    ],
+                    "date_heure_debut": "2025-02-22 20:18:08",
+                    "date_heure_fin": "2025-02-22 20:19:32"
+                }
+            ]
+        }
+    }
+}
