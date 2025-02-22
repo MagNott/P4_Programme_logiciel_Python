@@ -53,7 +53,7 @@ class JoueurVue:
             str | bool: Un message d'erreur si invalide, sinon `True` si la saisie est correcte.
         """
         if not re.match(r"^[A-Za-z]{2}\d{5}$", saisie):
-            return "Format invalide, il doit contenir 2 lettres au début suivi de 5 chiffres. Exemple valide : AB12345."
+            return "Format invalide, doit contenir 2 lettres au début suivi de 5 chiffres. Exemple valide : AB12345."
         return True
 
     def valider_date(self, saisie):
@@ -133,7 +133,7 @@ class JoueurVue:
 
     #
     def render_lister_joueur(self, p_liste_joueur: list) -> None:
-        """Affiche la liste des joueurs sous forme de tableau dans la console.
+        """Affiche la liste des joueurs trié par ordre alphabétique sous forme de tableau dans la console.
 
         Args:
             p_liste_joueur (list): Liste des objets Joueur contenant les informations des joueurs.
@@ -141,6 +141,10 @@ class JoueurVue:
         Returns:
             None: Cette méthode affiche uniquement le tableau dans la console.
         """
+
+        # Trie par ordre alphabétique de nom et prénom
+        joueurs_trie_nom_prenom = sorted(p_liste_joueur, key=lambda joueur: (joueur.nom_famille, joueur.prenom))
+
         # Création de la table
         table = Table(title="\n Liste des joueurs")
 
@@ -153,7 +157,7 @@ class JoueurVue:
         # Couleurs alternées pour chaque ligne
         couleurs_lignes = ["dim cyan", "dim magenta"]
 
-        for i, o_joueur in enumerate(p_liste_joueur):
+        for i, o_joueur in enumerate(joueurs_trie_nom_prenom):
             couleur = couleurs_lignes[i % len(couleurs_lignes)]  # Alterner les couleurs
             table.add_row(
                 f"[{couleur}]{o_joueur.identifiant_national_echec}[/{couleur}]",
