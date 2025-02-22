@@ -1,5 +1,8 @@
 from rich.console import Console
 from rich.table import Table
+import questionary
+import re
+from datetime import datetime
 
 
 class JoueurVue:
@@ -9,7 +12,72 @@ class JoueurVue:
         """Initialise l'affichage en configurant la console Rich pour une sortie stylisée."""
         self.console = Console()
 
-#
+    #
+    # Préparation des méthodes de validation pour la saisie d'un nouveau joueur
+    # Elles sont utilisées dans render_saisie_joueur()
+    def valider_nom(self, saisie):
+        """
+        Vérifie que la saisie du nom et du prénom est valide.
+
+        Un nom ou un prénom valide :
+        - Ne doit pas être vide.
+        - Ne doit contenir que des lettres (avec accents), un tiret (-) et des espaces.
+
+        Args:
+            saisie (str): La valeur saisie par l'utilisateur.
+
+        Returns:
+            str | bool: Un message d'erreur si invalide, sinon `True` si la saisie est correcte.
+    """
+        if not saisie.strip():
+            return "Le champ ne peut pas être vide."
+        if not re.match(r"^[A-Za-zÀ-ÖØ-öø-ÿ\s-]+$", saisie):
+            return "La saisie ne doit contenir que des lettres et des espaces."
+        return True
+
+    #
+    def valider_identifiant_echec(self, saisie):
+        """
+        Vérifie que l'identifiant national d'échecs est valide.
+
+        Un identifiant valide :
+        - Commence par 2 lettres majuscules ou minuscules.
+        - Est suivi de 5 chiffres.
+
+        Exemple valide : "AB12345"
+
+        Args:
+            saisie (str): La valeur saisie par l'utilisateur.
+
+        Returns:
+            str | bool: Un message d'erreur si invalide, sinon `True` si la saisie est correcte.
+        """
+        if not re.match(r"^[A-Za-z]{2}\d{5}$", saisie):
+            return "Format invalide, il doit contenir 2 lettres au début suivi de 5 chiffres. Exemple valide : AB12345."
+        return True
+
+    def valider_date(self, saisie):
+        """
+        Vérifie que la date saisie est valide.
+
+        Une date valide :
+        - Suit le format JJ/MM/AAAA.
+        - Correspond à une vraie date (ex : 31/02/2023 est invalide).
+
+        Args:
+            saisie (str): La valeur saisie par l'utilisateur.
+
+        Returns:
+            str | bool: Un message d'erreur si invalide, sinon `True` si la saisie est correcte.
+        """
+        # strptime() peut faire planter le programme si la saisie n'est pas bonne donc il faut utiliser un try/except
+        try:
+            datetime.strptime(saisie, "%d/%m/%Y")
+            return True
+        except ValueError:
+            return "Format invalide ou date incorrecte. Utilisez JJ/MM/AAAA."
+
+    #
     def render_saisie_joueur(self) -> dict:
         """Affiche des invites de commande pour saisir les informations d'un joueur et retourne les valeurs saisies.
 
@@ -23,18 +91,26 @@ class JoueurVue:
                 - "p_prenom" (str) : Prénom du joueur.
                 - "p_date_naissance" (str) : Date de naissance du joueur (format JJ/MM/AAAA).
         """
+
         d_infos_joueur = {}
-        d_infos_joueur["p_identifiant"] = self.console.input(
-            "Entrez l'identifiant national d'échec : "
-        )
-        d_infos_joueur["p_nom"] = self.console.input("Entrez le nom du joueur : ")
-        d_infos_joueur["p_prenom"] = self.console.input("Entrez le prénom du joueur : ")
-        d_infos_joueur["p_date_naissance"] = self.console.input(
-            "Entrez la date de naissance du joueur JJ/MM/AAAA : "
-        )
+
+        d_infos_joueur["p_identifiant"] = questionary.text(
+            "Entrez l'identifiant national d'échec : ",
+            validate=self.valider_identifiant_echec,
+        ).ask()
+        d_infos_joueur["p_nom"] = questionary.text(
+            "Entrez le nom du joueur : ", validate=self.valider_nom
+        ).ask()
+        d_infos_joueur["p_prenom"] = questionary.text(
+            "Entrez le prénom du joueur : ", validate=self.valider_nom
+        ).ask()
+        d_infos_joueur["p_date_naissance"] = questionary.text(
+            "Entrez la date de naissance du joueur JJ/MM/AAAA : ",
+            validate=self.valider_date,
+        ).ask()
         return d_infos_joueur
 
-#
+    #
     def render_confirm_ajout_joueur(
         self, p_identifiant: str, p_nom: str, p_prenom: str, p_date_naissance: str
     ) -> None:
@@ -55,7 +131,7 @@ class JoueurVue:
             f"(Né(e) le [yellow]{p_date_naissance}[/yellow])\n"
         )
 
-#
+    #
     def render_lister_joueur(self, p_liste_joueur: list) -> None:
         """Affiche la liste des joueurs sous forme de tableau dans la console.
 
