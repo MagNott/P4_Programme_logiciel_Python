@@ -3,6 +3,8 @@ import questionary
 from typing import List
 from models.tournoi import Tournoi
 from views.vue import Vue
+from datetime import datetime
+import re
 
 
 class TournoiVue(Vue):
@@ -28,10 +30,10 @@ class TournoiVue(Vue):
             p_nombre_tour_tournoi (str): Nombre de tour du tournoi.
             p_description_tournoi (str): Description ou informations supplémentaires sur le tournoi.
         """
-        
-        table = Table(title="\n✅ Tournoi ajouté avec succès", title_style="bold green")
-        table.add_column("Détail", style="bold cyan", justify="left")
-        table.add_column("Valeur", style="bold white", justify="left")
+
+        table = Table(title="\n✅ Tournoi ajouté avec succès", title_style="bold green", show_header=False)
+        table.add_column("Info", style="bold white", justify="left")
+        table.add_column("Tournoi", style="bold cyan", justify="left")
 
         table.add_row("🏆 Nom du tournoi", p_nom_tournoi)
         table.add_row("📍 Lieu", p_lieu_tournoi)
@@ -43,38 +45,35 @@ class TournoiVue(Vue):
         self.console.print(table)
 
 #
-    def render_lister_tournois(self, p_liste_tournois: list[dict[str, str]]) -> None:
+    def render_lister_tournois(self, p_liste_tournois: list[str]) -> None:
         """Affiche la liste des tournois enregistrés dans la base de données.
 
         Args:
-            p_liste_tournois (list[dict[str, str]]): Liste de dictionnaires contenant les informations des tournois.
+            p_liste_tournois (list[dict[str, str]]): Liste de string contenant les informations des tournois.
         """
 
-        table = Table(title="Liste des tournois")
-        table.add_column("nom du tournoi")
+        table = Table(title="\n 🏆 Liste des Tournois", title_style="bold green")
+
+        table.add_column("ID", style="bold cyan", justify="center")
+        table.add_column("Nom du tournoi", style="bold white", justify="left")
+        table.add_column("Date de début", style="bold magenta", justify="center")
+
+        # Regex pour extraire les infos depuis le nom de fichier
+        regex = r"tournoi_(\d+)_([^_]+)_(\d{2}-\d{2}-\d{4})\.json"
 
         for tournoi in p_liste_tournois:
-            table.add_row(tournoi)
+
+            # Extraction des infos avec la regex
+            match = re.match(regex, tournoi)
+            if match:
+                tournoi_id = match.group(1)
+                nom_tournoi = match.group(2).replace("_", " ")  # Remettre les espaces
+                date_debut = match.group(3)
+
+                # jouter une ligne au tableau
+                table.add_row(tournoi_id, nom_tournoi, date_debut)
 
         self.console.print(table)
-
-    #
-    def render_choix_tournoi(self, p_liste_tournois: list[str]) -> str:
-        """Permet à l'utilisateur de choisir un tournoi parmi une liste.
-
-        Args:
-            liste_tournois (list[str]): Liste des noms de fichiers représentant les tournois disponibles.
-
-        Returns:
-            str: Identifiant du tournoi choisi par l'utilisateur, saisi via l'interface interactive.
-        """
-
-        self.render_lister_tournois(p_liste_tournois)
-
-        # récupérer le choix de l'utilisateur
-        return questionary.text(
-            "Veuillez choisir un tournoi par son identifiant : "
-        ).ask()
 
     #
     def render_impossible_inscription(self, p_nom_tournoi: Tournoi):
@@ -148,7 +147,9 @@ class TournoiVue(Vue):
         # Le tournoi est stocké sous forme de liste contenant un unique dictionnaire (p_tournoi[0]
         # est utilisé pour accéder aux données)
         liste_joueurs_ids = p_tournoi[0]["liste_joueurs"]
+
         joueurs_affiches = []
+        joueurs_affiches_str = "Pas de joueurs inscrits"
 
         # Faire correspondre l'id du joueur avec ses données
         for joueur_id in liste_joueurs_ids:

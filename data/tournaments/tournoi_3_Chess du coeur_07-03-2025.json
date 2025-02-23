@@ -1,1 +1,14 @@
-{"_default": {"1": {"nom_tournoi": "Chess du coeur", "lieu_tournoi": "Antibes", "date_debut_tournoi": "07-03-2025", "date_fin_tournoi": "07-03-2025", "nombre_tours": "4", "description": "Caritatif", "liste_joueurs": [], "liste_tours": []}}}
+{
+    "_default": {
+        "1": {
+            "nom_tournoi": "Chess du coeur",
+            "lieu_tournoi": "Antibes",
+            "date_debut_tournoi": "07-03-2025",
+            "date_fin_tournoi": "07-03-2025",
+            "nombre_tours": "4",
+            "description": "Caritatif",
+            "liste_joueurs": [],
+            "liste_tours": []
+        }
+    }
+}

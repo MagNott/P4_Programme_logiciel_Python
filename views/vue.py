@@ -1,6 +1,7 @@
 from rich.console import Console
 import re
 from datetime import datetime
+import questionary
 
 
 class Vue:
@@ -69,3 +70,38 @@ class Vue:
         if date_fin_objet < date_debut_objet:
             return "La date de fin doit égale ou supérieure à la date de début."
         return True  # La validation est réussie
+
+#
+    def render_choix_tournoi(self, p_liste_tournois: list[str]) -> str:
+        """Permet à l'utilisateur de choisir un tournoi parmi une liste.
+
+        Args:
+            liste_tournois (list[str]): Liste des noms de fichiers représentant les tournois disponibles.
+
+        Returns:
+            str: Identifiant du tournoi choisi par l'utilisateur, saisi via l'interface interactive.
+        """
+
+        regex = r"tournoi_(\d+)_([^_]+)_(\d{2}-\d{2}-\d{4})\.json"
+
+        liste_choix = []
+        liste_tournoi_identifiant = {}
+
+        for fichier in p_liste_tournois:
+            match = re.match(regex, fichier)
+            if match:
+                tournoi_id = match.group(1)
+                nom_tournoi = match.group(2).replace("_", " ")  # Remettre les espaces
+                date_tournoi = match.group(3)
+
+                choix_affichage = f"{tournoi_id} - {nom_tournoi} - {date_tournoi}"
+                liste_choix.append(choix_affichage)
+                liste_tournoi_identifiant[choix_affichage] = tournoi_id  # Associer le choix à l'ID réel
+
+        # Demander à l'utilisateur de choisir un tournoi dans la liste
+        choix_utilisateur = questionary.select(
+            "Veuillez choisir un tournoi :", choices=sorted(liste_choix)
+        ).ask()
+
+        # Retourner uniquement l'ID du tournoi
+        return liste_tournoi_identifiant[choix_utilisateur]
