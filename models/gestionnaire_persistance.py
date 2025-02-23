@@ -108,7 +108,7 @@ class GestionnairePersistance:
             "liste_tours": p_tournoi_modele.liste_tours,
         }
         self.db_tournois = TinyDB(
-            f"data/tournaments/tournoi_{p_tournoi_modele.identifiant}.json"
+            f"data/tournaments/tournoi_{p_tournoi_modele.identifiant}_{p_tournoi_modele.nom_tournoi}_{p_tournoi_modele.date_debut_tournoi}.json"
         )
         self.db_tournois.insert(d_donnees_tournoi)
 

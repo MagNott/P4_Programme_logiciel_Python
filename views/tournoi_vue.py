@@ -1,16 +1,12 @@
-from rich.console import Console
 from rich.table import Table
 import questionary
 from typing import List
 from models.tournoi import Tournoi
+from views.vue import Vue
 
 
-class TournoiVue:
+class TournoiVue(Vue):
     """Gère l'affichage des informations liées aux tournois avec la bibliothèque Rich."""
-
-    def __init__(self):
-        """Initialise l'affichage en configurant la console Rich pour une sortie stylisée."""
-        self.console = Console()
 
     #
     def render_confirm_ajout_tournoi(
@@ -32,18 +28,21 @@ class TournoiVue:
             p_nombre_tour_tournoi (str): Nombre de tour du tournoi.
             p_description_tournoi (str): Description ou informations supplémentaires sur le tournoi.
         """
+        
+        table = Table(title="\n✅ Tournoi ajouté avec succès", title_style="bold green")
+        table.add_column("Détail", style="bold cyan", justify="left")
+        table.add_column("Valeur", style="bold white", justify="left")
 
-        self.console.print(
-            f"""\n[bold green]Tournoi ajouté avec succès :
-            {p_nom_tournoi},
-            {p_lieu_tournoi},
-            {p_date_debut_tournoi},
-            {p_date_fin_tournoi},
-            {p_nombre_tour_tournoi},
-            {p_description_tournoi},
-            [/bold green]\n"""
-        )
+        table.add_row("🏆 Nom du tournoi", p_nom_tournoi)
+        table.add_row("📍 Lieu", p_lieu_tournoi)
+        table.add_row("📅 Début", p_date_debut_tournoi)
+        table.add_row("📅 Fin", p_date_fin_tournoi)
+        table.add_row("🔄 Nombre de tours", str(p_nombre_tour_tournoi))
+        table.add_row("📝 Description", p_description_tournoi if p_description_tournoi else "Aucune description")
 
+        self.console.print(table)
+
+#
     def render_lister_tournois(self, p_liste_tournois: list[dict[str, str]]) -> None:
         """Affiche la liste des tournois enregistrés dans la base de données.
 
@@ -80,8 +79,8 @@ class TournoiVue:
     #
     def render_impossible_inscription(self, p_nom_tournoi: Tournoi):
         self.console.print(
-                f"\n [bold red] Le tournoi {p_nom_tournoi} a déjà commencé, il n'est pas possible d'y inscrire des joueurs !\n[/bold red]"
-            )
+            f"\n [bold red] Le tournoi {p_nom_tournoi} a déjà commencé, il n'est pas possible d'y inscrire des joueurs !\n[/bold red]"
+        )
 
     #
     def render_choix_joueur(
@@ -172,6 +171,24 @@ class TournoiVue:
             \n"""
         )
 
+    def valider_nombre_tour(self, p_saisie):
+        """
+        Vérifie que la saisie du nombre de tour est valide.
+
+        Un nom ou un prénom valide :
+        - Ne doit pas être vide.
+        - Ne doit contenir que des lettres (avec accents), un tiret (-) et des espaces.
+
+        Args:
+            saisie (str): La valeur saisie par l'utilisateur.
+
+        Returns:
+            str | bool: Un message d'erreur si invalide, sinon `True` si la saisie est correcte.
+    """
+        if not p_saisie.isdigit() or p_saisie == 0:
+            return "Il faut saisir un chiffre et qu'il soit supérieur à 0."
+        return True
+
     #
     def render_saisie_tournoi(self) -> dict:
         """Affiche les invites de saisie pour récolter les informations d'un tournoi et retourne les valeurs saisies.
@@ -189,21 +206,29 @@ class TournoiVue:
                 - "p_nombre_tour_tournoi" (str) : Nombre total de tours dans le tournoi.
                 - "p_description_tournoi" (str) : Description facultative du tournoi.
         """
+        # Demander la date de début du tournoi d'abord
+        p_date_debut_tournoi = questionary.text(
+            "Entrez la date du début du tournoi (JJ-MM-AAAA) :",
+            validate=self.valider_date
+        ).ask()
 
         d_infos_tournoi = {
-            "p_nom_tournoi": questionary.text("Entrez le nom du tournoi  :").ask(),
-            "p_lieu_tournoi": questionary.text("Entrez le lieu du tournoi  :").ask(),
-            "p_date_debut_tournoi": questionary.text(
-                "Entrez la date du début du tournoi  JJ/MM/AAAA :"
+            "p_nom_tournoi": questionary.text(
+                "Entrez le nom du tournoi  :", validate=self.valider_nom
             ).ask(),
+            "p_lieu_tournoi": questionary.text(
+                "Entrez le lieu du tournoi  :", validate=self.valider_nom
+            ).ask(),
+            "p_date_debut_tournoi": p_date_debut_tournoi,
             "p_date_fin_tournoi": questionary.text(
-                "Entrez la date de fin du tournoi  :"
+                "Entrez la date de fin du tournoi (JJ-MM-AAAA) :",
+                validate=lambda date_fin: self.valider_date_fin(date_fin, p_date_debut_tournoi)
             ).ask(),
             "p_nombre_tour_tournoi": questionary.text(
-                "Entrez le nombre de tour du tournoi  :"
+                "Entrez le nombre de tour du tournoi (4 par défaut) :", default=Tournoi.nombre_tours_defaut,
             ).ask(),
             "p_description_tournoi": questionary.text(
-                "Entrez la desription du tournoi  :"
+                "Entrez la desription du tournoi  :", validate=self.valider_nom
             ).ask(),
         }
 

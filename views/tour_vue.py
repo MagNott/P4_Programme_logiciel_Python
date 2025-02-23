@@ -1,16 +1,12 @@
-from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 import questionary
 from models.tournoi import Tournoi
+from views.vue import Vue
 
 
-class TourVue:
+class TourVue(Vue):
     """Gère l'affichage des informations liées aux tour avec la bibliothèque Rich."""
-
-    def __init__(self):
-        """Initialise l'affichage en configurant la console Rich pour une sortie stylisée."""
-        self.console = Console()
 
     #
     def render_choix_tournoi(self, p_liste_tournois: list[str]) -> str:
