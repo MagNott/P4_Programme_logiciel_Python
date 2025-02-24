@@ -144,6 +144,8 @@ class TournoiVue(Vue):
             p_joueurs_db (list[dict[str, str]]): Liste de dictionnaires représentant les joueurs enregistrés.
         """
 
+        tournoi = p_tournoi[0]
+
         # Le tournoi est stocké sous forme de liste contenant un unique dictionnaire (p_tournoi[0]
         # est utilisé pour accéder aux données)
         liste_joueurs_ids = p_tournoi[0]["liste_joueurs"]
@@ -158,20 +160,29 @@ class TournoiVue(Vue):
                     joueurs_affiches.append(
                         f"{joueur['nom_famille']} {joueur['prenom']}"
                     )
-            joueurs_affiches_str = ", ".join(joueurs_affiches)
+        joueurs_affiches = sorted(joueurs_affiches)
+        if joueurs_affiches:
+            joueurs_affiches_str = "\n".join(joueurs_affiches)  # Retour à la ligne pour meilleure lisibilité
+        else:
+            joueurs_affiches_str = "Aucun joueur inscrit"
 
-        self.console.print(
-            f"""\n[bold green]Contenu du tournoi : [/bold green]
-            Nom : [bold green]{p_tournoi[0]["nom_tournoi"]}[/bold green],
-            Lieu : [bold green]{p_tournoi[0]["lieu_tournoi"]}[/bold green],
-            Date début : [bold green]{p_tournoi[0]["date_debut_tournoi"]}[/bold green],
-            Date fin : [bold green]{p_tournoi[0]["date_fin_tournoi"]}[/bold green],
-            Nombre de tours : [bold green]{p_tournoi[0]["nombre_tours"]}[/bold green],
-            Liste des joueurs : [bold green]{joueurs_affiches_str}[/bold green]
-            Description : [bold green]{p_tournoi[0]["description"]}[/bold green],
-            \n"""
-        )
+        print("\n")
+        table_tournoi = Table(title="🏆 Informations du Tournoi", title_style="bold green", show_header=False)
 
+        table_tournoi.add_column("Détail", style="bold white", justify="left")
+        table_tournoi.add_column("Valeur", style="bold cyan", justify="left")
+
+        table_tournoi.add_row("🏷️ Nom", tournoi["nom_tournoi"])
+        table_tournoi.add_row("📍 Lieu", tournoi["lieu_tournoi"])
+        table_tournoi.add_row("📅 Début", tournoi["date_debut_tournoi"])
+        table_tournoi.add_row("🗓️ Fin", tournoi["date_fin_tournoi"])
+        table_tournoi.add_row("🔄 Nombre de tours", str(tournoi["nombre_tours"]))
+        table_tournoi.add_row("📝 Description", tournoi["description"] if tournoi["description"] else "Aucune description")
+        table_tournoi.add_row("👥 Joueurs", joueurs_affiches_str)
+
+        self.console.print(table_tournoi)
+
+#
     def valider_nombre_tour(self, p_saisie):
         """
         Vérifie que la saisie du nombre de tour est valide.
