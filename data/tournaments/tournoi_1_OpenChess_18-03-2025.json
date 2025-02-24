@@ -1,0 +1,101 @@
+{
+    "_default": {
+        "1": {
+            "nom_tournoi": "OpenChess",
+            "lieu_tournoi": "Nice",
+            "date_debut_tournoi": "18-03-2025",
+            "date_fin_tournoi": "18-03-2025",
+            "nombre_tours": "4",
+            "description": "D\u00e9butants",
+            "liste_joueurs": [
+                "1",
+                "4",
+                "6",
+                "7"
+            ],
+            "liste_tours": [
+                {
+                    "identifiant": 1,
+                    "nom": "Round 1",
+                    "statut": "Termin\u00e9",
+                    "liste_matchs": [
+                        {
+                            "identifiant": 1,
+                            "nom_match": "Match 1 - 1 VS 6",
+                            "joueur_blanc": "1",
+                            "joueur_noir": "6",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 1,
+                            "score_noir": 0
+                        },
+                        {
+                            "identifiant": 2,
+                            "nom_match": "Match 2 - 7 VS 4",
+                            "joueur_blanc": "7",
+                            "joueur_noir": "4",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0,
+                            "score_noir": 1
+                        }
+                    ],
+                    "date_heure_debut": "2025-02-23 20:05:32",
+                    "date_heure_fin": "2025-02-23 20:06:07"
+                },
+                {
+                    "identifiant": 2,
+                    "nom": "Round 2",
+                    "statut": "Termin\u00e9",
+                    "liste_matchs": [
+                        {
+                            "identifiant": 1,
+                            "nom_match": "Match 1 - 6 VS 4",
+                            "joueur_blanc": "6",
+                            "joueur_noir": "4",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 1,
+                            "score_noir": 0
+                        },
+                        {
+                            "identifiant": 2,
+                            "nom_match": "Match 2 - 7 VS 1",
+                            "joueur_blanc": "7",
+                            "joueur_noir": "1",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0.5,
+                            "score_noir": 0.5
+                        }
+                    ],
+                    "date_heure_debut": "2025-02-23 20:11:27",
+                    "date_heure_fin": "2025-02-23 20:12:04"
+                },
+                {
+                    "identifiant": 3,
+                    "nom": "Round 3",
+                    "statut": "Termin\u00e9",
+                    "liste_matchs": [
+                        {
+                            "identifiant": 1,
+                            "nom_match": "Match 1 - 4 VS 6",
+                            "joueur_blanc": "4",
+                            "joueur_noir": "6",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 1,
+                            "score_noir": 0
+                        },
+                        {
+                            "identifiant": 2,
+                            "nom_match": "Match 2 - 7 VS 1",
+                            "joueur_blanc": "7",
+                            "joueur_noir": "1",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 1,
+                            "score_noir": 0
+                        }
+                    ],
+                    "date_heure_debut": "2025-02-23 20:13:15",
+                    "date_heure_fin": "2025-02-23 20:20:12"
+                }
+            ]
+        }
+    }
+}

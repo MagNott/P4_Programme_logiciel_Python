@@ -1,38 +1,34 @@
-from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 import questionary
 from models.tournoi import Tournoi
+from views.vue import Vue
 
 
-class TourVue:
+class TourVue(Vue):
     """Gère l'affichage des informations liées aux tour avec la bibliothèque Rich."""
 
-    def __init__(self):
-        """Initialise l'affichage en configurant la console Rich pour une sortie stylisée."""
-        self.console = Console()
-
     #
-    def render_choix_tournoi(self, p_liste_tournois: list[str]) -> str:
-        """Permet à l'utilisateur de choisir un tournoi parmi une liste.
+    # def render_choix_tournoi(self, p_liste_tournois: list[str]) -> str:
+    #     """Permet à l'utilisateur de choisir un tournoi parmi une liste.
 
-        Args:
-            p_liste_tournois (list[str]): Liste des noms de fichiers des tournois disponibles.
+    #     Args:
+    #         p_liste_tournois (list[str]): Liste des noms de fichiers des tournois disponibles.
 
-        Returns:
-            str: Identifiant du tournoi choisi par l'utilisateur.
-        """
-        table = Table(title="Liste des tournois")
-        table.add_column("Nom du tournoi")
+    #     Returns:
+    #         str: Identifiant du tournoi choisi par l'utilisateur.
+    #     """
+    #     table = Table(title="Liste des tournois")
+    #     table.add_column("Nom du tournoi")
 
-        for tournoi in p_liste_tournois:
-            table.add_row(tournoi)
+    #     for tournoi in p_liste_tournois:
+    #         table.add_row(tournoi)
 
-        self.console.print(table)
+    #     self.console.print(table)
 
-        return questionary.text(
-            "Veuillez choisir un tournoi par son identifiant : "
-        ).ask()
+    #     return questionary.text(
+    #         "Veuillez choisir un tournoi par son identifiant : "
+    #     ).ask()
 
     #
     def render_confirmation_ajout_tour(
@@ -58,7 +54,7 @@ class TourVue:
         )
 
     #
-    def render_verification_tour_max(self, p_message: str) -> None:
+    def render_verification(self, p_message: str) -> None:
         """Affiche un message d'erreur lorsque le nombre maximal de tours est atteint.
 
         Args:

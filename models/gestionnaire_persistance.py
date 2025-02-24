@@ -108,7 +108,7 @@ class GestionnairePersistance:
             "liste_tours": p_tournoi_modele.liste_tours,
         }
         self.db_tournois = TinyDB(
-            f"data/tournaments/tournoi_{p_tournoi_modele.identifiant}.json"
+            f"data/tournaments/tournoi_{p_tournoi_modele.identifiant}_{p_tournoi_modele.nom_tournoi}_{p_tournoi_modele.date_debut_tournoi}.json"
         )
         self.db_tournois.insert(d_donnees_tournoi)
 
@@ -123,9 +123,18 @@ class GestionnairePersistance:
             "liste_joueurs": p_tournoi_modele.liste_joueurs,
         }
         self.db_tournois = TinyDB(
-            f"data/tournaments/tournoi_{p_tournoi_modele.identifiant}.json"
+            f"data/tournaments/tournoi_{p_tournoi_modele.identifiant}_{p_tournoi_modele.nom_tournoi}_{p_tournoi_modele.date_debut_tournoi}.json"
         )
         self.db_tournois.update(d_liste_joueurs_db_tournoi, doc_ids=[int(1)])
+
+    def trouver_fichier_par_identifiant(self, p_identifiant_tournoi):
+        """Retourne la liste des fichiers commençant par un certain préfixe dans un dossier donné."""
+
+        fichiers = os.listdir("data/tournaments")  # Liste tous les fichiers du dossier
+
+        for fichier in fichiers:  # Boucle sur chaque fichier
+            if fichier.startswith(f"tournoi_{p_identifiant_tournoi}_"):  # Vérifie si le fichier commence par le préfixe
+                return f"data/tournaments/{fichier}"
 
     #
     def charger_tournoi(self, p_identifiant_tournoi: str) -> list[dict[str, str]]:
@@ -136,9 +145,9 @@ class GestionnairePersistance:
             list[dict[str, str]]: Liste contenant un dictionnaire avec toutes les informations du tournoi.
         """
 
-        self.db_tournois = TinyDB(
-            f"data/tournaments/tournoi_{p_identifiant_tournoi}.json"
-        )
+        fichier_tournoi = self.trouver_fichier_par_identifiant(p_identifiant_tournoi)
+
+        self.db_tournois = TinyDB(fichier_tournoi)
         return self.db_tournois.all()
 
     #
@@ -151,9 +160,10 @@ class GestionnairePersistance:
         Returns:
             Tournoi: L'objet Tournoi correspondant.
         """
-        self.db_tournois = TinyDB(
-            f"data/tournaments/tournoi_{p_identifiant_tournoi}.json"
-        )
+
+        fichier_tournoi = self.trouver_fichier_par_identifiant(p_identifiant_tournoi)
+
+        self.db_tournois = TinyDB(fichier_tournoi)
 
         d_tournoi = self.db_tournois.all()[0]  # Récupérer les données
 
@@ -167,7 +177,7 @@ class GestionnairePersistance:
             p_description=d_tournoi["description"],
             p_liste_joueurs=d_tournoi["liste_joueurs"],
         )
-
+        o_tournoi.liste_tours = []
         for tour in d_tournoi["liste_tours"]:
             # Créer un objet Tour pour chaque tour et l'ajouter à la liste des tours du tournoi
             p_tour = Tour(
@@ -183,7 +193,7 @@ class GestionnairePersistance:
         return o_tournoi
 
     #
-    def lister_tournois(self) -> list[str]:
+    def recuperer_fichiers_tournois(self) -> list[str]:
         """Liste tous les fichiers JSON présents dans le dossier des tournois.
 
         Returns:
@@ -198,7 +208,7 @@ class GestionnairePersistance:
         return fichiers_tournois
 
     #
-    def enregistrer_tour_tournoi(self, p_tour: Tour, p_tournoi: Tournoi) -> None:
+    def enregistrer_tour_tournoi(self, p_tour: Tour, p_tournoi_modele: Tournoi) -> None:
         """Ajoute un tour à un tournoi existant dans TinyDB.
 
         Args:
@@ -206,7 +216,7 @@ class GestionnairePersistance:
             p_tournoi (Tournoi): L'objet Tournoi dans lequel ajouter le tour.
         """
         self.db_tournois = TinyDB(
-            f"data/tournaments/tournoi_{p_tournoi.identifiant}.json"
+            f"data/tournaments/tournoi_{p_tournoi_modele.identifiant}_{p_tournoi_modele.nom_tournoi}_{p_tournoi_modele.date_debut_tournoi}.json"
         )
 
         # Charge les données actuelles du tournoi
@@ -255,9 +265,11 @@ class GestionnairePersistance:
         Returns:
             dict: Un dictionnaire contenant les informations du dernier tour du tournoi.
         """
-        self.db_tournois = TinyDB(
-            f"data/tournaments/tournoi_{p_identifiant_tournoi}.json"
-        )
+
+        fichier_tournoi = self.trouver_fichier_par_identifiant(p_identifiant_tournoi)
+
+        self.db_tournois = TinyDB(fichier_tournoi)
+
         d_tournoi = self.db_tournois.all()[0]
 
         d_dernier_tour = d_tournoi.get("liste_tours")[-1]
@@ -310,10 +322,9 @@ class GestionnairePersistance:
             None: Met à jour la base de données, mais ne retourne pas de valeur.
         """
 
-        # Charge les données du tournoi depuis la base de données JSON avec TinyDB.
-        self.db_tournois = TinyDB(
-            f"data/tournaments/tournoi_{p_identifiant_tournoi}.json"
-        )
+        fichier_tournoi = self.trouver_fichier_par_identifiant(p_identifiant_tournoi)
+
+        self.db_tournois = TinyDB(fichier_tournoi)
 
         # Charge les données actuelles du tournoi
         d_tournoi = self.db_tournois.all()[0]

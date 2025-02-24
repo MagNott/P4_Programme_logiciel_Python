@@ -60,7 +60,7 @@ class TournoiControleur:
         """
 
         # Récupère la liste des tournois existants depuis le fichier JSON.
-        l_liste_tournois = self.o_gestionnaire_persistance.lister_tournois()
+        l_liste_tournois = self.o_gestionnaire_persistance.recuperer_fichiers_tournois()
 
         # # Affiche les tournois disponibles et demande à l'utilisateur d'en choisir un.
         i_identifiant_tournoi = self.o_tournoi_vue.render_choix_tournoi(
@@ -99,7 +99,7 @@ class TournoiControleur:
         """
 
         # Charge la liste des tournois existants.
-        l_liste_tournois = self.o_gestionnaire_persistance.lister_tournois()
+        l_liste_tournois = self.o_gestionnaire_persistance.recuperer_fichiers_tournois()
 
         # Affiche les informations de chaque tournoi dans la console.
         self.o_tournoi_vue.render_lister_tournois(l_liste_tournois)
@@ -119,7 +119,7 @@ class TournoiControleur:
         l_liste_joueurs = self.o_gestionnaire_persistance.charger_joueurs()
 
         # Charge la liste des tournois existants.
-        l_liste_tournois = self.o_gestionnaire_persistance.lister_tournois()
+        l_liste_tournois = self.o_gestionnaire_persistance.recuperer_fichiers_tournois()
 
         # Affiche les tournois disponibles et demande à l'utilisateur d'en choisir un.
         i_identifiant_tournoi = self.o_tournoi_vue.render_choix_tournoi(

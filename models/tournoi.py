@@ -3,6 +3,8 @@ import re
 
 
 class Tournoi:
+    nombre_tours_defaut: int = "4"
+
     def __init__(
         self,
         p_identifiant: int,
@@ -10,7 +12,7 @@ class Tournoi:
         p_lieu_tournoi: str,
         p_date_debut_tournoi: str,
         p_date_fin_tournoi: str,
-        p_nombre_tours: int = 4,
+        p_nombre_tours: int = None,
         p_description: str | None = None,
         p_liste_tours: list = [],
         p_liste_joueurs: list = [],
@@ -31,7 +33,7 @@ class Tournoi:
         self.lieu_tournoi = p_lieu_tournoi
         self.date_debut_tournoi = p_date_debut_tournoi
         self.date_fin_tournoi = p_date_fin_tournoi
-        self.nombre_tours = p_nombre_tours
+        self.nombre_tours = p_nombre_tours if p_nombre_tours is not None else Tournoi.nombre_tours_defaut
         self.liste_joueurs = p_liste_joueurs
         self.description = p_description
         self.liste_tours = p_liste_tours
@@ -51,7 +53,7 @@ class Tournoi:
         """
 
         # Préparation de la regex pour extraire le numéro du tournoi à partir du nom du fichier
-        regex = r"tournoi_(\d+)\.json"
+        regex = r"tournoi_(\d+)_.*\.json"
         l_fichiers = os.listdir('data/tournaments')
         identifiants = []
 

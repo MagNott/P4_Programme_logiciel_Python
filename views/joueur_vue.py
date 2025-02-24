@@ -1,39 +1,11 @@
-from rich.console import Console
 from rich.table import Table
 import questionary
 import re
-from datetime import datetime
+from views.vue import Vue
 
 
-class JoueurVue:
+class JoueurVue(Vue):
     """Gère l'affichage des informations liées aux joueurs avec la bibliothèque Rich."""
-
-    def __init__(self):
-        """Initialise l'affichage en configurant la console Rich pour une sortie stylisée."""
-        self.console = Console()
-
-    #
-    # Préparation des méthodes de validation pour la saisie d'un nouveau joueur
-    # Elles sont utilisées dans render_saisie_joueur()
-    def valider_nom(self, saisie):
-        """
-        Vérifie que la saisie du nom et du prénom est valide.
-
-        Un nom ou un prénom valide :
-        - Ne doit pas être vide.
-        - Ne doit contenir que des lettres (avec accents), un tiret (-) et des espaces.
-
-        Args:
-            saisie (str): La valeur saisie par l'utilisateur.
-
-        Returns:
-            str | bool: Un message d'erreur si invalide, sinon `True` si la saisie est correcte.
-    """
-        if not saisie.strip():
-            return "Le champ ne peut pas être vide."
-        if not re.match(r"^[A-Za-zÀ-ÖØ-öø-ÿ\s-]+$", saisie):
-            return "La saisie ne doit contenir que des lettres et des espaces."
-        return True
 
     #
     def valider_identifiant_echec(self, saisie):
@@ -55,27 +27,6 @@ class JoueurVue:
         if not re.match(r"^[A-Za-z]{2}\d{5}$", saisie):
             return "Format invalide, doit contenir 2 lettres au début suivi de 5 chiffres. Exemple valide : AB12345."
         return True
-
-    def valider_date(self, saisie):
-        """
-        Vérifie que la date saisie est valide.
-
-        Une date valide :
-        - Suit le format JJ/MM/AAAA.
-        - Correspond à une vraie date (ex : 31/02/2023 est invalide).
-
-        Args:
-            saisie (str): La valeur saisie par l'utilisateur.
-
-        Returns:
-            str | bool: Un message d'erreur si invalide, sinon `True` si la saisie est correcte.
-        """
-        # strptime() peut faire planter le programme si la saisie n'est pas bonne donc il faut utiliser un try/except
-        try:
-            datetime.strptime(saisie, "%d/%m/%Y")
-            return True
-        except ValueError:
-            return "Format invalide ou date incorrecte. Utilisez JJ/MM/AAAA."
 
     #
     def render_saisie_joueur(self) -> dict:
@@ -105,7 +56,7 @@ class JoueurVue:
             "Entrez le prénom du joueur : ", validate=self.valider_nom
         ).ask()
         d_infos_joueur["p_date_naissance"] = questionary.text(
-            "Entrez la date de naissance du joueur JJ/MM/AAAA : ",
+            "Entrez la date de naissance du joueur JJ-MM-AAAA : ",
             validate=self.valider_date,
         ).ask()
         return d_infos_joueur
@@ -143,7 +94,9 @@ class JoueurVue:
         """
 
         # Trie par ordre alphabétique de nom et prénom
-        joueurs_trie_nom_prenom = sorted(p_liste_joueur, key=lambda joueur: (joueur.nom_famille, joueur.prenom))
+        joueurs_trie_nom_prenom = sorted(
+            p_liste_joueur, key=lambda joueur: (joueur.nom_famille, joueur.prenom)
+        )
 
         # Création de la table
         table = Table(title="\n Liste des joueurs")

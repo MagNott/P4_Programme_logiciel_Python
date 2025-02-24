@@ -31,7 +31,7 @@ class TourControleur:
         """
 
         # Liste les tournois existants et demande à l'utilisateur d'en choisir un.
-        l_liste_tournois = self.o_gestionnaire_persistance.lister_tournois()
+        l_liste_tournois = self.o_gestionnaire_persistance.recuperer_fichiers_tournois()
         i_identifiant_tournoi = self.o_tour_vue.render_choix_tournoi(l_liste_tournois)
 
         # Récupère l'objet Tournoi
@@ -41,8 +41,14 @@ class TourControleur:
 
         # Vérifie que le tournoi peut accueillir un nouveau tour.
         if len(o_tournoi_choisi.liste_tours) >= int(o_tournoi_choisi.nombre_tours):
-            self.o_tour_vue.render_verification_tour_max(
+            self.o_tour_vue.render_verification(
                 "Ce tournoi a atteint son nombre maximal de tours."
+            )
+            return
+        
+        if len(o_tournoi_choisi.liste_joueurs) == 0:
+            self.o_tour_vue.render_verification(
+                "Ce tournoi n'a pas encore de joueurs, veuillez inscrire des joueurs avant."
             )
             return
 
@@ -134,7 +140,7 @@ class TourControleur:
         """
 
         # Liste les tournois disponibles et demande à l'utilisateur de choisir un tournoi.
-        l_liste_tournois = self.o_gestionnaire_persistance.lister_tournois()
+        l_liste_tournois = self.o_gestionnaire_persistance.recuperer_fichiers_tournois()
         i_identifiant_tournoi = self.o_tour_vue.render_choix_tournoi(l_liste_tournois)
 
         o_tournoi = self.o_gestionnaire_persistance.recuperer_objet_tournoi(i_identifiant_tournoi)

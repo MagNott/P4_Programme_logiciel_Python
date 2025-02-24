@@ -5,7 +5,7 @@
             "nom_famille": "DUPONT",
             "prenom": "Jean",
             "date_naissance": "18/04/85",
-            "score": 12
+            "score": 15
         },
         "2": {
             "identifiant_national_echec": "DA15354",
@@ -19,14 +19,14 @@
             "nom_famille": "RIVIERE",
             "prenom": "Pierre",
             "date_naissance": "16/07/1995",
-            "score": 4
+            "score": 5
         },
         "4": {
             "identifiant_national_echec": "HY14875",
             "nom_famille": "ALLARD",
             "prenom": "Martine",
             "date_naissance": "17/09/2001",
-            "score": 9
+            "score": 12
         },
         "5": {
             "identifiant_national_echec": "AD13545",
@@ -40,14 +40,14 @@
             "nom_famille": "NOOK",
             "prenom": "Tom",
             "date_naissance": "01/01/2002",
-            "score": 0
+            "score": 6.0
         },
         "7": {
             "identifiant_national_echec": "de12345",
             "nom_famille": "POTIER",
             "prenom": "Fabien",
             "date_naissance": "18/08/1999",
-            "score": 2.0
+            "score": 7.0
         },
         "8": {
             "identifiant_national_echec": "FR12312",
@@ -55,6 +55,28 @@
             "prenom": "Jean-Marc",
             "date_naissance": "19/07/1998",
             "score": 0
+        },
+        "9": {
+            "identifiant_national_echec": "AD12456",
+            "nom_famille": "TERRAZZO",
+            "prenom": "Paulo",
+            "date_naissance": "09/06/1995",
+            "score": 0
+        },
+        "10": {
+            "identifiant_national_echec": "DF12345",
+            "nom_famille": "BROWN",
+            "prenom": "Alphonse",
+            "date_naissance": "15-05-1989",
+            "score": 0
+        },
+        "11": {
+            "identifiant_national_echec": "DE45676",
+            "nom_famille": "BROWN",
+            "prenom": "Melinda",
+            "date_naissance": "19-09-1988",
+            "score": 0
         }
+    
     }
 }
