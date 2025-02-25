@@ -3,12 +3,33 @@ import questionary
 from typing import List
 from models.tournoi import Tournoi
 from views.vue import Vue
-from datetime import datetime
 import re
 
 
 class TournoiVue(Vue):
     """Gère l'affichage des informations liées aux tournois avec la bibliothèque Rich."""
+
+#
+    # Surcharge la methode valider_nom() de la classe parente Vue pour accepter les chiffres dans le nom d'un tournoi
+    def valider_nom(self, p_saisie):
+        """
+        Vérifie que la saisie du nom et du prénom est valide.
+
+        Un nom ou un prénom valide :
+        - Ne doit pas être vide.
+        - Ne doit contenir que des lettres (avec accents), un tiret (-), des chiffres et des espaces.
+
+        Args:
+            saisie (str): La valeur saisie par l'utilisateur.
+
+        Returns:
+            str | bool: Un message d'erreur si invalide, sinon `True` si la saisie est correcte.
+    """
+        if not p_saisie.strip():
+            return "Le champ ne peut pas être vide."
+        if not re.match(r"^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s-]+$", p_saisie):
+            return "La saisie ne doit contenir que des lettres, des tirets et des espaces."
+        return True
 
     #
     def render_confirm_ajout_tournoi(

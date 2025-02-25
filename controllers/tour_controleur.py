@@ -45,7 +45,7 @@ class TourControleur:
                 "Ce tournoi a atteint son nombre maximal de tours."
             )
             return
-        
+
         if len(o_tournoi_choisi.liste_joueurs) == 0:
             self.o_tour_vue.render_verification(
                 "Ce tournoi n'a pas encore de joueurs, veuillez inscrire des joueurs avant."
@@ -103,7 +103,7 @@ class TourControleur:
 
             # Affiche les matchs du tour à l'utilisateur via la console.
             self.o_tour_vue.render_visualiser_matchs(
-                i_identifiant_tournoi,
+                o_tournoi_choisi.nom_tournoi,
                 i_numero_tour,
                 identifiant_match - 1,
                 o_joueur_blanc_nom,
