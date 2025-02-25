@@ -1,0 +1,19 @@
+{
+    "_default": {
+        "1": {
+            "nom_tournoi": "Chess2 Le retour",
+            "lieu_tournoi": "Monaco",
+            "date_debut_tournoi": "10-03-2025",
+            "date_fin_tournoi": "10-03-2025",
+            "nombre_tours": "4",
+            "description": "Le tournoi des grands gagnants",
+            "liste_joueurs": [
+                "4",
+                "8",
+                "1",
+                "2"
+            ],
+            "liste_tours": []
+        }
+    }
+}

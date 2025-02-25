@@ -2,7 +2,6 @@ from rich.table import Table
 import questionary
 import re
 from views.vue import Vue
-import math
 
 
 class JoueurVue(Vue):
