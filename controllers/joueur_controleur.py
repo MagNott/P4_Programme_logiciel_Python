@@ -61,6 +61,7 @@ class JoueurControleur:
                 p_nom_famille=joueur_datum["nom_famille"],
                 p_prenom=joueur_datum["prenom"],
                 p_date_naissance=joueur_datum["date_naissance"],
+                p_score=joueur_datum["score"],
             )
             joueurs.append(o_joueur)
 
