@@ -106,6 +106,7 @@ class JoueurVue(Vue):
         table.add_column("Nom", justify="center")
         table.add_column("Prénom", justify="center")
         table.add_column("Date de naissance", justify="center")
+        table.add_column("score", justify="center")
 
         # Couleurs alternées pour chaque ligne
         couleurs_lignes = ["dim cyan", "dim magenta"]
@@ -117,5 +118,6 @@ class JoueurVue(Vue):
                 f"[{couleur}]{o_joueur.nom_famille}[/{couleur}]",
                 f"[{couleur}]{o_joueur.prenom}[/{couleur}]",
                 f"[{couleur}]{o_joueur.date_naissance}[/{couleur}]",
+                f"[{couleur}]{o_joueur.score}[/{couleur}]",
             )
         self.console.print(table)
