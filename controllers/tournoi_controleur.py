@@ -1,6 +1,7 @@
 from models.tournoi import Tournoi
 from models.gestionnaire_persistance import GestionnairePersistance
 from views.tournoi_vue import TournoiVue
+import re
 
 
 class TournoiControleur:
@@ -59,14 +60,14 @@ class TournoiControleur:
             None
         """
 
-        # Récupère la liste des tournois existants depuis le fichier JSON.
+        # Récupère la liste des tournois existants depuis le fichier JSON
         l_liste_tournois = self.o_gestionnaire_persistance.recuperer_fichiers_tournois()
 
-        # # Affiche les tournois disponibles et demande à l'utilisateur d'en choisir un.
+        # # Affiche les tournois disponibles et demande à l'utilisateur d'en choisir un
         i_identifiant_tournoi = self.o_tournoi_vue.render_choix_tournoi(
             l_liste_tournois
         )
-        # Charge les données du tournoi sélectionné.
+        # Charge les données du tournoi sélectionné
         o_tournoi_choisi = self.o_gestionnaire_persistance.recuperer_objet_tournoi(
             i_identifiant_tournoi
         )
@@ -75,16 +76,16 @@ class TournoiControleur:
             self.o_tournoi_vue.render_impossible_inscription(o_tournoi_choisi.nom_tournoi)
             return
 
-        # Récupère la liste des joueurs disponibles.
+        # Récupère la liste des joueurs disponibles
         l_liste_joueurs = self.o_gestionnaire_persistance.charger_joueurs()
 
-        # Affiche les joueurs et demande à l'utilisateur de sélectionner ceux à inscrire.
+        # Affiche les joueurs et demande à l'utilisateur de sélectionner ceux à inscrire
         l_choix_joueur = self.o_tournoi_vue.render_choix_joueur(l_liste_joueurs, o_tournoi_choisi)
 
-        # Met à jour la liste des joueurs du tournoi.
+        # Met à jour la liste des joueurs du tournoi
         o_tournoi_choisi.liste_joueurs = l_choix_joueur
 
-        # Sauvegarde la mise à jour du tournoi dans la base de données.
+        # Sauvegarde la mise à jour du tournoi dans la base de données
         self.o_gestionnaire_persistance.sauvegarder_joueurs_tournoi(o_tournoi_choisi)
 
 #
@@ -98,11 +99,19 @@ class TournoiControleur:
             None
         """
 
-        # Charge la liste des tournois existants.
+        # Charge la liste des tournois existants
         l_liste_tournois = self.o_gestionnaire_persistance.recuperer_fichiers_tournois()
 
-        # Affiche les informations de chaque tournoi dans la console.
-        self.o_tournoi_vue.render_lister_tournois(l_liste_tournois)
+        regex = r"tournoi_(\d+)_"
+        l_objets_tournoi = []
+        for s_tournoi in l_liste_tournois:
+            match = re.match(regex, s_tournoi)
+            if match:
+                i_identifiant_tournoi = match.group(1)
+                l_objets_tournoi.append(self.o_gestionnaire_persistance.recuperer_objet_tournoi(i_identifiant_tournoi))
+
+        # Affiche les informations de chaque tournoi dans la console
+        self.o_tournoi_vue.render_lister_tournois(l_objets_tournoi)
 
 #
     def visualiser_tournoi(self) -> None:

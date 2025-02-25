@@ -4,12 +4,13 @@ from typing import List
 from models.tournoi import Tournoi
 from views.vue import Vue
 import re
+from datetime import datetime
 
 
 class TournoiVue(Vue):
     """Gère l'affichage des informations liées aux tournois avec la bibliothèque Rich."""
 
-#
+    #
     # Surcharge la methode valider_nom() de la classe parente Vue pour accepter les chiffres dans le nom d'un tournoi
     def valider_nom(self, p_saisie):
         """
@@ -24,11 +25,13 @@ class TournoiVue(Vue):
 
         Returns:
             str | bool: Un message d'erreur si invalide, sinon `True` si la saisie est correcte.
-    """
+        """
         if not p_saisie.strip():
             return "Le champ ne peut pas être vide."
         if not re.match(r"^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s-]+$", p_saisie):
-            return "La saisie ne doit contenir que des lettres, des tirets et des espaces."
+            return (
+                "La saisie ne doit contenir que des lettres, des tirets et des espaces."
+            )
         return True
 
     #
@@ -52,7 +55,11 @@ class TournoiVue(Vue):
             p_description_tournoi (str): Description ou informations supplémentaires sur le tournoi.
         """
 
-        table = Table(title="\n✅ Tournoi ajouté avec succès", title_style="bold green", show_header=False)
+        table = Table(
+            title="\n✅ Tournoi ajouté avec succès",
+            title_style="bold green",
+            show_header=False,
+        )
         table.add_column("Info", style="bold white", justify="left")
         table.add_column("Tournoi", style="bold cyan", justify="left")
 
@@ -61,38 +68,46 @@ class TournoiVue(Vue):
         table.add_row("📅 Début", p_date_debut_tournoi)
         table.add_row("📅 Fin", p_date_fin_tournoi)
         table.add_row("🔄 Nombre de tours", str(p_nombre_tour_tournoi))
-        table.add_row("📝 Description", p_description_tournoi if p_description_tournoi else "Aucune description")
+        table.add_row(
+            "📝 Description",
+            p_description_tournoi if p_description_tournoi else "Aucune description",
+        )
 
         self.console.print(table)
 
-#
-    def render_lister_tournois(self, p_liste_tournois: list[str]) -> None:
+    #
+    def render_lister_tournois(self, p_liste_objets_tournois: list[Tournoi]) -> None:
         """Affiche la liste des tournois enregistrés dans la base de données.
 
         Args:
-            p_liste_tournois (list[dict[str, str]]): Liste de string contenant les informations des tournois.
+            p_liste_objets_tournois list[Tournoi]: Liste d'objets tournoi
         """
+        # Range les tournois par ordre croissant de date
+        p_liste_objets_tournois = sorted(
+            p_liste_objets_tournois,
+            key=lambda tournoi: datetime.strptime(
+                tournoi.date_debut_tournoi, "%d-%m-%Y"
+            ),
+        )
 
-        table = Table(title="\n 🏆 Liste des Tournois", title_style="bold green")
+        table = Table(title="\n 🏆 Liste des Tournois", title_style="bold blue")
 
         table.add_column("ID", style="bold cyan", justify="center")
         table.add_column("Nom du tournoi", style="bold white", justify="left")
         table.add_column("Date de début", style="bold magenta", justify="center")
+        table.add_column("Date de fin", style="bold magenta", justify="center")
 
-        # Regex pour extraire les infos depuis le nom de fichier
-        regex = r"tournoi_(\d+)_([^_]+)_(\d{2}-\d{2}-\d{4})\.json"
+        # Couleurs alternées pour chaque ligne
+        couleurs_lignes = ["cyan", "magenta"]
 
-        for tournoi in p_liste_tournois:
-
-            # Extraction des infos avec la regex
-            match = re.match(regex, tournoi)
-            if match:
-                tournoi_id = match.group(1)
-                nom_tournoi = match.group(2).replace("_", " ")  # Remettre les espaces
-                date_debut = match.group(3)
-
-                # jouter une ligne au tableau
-                table.add_row(tournoi_id, nom_tournoi, date_debut)
+        for i, o_tournoi in enumerate(p_liste_objets_tournois):
+            couleur = couleurs_lignes[i % len(couleurs_lignes)]
+            table.add_row(
+                f"[{couleur}]{o_tournoi.identifiant}[/{couleur}]",
+                f"[{couleur}]{o_tournoi.nom_tournoi}[/{couleur}]",
+                f"[{couleur}]{o_tournoi.date_debut_tournoi}[/{couleur}]",
+                f"[{couleur}]{o_tournoi.date_fin_tournoi}[/{couleur}]",
+            )
 
         self.console.print(table)
 
@@ -183,12 +198,18 @@ class TournoiVue(Vue):
                     )
         joueurs_affiches = sorted(joueurs_affiches)
         if joueurs_affiches:
-            joueurs_affiches_str = "\n".join(joueurs_affiches)  # Retour à la ligne pour meilleure lisibilité
+            joueurs_affiches_str = "\n".join(
+                joueurs_affiches
+            )  # Retour à la ligne pour meilleure lisibilité
         else:
             joueurs_affiches_str = "Aucun joueur inscrit"
 
         print("\n")
-        table_tournoi = Table(title="🏆 Informations du Tournoi", title_style="bold green", show_header=False)
+        table_tournoi = Table(
+            title="🏆 Informations du Tournoi",
+            title_style="bold green",
+            show_header=False,
+        )
 
         table_tournoi.add_column("Détail", style="bold white", justify="left")
         table_tournoi.add_column("Valeur", style="bold cyan", justify="left")
@@ -198,12 +219,15 @@ class TournoiVue(Vue):
         table_tournoi.add_row("📅 Début", tournoi["date_debut_tournoi"])
         table_tournoi.add_row("🗓️ Fin", tournoi["date_fin_tournoi"])
         table_tournoi.add_row("🔄 Nombre de tours", str(tournoi["nombre_tours"]))
-        table_tournoi.add_row("📝 Description", tournoi["description"] if tournoi["description"] else "Aucune description")
+        table_tournoi.add_row(
+            "📝 Description",
+            tournoi["description"] if tournoi["description"] else "Aucune description",
+        )
         table_tournoi.add_row("👥 Joueurs", joueurs_affiches_str)
 
         self.console.print(table_tournoi)
 
-#
+    #
     def valider_nombre_tour(self, p_saisie):
         """
         Vérifie que la saisie du nombre de tour est valide.
@@ -217,7 +241,7 @@ class TournoiVue(Vue):
 
         Returns:
             str | bool: Un message d'erreur si invalide, sinon `True` si la saisie est correcte.
-    """
+        """
         if not p_saisie.isdigit() or p_saisie == 0:
             return "Il faut saisir un chiffre et qu'il soit supérieur à 0."
         return True
@@ -242,7 +266,7 @@ class TournoiVue(Vue):
         # Demander la date de début du tournoi d'abord
         p_date_debut_tournoi = questionary.text(
             "Entrez la date du début du tournoi (JJ-MM-AAAA) :",
-            validate=self.valider_date
+            validate=self.valider_date,
         ).ask()
 
         d_infos_tournoi = {
@@ -255,10 +279,13 @@ class TournoiVue(Vue):
             "p_date_debut_tournoi": p_date_debut_tournoi,
             "p_date_fin_tournoi": questionary.text(
                 "Entrez la date de fin du tournoi (JJ-MM-AAAA) :",
-                validate=lambda date_fin: self.valider_date_fin(date_fin, p_date_debut_tournoi)
+                validate=lambda date_fin: self.valider_date_fin(
+                    date_fin, p_date_debut_tournoi
+                ),
             ).ask(),
             "p_nombre_tour_tournoi": questionary.text(
-                "Entrez le nombre de tour du tournoi (4 par défaut) :", default=Tournoi.nombre_tours_defaut,
+                "Entrez le nombre de tour du tournoi (4 par défaut) :",
+                default=Tournoi.nombre_tours_defaut,
             ).ask(),
             "p_description_tournoi": questionary.text(
                 "Entrez la desription du tournoi  :", validate=self.valider_nom
