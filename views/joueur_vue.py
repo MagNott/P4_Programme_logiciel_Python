@@ -2,6 +2,7 @@ from rich.table import Table
 import questionary
 import re
 from views.vue import Vue
+import math
 
 
 class JoueurVue(Vue):
@@ -99,17 +100,17 @@ class JoueurVue(Vue):
         )
 
         # Création de la table
-        table = Table(title="\n Liste des joueurs")
+        table = Table(title="\n 🏅 Liste des joueurs", title_style="bold blue")
 
         # Définir les colonnes
-        table.add_column("Identifiant", justify="center")
+        table.add_column("Id Echec", justify="center")
         table.add_column("Nom", justify="center")
         table.add_column("Prénom", justify="center")
         table.add_column("Date de naissance", justify="center")
-        table.add_column("score", justify="center")
+        table.add_column("Score", justify="center")
 
         # Couleurs alternées pour chaque ligne
-        couleurs_lignes = ["dim cyan", "dim magenta"]
+        couleurs_lignes = ["cyan", "magenta"]
 
         for i, o_joueur in enumerate(joueurs_trie_nom_prenom):
             couleur = couleurs_lignes[i % len(couleurs_lignes)]  # Alterner les couleurs
@@ -118,6 +119,8 @@ class JoueurVue(Vue):
                 f"[{couleur}]{o_joueur.nom_famille}[/{couleur}]",
                 f"[{couleur}]{o_joueur.prenom}[/{couleur}]",
                 f"[{couleur}]{o_joueur.date_naissance}[/{couleur}]",
-                f"[{couleur}]{o_joueur.score}[/{couleur}]",
+                f"[{couleur}]{o_joueur.score:.1f}[/{couleur}]",
+                # Pour garder un chiffre après la virgule : :.1f
+                # : indique un formatage spécial, .1 pour garder 1 chiffre, f pour float
             )
         self.console.print(table)

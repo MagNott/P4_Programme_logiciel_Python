@@ -12,7 +12,7 @@
             "nom_famille": "MARTIN",
             "prenom": "Florence",
             "date_naissance": "14/05/1989",
-            "score": 9.0
+            "score": 10.0
         },
         "3": {
             "identifiant_national_echec": "GH12489",
@@ -26,35 +26,35 @@
             "nom_famille": "ALLARD",
             "prenom": "Martine",
             "date_naissance": "17/09/2001",
-            "score": 12
+            "score": 14.0
         },
         "5": {
             "identifiant_national_echec": "AD13545",
             "nom_famille": "COCHI",
             "prenom": "Henry",
             "date_naissance": "05/05/1999",
-            "score": 2
+            "score": 2.5
         },
         "6": {
             "identifiant_national_echec": "AD14565",
             "nom_famille": "NOOK",
             "prenom": "Tom",
             "date_naissance": "01/01/2002",
-            "score": 6.0
+            "score": 7.5
         },
         "7": {
             "identifiant_national_echec": "de12345",
             "nom_famille": "POTIER",
             "prenom": "Fabien",
             "date_naissance": "18/08/1999",
-            "score": 7.0
+            "score": 8.0
         },
         "8": {
             "identifiant_national_echec": "FR12312",
             "nom_famille": "DURANT",
             "prenom": "Jean-Marc",
             "date_naissance": "19/07/1998",
-            "score": 0
+            "score": 1.5
         },
         "9": {
             "identifiant_national_echec": "AD12456",
@@ -68,7 +68,7 @@
             "nom_famille": "BROWN",
             "prenom": "Alphonse",
             "date_naissance": "15-05-1989",
-            "score": 0
+            "score": 0.5
         },
         "11": {
             "identifiant_national_echec": "DE45676",
@@ -77,6 +77,5 @@
             "date_naissance": "19-09-1988",
             "score": 0
         }
-    
     }
 }

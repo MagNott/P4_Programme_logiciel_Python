@@ -348,7 +348,7 @@ class GestionnairePersistance:
                 d_liste_match["joueur_blanc"], d_resultat["score_blanc"]
             )
             self.mettre_a_jour_joueur(
-                d_liste_match["joueur_blanc"], d_resultat["score_noir"]
+                d_liste_match["joueur_noir"], d_resultat["score_noir"]
             )
 
         # Marque le tour comme "Terminé" et enregistre l'heure de fin.
