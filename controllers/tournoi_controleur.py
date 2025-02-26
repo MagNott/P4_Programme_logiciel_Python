@@ -124,8 +124,29 @@ class TournoiControleur:
             None
         """
 
-        # Charge la liste des joueurs enregistrés.
-        l_liste_joueurs = self.o_gestionnaire_persistance.charger_joueurs()
+        # Charge la liste des tournois existants.
+        l_liste_tournois = self.o_gestionnaire_persistance.recuperer_fichiers_tournois()
+
+        # Affiche les tournois disponibles et demande à l'utilisateur d'en choisir un.
+        i_identifiant_tournoi = self.o_tournoi_vue.render_choix_tournoi(
+            l_liste_tournois
+        )
+
+        o_tournoi = self.o_gestionnaire_persistance.recuperer_objet_tournoi(i_identifiant_tournoi)
+
+        # Affiche les informations détaillées du tournoi, y compris les joueurs inscrits àce tournoi.
+        self.o_tournoi_vue.render_visualiser_tournoi(o_tournoi)
+
+#
+    def visualiser_tour_match_tournoi(self) -> None:
+        """Affiche les détails d'un tournoi sélectionné par l'utilisateur.
+
+        Args:
+            None
+
+        Returns:
+            None
+        """
 
         # Charge la liste des tournois existants.
         l_liste_tournois = self.o_gestionnaire_persistance.recuperer_fichiers_tournois()
@@ -135,10 +156,7 @@ class TournoiControleur:
             l_liste_tournois
         )
 
-        # Récupère les données du tournoi sélectionné.
-        d_tournoi = self.o_gestionnaire_persistance.charger_tournoi(
-            i_identifiant_tournoi
-        )
+        o_tournoi = self.o_gestionnaire_persistance.recuperer_objet_tournoi(i_identifiant_tournoi)
 
         # Affiche les informations détaillées du tournoi, y compris les joueurs inscrits àce tournoi.
-        self.o_tournoi_vue.render_visualiser_tournoi(d_tournoi, l_liste_joueurs)
+        self.o_tournoi_vue.render_visualiser_tour_match_tournoi(o_tournoi)

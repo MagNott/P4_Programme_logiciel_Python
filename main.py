@@ -19,6 +19,7 @@ MENU_LISTER_TOURNOI = "Lister les tournois"
 MENU_VISUALISER_TOURNOI = "Visualiser un tournoi"
 MENU_CREER_TOUR = "Créer un tour"
 MENU_TERMINER_TOUR = "Terminer un tour"
+MENU_VISUALISER_TOUR_MATCH_TOURNOI = "Visualiser les tours et matchs d'un tournoi"
 RETOUR_MENU_PRINCIPAL = "Retour au menu principal"
 MENU_QUITTER = "Quitter"
 
@@ -105,6 +106,7 @@ def menu_rapports():
             MENU_LISTER_JOUEURS,
             MENU_LISTER_TOURNOI,
             MENU_VISUALISER_TOURNOI,
+            MENU_VISUALISER_TOUR_MATCH_TOURNOI,
             RETOUR_MENU_PRINCIPAL,
         ],
     ).ask()
@@ -156,6 +158,8 @@ if __name__ == "__main__":
                     tournoi_controleur.lister_tournois()
                 elif choix_rapports == MENU_VISUALISER_TOURNOI:
                     tournoi_controleur.visualiser_tournoi()
+                elif choix_rapports == MENU_VISUALISER_TOUR_MATCH_TOURNOI:
+                    tournoi_controleur.visualiser_tour_match_tournoi()
                 elif choix_rapports == RETOUR_MENU_PRINCIPAL:
                     break
         elif choix == MENU_QUITTER:

@@ -171,61 +171,101 @@ class TournoiVue(Vue):
 
     #
     def render_visualiser_tournoi(
-        self, p_tournoi: list[dict[str, str]], p_joueurs_db: list[dict[str, str]]
+        self, p_objet_tournoi: Tournoi
     ) -> None:
-        """Affiche les informations du tournoi choisi.
+        """Affiche les informations du tournoi choisi
 
         Args:
-            p_tournoi (list[dict[str, str]]): Liste contenant un dictionnaire avec les informations du tournoi.
-            p_joueurs_db (list[dict[str, str]]): Liste de dictionnaires représentant les joueurs enregistrés.
+            p_objet_tournoi Tournoi : objet tournoi
         """
 
-        tournoi = p_tournoi[0]
+        liste_nom_joueurs = []
+        for o_joueur in p_objet_tournoi.liste_joueurs:
+            nom_joueur = o_joueur.nom_famille
+            prenom_joueur = o_joueur.prenom
+            s_joueur = f"{nom_joueur} {prenom_joueur}"
+            liste_nom_joueurs.append(s_joueur)
 
-        # Le tournoi est stocké sous forme de liste contenant un unique dictionnaire (p_tournoi[0]
-        # est utilisé pour accéder aux données)
-        liste_joueurs_ids = p_tournoi[0]["liste_joueurs"]
-
-        joueurs_affiches = []
-        joueurs_affiches_str = "Pas de joueurs inscrits"
-
-        # Faire correspondre l'id du joueur avec ses données
-        for joueur_id in liste_joueurs_ids:
-            for joueur in p_joueurs_db:
-                if joueur["id_tinydb"] == int(joueur_id):
-                    joueurs_affiches.append(
-                        f"{joueur['nom_famille']} {joueur['prenom']}"
-                    )
-        joueurs_affiches = sorted(joueurs_affiches)
-        if joueurs_affiches:
-            joueurs_affiches_str = "\n".join(
-                joueurs_affiches
-            )  # Retour à la ligne pour meilleure lisibilité
-        else:
-            joueurs_affiches_str = "Aucun joueur inscrit"
+        joueur_alpha = sorted(liste_nom_joueurs)
 
         print("\n")
         table_tournoi = Table(
             title="🏆 Informations du Tournoi",
-            title_style="bold green",
+            title_style="bold blue",
             show_header=False,
         )
 
         table_tournoi.add_column("Détail", style="bold white", justify="left")
         table_tournoi.add_column("Valeur", style="bold cyan", justify="left")
 
-        table_tournoi.add_row("🏷️ Nom", tournoi["nom_tournoi"])
-        table_tournoi.add_row("📍 Lieu", tournoi["lieu_tournoi"])
-        table_tournoi.add_row("📅 Début", tournoi["date_debut_tournoi"])
-        table_tournoi.add_row("🗓️ Fin", tournoi["date_fin_tournoi"])
-        table_tournoi.add_row("🔄 Nombre de tours", str(tournoi["nombre_tours"]))
+        table_tournoi.add_row("🏷️  Nom", p_objet_tournoi.nom_tournoi)
+        table_tournoi.add_row("📍 Lieu", p_objet_tournoi.lieu_tournoi)
+        table_tournoi.add_row("📅 Début", p_objet_tournoi.date_debut_tournoi)
+        table_tournoi.add_row("🗓️  Fin", p_objet_tournoi.date_fin_tournoi)
+        table_tournoi.add_row("🔄 Nombre de tours", str(p_objet_tournoi.nombre_tours))
         table_tournoi.add_row(
             "📝 Description",
-            tournoi["description"] if tournoi["description"] else "Aucune description",
+            p_objet_tournoi.description if p_objet_tournoi.description else "Aucune description",
         )
-        table_tournoi.add_row("👥 Joueurs", joueurs_affiches_str)
+        table_tournoi.add_row("\n")
+        table_tournoi.add_row("👥 Joueurs", "\n".join(joueur_alpha))
 
         self.console.print(table_tournoi)
+
+    #
+    def render_visualiser_tour_match_tournoi(self, p_objet_tournoi: Tournoi):
+
+        print("\n")
+        print(f"🏆 Déroulé du Tournoi {p_objet_tournoi.nom_tournoi}")
+
+
+        # for o_tour in p_objet_tournoi.liste_tours:
+        #     print(o_tour.nom)
+        #     print(o_tour.statut)
+        #     print(o_tour.date_heure_debut)
+        #     print(o_tour.date_heure_fin)
+
+        #     for o_match in o_tour.liste_matchs:
+        #         print(o_match.nom_match)
+        #         print(o_match.joueur_blanc.nom_famille)
+        #         print(o_match.score_blanc)
+        #         print(o_match.joueur_noir.nom_famille)
+        #         print(o_match.score_noir)
+        #         print(o_match.statut)
+
+        for o_tour in p_objet_tournoi.liste_tours:
+            table_tour = Table(title=f"🔄 {o_tour.nom} ({o_tour.statut})", title_style="bold magenta", show_header=False,)
+            table_tour.add_column("Détail", style="bold white", justify="left")
+            table_tour.add_column("Valeur", style="bold cyan", justify="left")
+
+            table_tour.add_row("📅 Début", o_tour.date_heure_debut if o_tour.date_heure_debut else "Non renseigné")
+            table_tour.add_row("🗓️  Fin", o_tour.date_heure_fin if o_tour.date_heure_fin else "Non terminé")
+
+            self.console.print(table_tour)
+            self.console.print("\n")
+
+            # 🎯 Tableau des matchs de ce tour
+            table_matchs = Table(title="⚔️  Matchs du Tour", title_style="bold yellow")
+            table_matchs.add_column("🏳️  Joueur Blanc", justify="center", style="bold white")
+            table_matchs.add_column("⚖️  Score Blanc", justify="center", style="bold cyan")
+            table_matchs.add_column("⚔️  VS", justify="center", style="bold red")
+            table_matchs.add_column("⚖️  Score Noir", justify="center", style="bold cyan")
+            table_matchs.add_column("🏴 Joueur Noir", justify="center", style="bold white")
+            table_matchs.add_column("📌 Statut", justify="center", style="bold green")
+
+            for o_match in o_tour.liste_matchs:
+                table_matchs.add_row(
+                    f"{o_match.joueur_blanc.nom_famille} {o_match.joueur_blanc.prenom}",
+                    str(o_match.score_blanc),
+                    "🆚",
+                    str(o_match.score_noir),
+                    f"{o_match.joueur_noir.nom_famille} {o_match.joueur_noir.prenom}"
+                    ,
+                    o_match.statut,
+                )
+
+            self.console.print(table_matchs)
+            self.console.print("\n")
 
     #
     def valider_nombre_tour(self, p_saisie):
