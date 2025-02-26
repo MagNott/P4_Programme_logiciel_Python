@@ -5,7 +5,6 @@ from models.tour import Tour
 from models.match import Match
 import os
 from datetime import datetime
-from icecream import ic
 
 
 class GestionnairePersistance:
@@ -133,22 +132,10 @@ class GestionnairePersistance:
         fichiers = os.listdir("data/tournaments")  # Liste tous les fichiers du dossier
 
         for fichier in fichiers:  # Boucle sur chaque fichier
-            if fichier.startswith(f"tournoi_{p_identifiant_tournoi}_"):  # Vérifie si le fichier commence par le préfixe
+            if fichier.startswith(
+                f"tournoi_{p_identifiant_tournoi}_"
+            ):  # Vérifie si le fichier commence par le préfixe
                 return f"data/tournaments/{fichier}"
-
-    #
-    def charger_tournoi(self, p_identifiant_tournoi: str) -> list[dict[str, str]]:
-        """Charge les données d'un tournoi depuis son fichier JSON.
-        Args:
-            p_identifiant_tournoi (str): Identifiant du tournoi utilisé pour retrouver son fichier.
-        Returns:
-            list[dict[str, str]]: Liste contenant un dictionnaire avec toutes les informations du tournoi.
-        """
-
-        fichier_tournoi = self.trouver_fichier_par_identifiant(p_identifiant_tournoi)
-
-        self.db_tournois = TinyDB(fichier_tournoi)
-        return self.db_tournois.all()
 
     #
     def recuperer_objet_tournoi(self, p_identifiant_tournoi: str) -> Tournoi:
@@ -178,17 +165,36 @@ class GestionnairePersistance:
             p_liste_joueurs=d_tournoi["liste_joueurs"],
         )
         o_tournoi.liste_tours = []
-        for tour in d_tournoi["liste_tours"]:
+        for d_tour in d_tournoi["liste_tours"]:
             # Créer un objet Tour pour chaque tour et l'ajouter à la liste des tours du tournoi
-            p_tour = Tour(
-                p_identifiant=tour["identifiant"],
-                p_nom=tour["nom"],
+            o_tour = Tour(
+                p_identifiant=d_tour["identifiant"],
+                p_nom=d_tour["nom"],
                 p_tournoi=o_tournoi,
-                p_statut=tour["statut"],
-                p_date_heure_debut=tour["date_heure_debut"],
-                p_date_heure_fin=tour["date_heure_fin"],
+                p_statut=d_tour["statut"],
+                p_date_heure_debut=d_tour["date_heure_debut"],
+                p_date_heure_fin=d_tour["date_heure_fin"],
             )
-            o_tournoi.liste_tours.append(p_tour)
+
+            o_tour.liste_match = []
+            for match in d_tour["liste_matchs"]:
+                o_match = Match(
+                    p_identifiant=match["identifiant"],
+                    p_joueur_blanc=self.recuperer_objet_joueur(match["joueur_blanc"]),
+                    p_joueur_noir=self.recuperer_objet_joueur(match["joueur_noir"]),
+                    p_score_blanc=match["score_blanc"],
+                    p_score_noir=match["score_noir"],
+                    p_statut=match["statut"],
+                )
+                o_tour.liste_matchs.append(o_match)
+
+            o_tournoi.liste_tours.append(o_tour)
+
+        o_tournoi.liste_joueurs = []
+        for i_joueur in d_tournoi["liste_joueurs"]:
+            o_joueur = self.recuperer_objet_joueur(i_joueur)
+
+            o_tournoi.liste_joueurs.append(o_joueur)
 
         return o_tournoi
 
