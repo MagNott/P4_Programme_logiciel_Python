@@ -171,7 +171,7 @@ class TournoiVue(Vue):
 
     #
     def render_visualiser_tournoi(
-        self, p_objet_tournoi: Tournoi
+        self, p_objet_tournoi: Tournoi, p_scores_joueurs: dict
     ) -> None:
         """Affiche les informations du tournoi choisi
 
@@ -183,7 +183,8 @@ class TournoiVue(Vue):
         for o_joueur in p_objet_tournoi.liste_joueurs:
             nom_joueur = o_joueur.nom_famille
             prenom_joueur = o_joueur.prenom
-            s_joueur = f"{nom_joueur} {prenom_joueur}"
+            i_score_joueur = p_scores_joueurs[o_joueur.identifiant_tinydb]
+            s_joueur = f"{nom_joueur} {prenom_joueur} - {i_score_joueur} point(s)"
             liste_nom_joueurs.append(s_joueur)
 
         joueur_alpha = sorted(liste_nom_joueurs)
@@ -217,21 +218,6 @@ class TournoiVue(Vue):
 
         print("\n")
         print(f"🏆 Déroulé du Tournoi {p_objet_tournoi.nom_tournoi}")
-
-
-        # for o_tour in p_objet_tournoi.liste_tours:
-        #     print(o_tour.nom)
-        #     print(o_tour.statut)
-        #     print(o_tour.date_heure_debut)
-        #     print(o_tour.date_heure_fin)
-
-        #     for o_match in o_tour.liste_matchs:
-        #         print(o_match.nom_match)
-        #         print(o_match.joueur_blanc.nom_famille)
-        #         print(o_match.score_blanc)
-        #         print(o_match.joueur_noir.nom_famille)
-        #         print(o_match.score_noir)
-        #         print(o_match.statut)
 
         for o_tour in p_objet_tournoi.liste_tours:
             table_tour = Table(title=f"🔄 {o_tour.nom} ({o_tour.statut})", title_style="bold magenta", show_header=False,)

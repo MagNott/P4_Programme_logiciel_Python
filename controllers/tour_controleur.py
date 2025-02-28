@@ -73,41 +73,41 @@ class TourControleur:
             p_tournoi=o_tournoi_choisi,
         )
         # Mélange les joueurs du tournoi et forme des paires pour les matchs.
-        l_joueurs = (o_tournoi_choisi.liste_joueurs.copy())
+        l_objets_joueurs = (o_tournoi_choisi.liste_joueurs.copy())
         # On utilise copy() sinon on passe par référence et on modifie la liste du tournoi
-        random.shuffle(l_joueurs)  # Mélange aléatoire
+        random.shuffle(l_objets_joueurs)  # Mélange aléatoire
 
         identifiant_match = 1
         # Créer les paires de joueurs et générer les matchs
-        while len(l_joueurs) >= 2:
-            p_joueur_blanc = l_joueurs.pop()
-            p_joueur_noir = l_joueurs.pop()
+        while len(l_objets_joueurs) >= 2:
+            o_joueur_blanc = l_objets_joueurs.pop()
+            o_joueur_noir = l_objets_joueurs.pop()
 
             o_nouveau_match = Match(
                 identifiant_match,
-                p_joueur_blanc,
-                p_joueur_noir,
+                o_joueur_blanc,
+                o_joueur_noir,
             )
             identifiant_match += 1
 
-            # Associe chaque joueur à son nom complet pour l'affichage.
-            o_joueur_blanc = self.o_gestionnaire_persistance.recuperer_objet_joueur(
-                p_joueur_blanc
-            )
-            o_joueur_blanc_nom = f"{o_joueur_blanc.nom_famille} {o_joueur_blanc.prenom}"
+            # # Associe chaque joueur à son nom complet pour l'affichage.
+            # o_joueur_blanc = self.o_gestionnaire_persistance.recuperer_objet_joueur(
+            #     p_joueur_blanc
+            # )
+            # o_joueur_blanc_nom = f"{o_joueur_blanc.nom_famille} {o_joueur_blanc.prenom}"
 
-            o_joueur_noir = self.o_gestionnaire_persistance.recuperer_objet_joueur(
-                p_joueur_noir
-            )
-            o_joueur_noir_nom = f"{o_joueur_noir.nom_famille} {o_joueur_noir.prenom}"
+            # o_joueur_noir = self.o_gestionnaire_persistance.recuperer_objet_joueur(
+            #     p_joueur_noir
+            # )
+            # o_joueur_noir_nom = f"{o_joueur_noir.nom_famille} {o_joueur_noir.prenom}"
 
             # Affiche les matchs du tour à l'utilisateur via la console.
             self.o_tour_vue.render_visualiser_matchs(
                 o_tournoi_choisi.nom_tournoi,
                 i_numero_tour,
                 identifiant_match - 1,
-                o_joueur_blanc_nom,
-                o_joueur_noir_nom,
+                o_joueur_blanc,
+                o_joueur_noir,
             )
 
             # Enregistre le tour et ses matchs dans la base de données.
@@ -156,12 +156,9 @@ class TourControleur:
             self.o_gestionnaire_persistance.recuperer_liste_objets_matchs(d_dernier_tour)
         )
 
-        for match in l_objets_matchs:
-            o_joueur_blanc = self.o_gestionnaire_persistance.recuperer_objet_joueur(match.joueur_blanc)
-            o_joueur_noir = self.o_gestionnaire_persistance.recuperer_objet_joueur(match.joueur_noir)
-
-            match.joueur_blanc = f"{o_joueur_blanc.prenom} {o_joueur_blanc.nom_famille}"
-            match.joueur_noir = f"{o_joueur_noir.prenom} {o_joueur_noir.nom_famille}"
+        # for match in l_objets_matchs:
+            # match.joueur_blanc = f"{match.joueur_blanc.prenom} {match.joueur_blanc.nom_famille}"
+            # match.joueur_noir = f"{match.joueur_noir.prenom} {match.joueur_noir.nom_famille}"
 
         # Affiche les matchs et demande à l'utilisateur de saisir les résultats.
         l_resultats = self.o_tour_vue.render_matchs_pour_saisie(o_tournoi, d_dernier_tour, l_objets_matchs)

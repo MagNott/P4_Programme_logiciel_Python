@@ -1,6 +1,7 @@
 from models.tournoi import Tournoi
 from models.gestionnaire_persistance import GestionnairePersistance
 from views.tournoi_vue import TournoiVue
+from tinydb import TinyDB
 import re
 
 
@@ -72,6 +73,7 @@ class TournoiControleur:
             i_identifiant_tournoi
         )
 
+        # Vérifie si le tournoi a déjà commencé pour empecher l'inscription des joueurs
         if not len(o_tournoi_choisi.liste_tours) == 0:
             self.o_tournoi_vue.render_impossible_inscription(o_tournoi_choisi.nom_tournoi)
             return
@@ -80,10 +82,17 @@ class TournoiControleur:
         l_liste_joueurs = self.o_gestionnaire_persistance.charger_joueurs()
 
         # Affiche les joueurs et demande à l'utilisateur de sélectionner ceux à inscrire
-        l_choix_joueur = self.o_tournoi_vue.render_choix_joueur(l_liste_joueurs, o_tournoi_choisi)
+        l_choix_joueurs = self.o_tournoi_vue.render_choix_joueur(l_liste_joueurs, o_tournoi_choisi)
 
-        # Met à jour la liste des joueurs du tournoi
-        o_tournoi_choisi.liste_joueurs = l_choix_joueur
+        # Construit un dicitonnaire qui va servir de liste de joueur mais avec leurs scores
+        d_joueurs_choisis = {}
+        for choix_joueur in l_choix_joueurs:
+            d_joueurs_choisis[choix_joueur] = 0
+
+        # Met à jour le dictionnaire des joueurs du tournoi
+        o_tournoi_choisi.liste_joueurs = d_joueurs_choisis
+
+        print(o_tournoi_choisi.liste_joueurs)
 
         # Sauvegarde la mise à jour du tournoi dans la base de données
         self.o_gestionnaire_persistance.sauvegarder_joueurs_tournoi(o_tournoi_choisi)
@@ -134,8 +143,11 @@ class TournoiControleur:
 
         o_tournoi = self.o_gestionnaire_persistance.recuperer_objet_tournoi(i_identifiant_tournoi)
 
+        d_scores_joueurs = self.o_gestionnaire_persistance.recuepere_score_joueurs(i_identifiant_tournoi)
+
+
         # Affiche les informations détaillées du tournoi, y compris les joueurs inscrits àce tournoi.
-        self.o_tournoi_vue.render_visualiser_tournoi(o_tournoi)
+        self.o_tournoi_vue.render_visualiser_tournoi(o_tournoi, d_scores_joueurs)
 
 #
     def visualiser_tour_match_tournoi(self) -> None:

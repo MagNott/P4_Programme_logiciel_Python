@@ -126,6 +126,7 @@ class GestionnairePersistance:
         )
         self.db_tournois.update(d_liste_joueurs_db_tournoi, doc_ids=[int(1)])
 
+#
     def trouver_fichier_par_identifiant(self, p_identifiant_tournoi):
         """Retourne la liste des fichiers commençant par un certain préfixe dans un dossier donné."""
 
@@ -182,8 +183,8 @@ class GestionnairePersistance:
                     p_identifiant=match["identifiant"],
                     p_joueur_blanc=self.recuperer_objet_joueur(match["joueur_blanc"]),
                     p_joueur_noir=self.recuperer_objet_joueur(match["joueur_noir"]),
-                    p_score_blanc=match["score_blanc"],
-                    p_score_noir=match["score_noir"],
+                    p_score_blanc=match.get("score_blanc", 0.0),
+                    p_score_noir=match.get("score_noir", 0.0),
                     p_statut=match["statut"],
                 )
                 o_tour.liste_matchs.append(o_match)
@@ -214,7 +215,7 @@ class GestionnairePersistance:
         return fichiers_tournois
 
     #
-    def enregistrer_tour_tournoi(self, p_tour: Tour, p_tournoi_modele: Tournoi) -> None:
+    def enregistrer_tour_tournoi(self, p_objet_tour: Tour, p_objet_tournoi: Tournoi) -> None:
         """Ajoute un tour à un tournoi existant dans TinyDB.
 
         Args:
@@ -222,7 +223,7 @@ class GestionnairePersistance:
             p_tournoi (Tournoi): L'objet Tournoi dans lequel ajouter le tour.
         """
         self.db_tournois = TinyDB(
-            f"data/tournaments/tournoi_{p_tournoi_modele.identifiant}_{p_tournoi_modele.nom_tournoi}_{p_tournoi_modele.date_debut_tournoi}.json"
+            f"data/tournaments/tournoi_{p_objet_tournoi.identifiant}_{p_objet_tournoi.nom_tournoi}_{p_objet_tournoi.date_debut_tournoi}.json"
         )
 
         # Charge les données actuelles du tournoi
@@ -234,24 +235,24 @@ class GestionnairePersistance:
 
         # Transforme chaque match en dictionnaire
         l_matchs_dictionnaire = []
-        for o_match in p_tour.liste_matchs:
+        for o_match in p_objet_tour.liste_matchs:
             d_match = {
                 "identifiant": o_match.identifiant,
                 "nom_match": o_match.nom_match,
-                "joueur_blanc": o_match.joueur_blanc,
-                "joueur_noir": o_match.joueur_noir,
+                "joueur_blanc": o_match.joueur_blanc.identifiant_tinydb,
+                "joueur_noir": o_match.joueur_noir.identifiant_tinydb,
                 "statut": o_match.statut,
             }
             l_matchs_dictionnaire.append(d_match)
 
         # Transforme l'objet Tour en dictionnaire
         d_nouveau_tour = {
-            "identifiant": p_tour.identifiant,
-            "nom": p_tour.nom,
-            "statut": p_tour.statut,
+            "identifiant": p_objet_tour.identifiant,
+            "nom": p_objet_tour.nom,
+            "statut": p_objet_tour.statut,
             "liste_matchs": l_matchs_dictionnaire,
-            "date_heure_debut": p_tour.date_heure_debut,
-            "date_heure_fin": p_tour.date_heure_fin,
+            "date_heure_debut": p_objet_tour.date_heure_debut,
+            "date_heure_fin": p_objet_tour.date_heure_fin,
         }
 
         # Ajoute ce tour aux données du tournoi
@@ -300,8 +301,8 @@ class GestionnairePersistance:
             # Création de l'objet Match
             o_match = Match(
                 p_identifiant=d_match["identifiant"],
-                p_joueur_blanc=d_match["joueur_blanc"],
-                p_joueur_noir=d_match["joueur_noir"],
+                p_joueur_blanc=self.recuperer_objet_joueur(d_match["joueur_blanc"]),
+                p_joueur_noir=self.recuperer_objet_joueur(d_match["joueur_noir"]),
                 p_score_blanc=d_match.get("score_blanc", 0),
                 p_score_noir=d_match.get("score_noir", 0),
                 p_statut=d_match["statut"],
@@ -357,6 +358,9 @@ class GestionnairePersistance:
                 d_liste_match["joueur_noir"], d_resultat["score_noir"]
             )
 
+            d_tournoi["liste_joueurs"][d_liste_match["joueur_blanc"]] += d_resultat["score_blanc"]
+            d_tournoi["liste_joueurs"][d_liste_match["joueur_noir"]] += d_resultat["score_noir"]
+
         # Marque le tour comme "Terminé" et enregistre l'heure de fin.
         d_tournoi["liste_tours"][-1]["statut"] = "Terminé"
         d_tournoi["liste_tours"][-1]["date_heure_fin"] = datetime.now().strftime(
@@ -365,3 +369,14 @@ class GestionnairePersistance:
 
         # Sauvegarde les modifications dans TinyDB.
         self.db_tournois.update(d_tournoi, doc_ids=[1])
+
+#
+    def recuepere_score_joueurs(self, p_identifiant_tournoi):
+
+        fichier_tournoi = self.trouver_fichier_par_identifiant(p_identifiant_tournoi)
+        self.db_tournois = TinyDB(fichier_tournoi)
+        d_tournoi = self.db_tournois.all()[0]
+
+        d_scores = d_tournoi["liste_joueurs"]
+
+        return d_scores

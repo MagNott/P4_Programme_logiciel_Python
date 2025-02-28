@@ -83,8 +83,8 @@ class TourVue(Vue):
         p_tournoi_choisi: str,
         p_numero_tour: int,
         p_identifiant_match: int,
-        p_joueur_blanc: str,
-        p_joueur_noir: str,
+        p_objet_joueur_blanc: str,
+        p_objet_joueur_noir: str,
     ) -> None:
         """
         Affiche les informations d'un match généré pour un tour donné.
@@ -116,9 +116,9 @@ class TourVue(Vue):
         table.add_column("🔹 Joueur Noir", style="bold white", justify="center")
 
         table.add_row(
-            f"[cyan]{p_joueur_blanc}[/cyan]",
+            f"[cyan]{p_objet_joueur_blanc.nom_famille} {p_objet_joueur_blanc.prenom}[/cyan]",
             "[yellow]⚔️[/yellow]",
-            f"[cyan]{p_joueur_noir}[/cyan]",
+            f"[cyan]{p_objet_joueur_noir.nom_famille} {p_objet_joueur_noir.prenom}[/cyan]",
         )
 
         self.console.print(table)
@@ -128,7 +128,7 @@ class TourVue(Vue):
         self,
         p_objet_tournoi: Tournoi,
         p_dernier_tour: dict,
-        p_matchs: list
+        p_objets_matchs: list
     ) -> list[dict]:
         """
         Affiche les matchs en attente de saisie des résultats et recueille la saisie utilisateur du résultat.
@@ -153,9 +153,9 @@ class TourVue(Vue):
         s_dernier_tour_nom = p_dernier_tour["nom"]
         s_tournoi_nom = p_objet_tournoi.nom_tournoi
         l_resultats = []
-        for match in p_matchs:
+        for o_match in p_objets_matchs:
 
-            texte = (f"[bold cyan] Match N°{match.identifiant} : {match.joueur_blanc} ⚔️  {match.joueur_noir}\n"
+            texte = (f"[bold cyan] Match N°{o_match.identifiant} : {o_match.joueur_blanc.nom_famille} {o_match.joueur_blanc.prenom} ⚔️  {o_match.joueur_noir.nom_famille} {o_match.joueur_noir.prenom}\n"
                      f"du {s_dernier_tour_nom} du tournoi : {s_tournoi_nom}[/bold cyan]")
 
             self.console.print(Panel(texte, border_style="cyan", expand=False,))
@@ -165,8 +165,8 @@ class TourVue(Vue):
             table.add_column("🏆 Choix", style="bold yellow", justify="center")
             table.add_column("📋 Explication", style="bold white", justify="left")
 
-            table.add_row("[1]", f"Victoire de [cyan]{match.joueur_blanc}[/cyan]")
-            table.add_row("[2]", f"Victoire de [cyan]{match.joueur_noir}[/cyan]")
+            table.add_row("[1]", f"Victoire de [cyan]{o_match.joueur_blanc.nom_famille} {o_match.joueur_blanc.prenom}[/cyan]")
+            table.add_row("[2]", f"Victoire de [cyan]{o_match.joueur_noir.nom_famille} {o_match.joueur_noir.prenom}[/cyan]")
             table.add_row("[0]", "Match nul")
 
             self.console.print(table)
