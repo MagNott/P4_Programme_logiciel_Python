@@ -3,6 +3,7 @@ from rich.panel import Panel
 import questionary
 from models.tournoi import Tournoi
 from views.vue import Vue
+from models.joueur import Joueur
 
 
 class TourVue(Vue):
@@ -83,8 +84,8 @@ class TourVue(Vue):
         p_tournoi_choisi: str,
         p_numero_tour: int,
         p_identifiant_match: int,
-        p_objet_joueur_blanc: str,
-        p_objet_joueur_noir: str,
+        p_objet_joueur_blanc: Joueur,
+        p_objet_joueur_noir: Joueur,
     ) -> None:
         """
         Affiche les informations d'un match généré pour un tour donné.
