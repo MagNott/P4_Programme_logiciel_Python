@@ -117,6 +117,21 @@ class TournoiVue(Vue):
             f"\n [bold red] Le tournoi {p_nom_tournoi} a déjà commencé, il n'est pas possible d'y inscrire des joueurs !\n[/bold red]"
         )
 
+    def valider_nombre_joueurs(self, saisie):
+        """ Fonction qui vérifie si l'entrée est un nombre pair valide. """
+        if not saisie.isdigit():
+            return "Veuillez entrer un **nombre valide** (chiffres uniquement)."
+
+        nombre = int(saisie)
+
+        if nombre % 2 != 0:
+            return "Le nombre doit être **pair**."
+
+        if nombre < 2:
+            return "Il doit y avoir au **moins 2 joueurs**."
+
+        return True
+
     #
     def render_choix_joueur(
         self, p_liste_joueurs: List[dict], p_objet_tournoi: Tournoi
@@ -149,7 +164,11 @@ class TournoiVue(Vue):
 
         l_choix_joueur = []
 
-        for _ in range(4):
+        nombre_joueurs = questionary.text(
+                "Combien souahitez-vous inscrire de joueur à ce tournoi (nombres paires):", validate=self.valider_nombre_joueurs
+            ).ask()
+
+        for _ in range(int(nombre_joueurs)):
             joueur = questionary.select(
                 "Veuillez choisir un joueur parmi la liste :", choices=liste_choix
             ).ask()
