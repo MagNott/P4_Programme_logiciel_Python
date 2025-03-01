@@ -5,7 +5,6 @@ from models.match import Match
 import random
 from models.tournoi import Tournoi
 from itertools import combinations, cycle
-from icecream import ic
 
 
 class TourControleur:
@@ -97,7 +96,6 @@ class TourControleur:
         d_joueurs_tries = dict(
             sorted(d_scores_joueurs.items(), key=lambda item: item[1], reverse=True)
         )
-        ic(d_joueurs_tries)
 
         l_joueur_tries = list(d_joueurs_tries.keys())
         circular_list = cycle(l_joueur_tries)  # Crée une liste infinie
@@ -107,8 +105,6 @@ class TourControleur:
         for paire in paires_possibles:
             paires_possible_sets.append(frozenset(paire))
 
-        ic(paires_possibles)
-
         l_match_joues = []
         for o_tour in p_objet_tournoi_choisi.liste_tours:
             for o_match in o_tour.liste_matchs:
@@ -116,12 +112,14 @@ class TourControleur:
                 i_joueur_noir = o_match.joueur_noir.identifiant_tinydb
 
                 l_match_joues.append(frozenset([i_joueur_blanc, i_joueur_noir]))
-                paires_possible_sets.remove(frozenset([i_joueur_blanc, i_joueur_noir]))
+                if frozenset([i_joueur_blanc, i_joueur_noir]) in paires_possible_sets:
+                    paires_possible_sets.remove(
+                        frozenset([i_joueur_blanc, i_joueur_noir])
+                    )
 
         compteur = 0
         l_paires = []
         identifiant_match = 1
-        ic(l_joueur_tries)
 
         while len(paires_possible_sets) >= 1 and len(l_joueur_tries) > 0:
             i_joueur1 = next(circular_list)
@@ -156,44 +154,37 @@ class TourControleur:
                 # Si on ne trouve pas de paire, on évite la boucle infinie
                 compteur += 1
                 if compteur >= len(l_joueur_tries):
-                    print("Impossible de former de nouvelles paires. Fin de la boucle.")
                     break  # Condition de sortie
 
-        while len(paires_possible_sets) >= 1 and len(l_joueur_tries) > 1:
-            paire_trouvee = False  # Indique si on a trouvé une paire valide
+        # On utilise une copie pour ne pas modifier la liste en cours d'itération
+        joueurs_a_tester = l_joueur_tries[:]
 
-            # On parcourt les joueurs restants pour former des paires valides
-            for i in range(len(l_joueur_tries) - 1):
-                for j in range(i + 1, len(l_joueur_tries)):  # Toujours après `i`
-                    i_joueur1 = l_joueur_tries[i]
-                    i_joueur2 = l_joueur_tries[j]
 
-                    set_paire_courante = frozenset([i_joueur1, i_joueur2])
+        # On parcourt les joueurs restants pour former des paires valides
+        for i in range(len(l_joueur_tries) - 1):
+            for j in range(i + 1, len(l_joueur_tries)):  # Toujours après `i`
+                i_joueur1 = joueurs_a_tester[i]
+                i_joueur2 = joueurs_a_tester[j]
 
-                    # Vérifie si cette paire peut être jouée
-                    if set_paire_courante in paires_possible_sets:
-                        # Ajoute la paire et la retire des sets disponibles
-                        l_paires.append([i_joueur1, i_joueur2])
-                        paires_possible_sets.remove(set_paire_courante)
+                set_paire_courante = frozenset([i_joueur1, i_joueur2])
 
-                        # Supprime les joueurs appariés pour éviter de les réutiliser
-                        l_joueur_tries.remove(i_joueur1)
-                        l_joueur_tries.remove(i_joueur2)
+                # Vérifie si cette paire peut être jouée
+                if set_paire_courante in paires_possible_sets and i_joueur1 in l_joueur_tries and i_joueur2 in l_joueur_tries :
+                    # Ajoute la paire et la retire des sets disponibles
+                    l_paires.append([i_joueur1, i_joueur2])
+                    paires_possible_sets.remove(set_paire_courante)
 
-                        identifiant_match = self._gerer_match_tour(
-                            p_objet_tournoi_choisi,
-                            p_objet_tour,
-                            identifiant_match,
-                            i_joueur1,
-                            i_joueur2,
-                        )
+                    # Supprime les joueurs appariés pour éviter de les réutiliser
+                    l_joueur_tries.remove(i_joueur1)
+                    l_joueur_tries.remove(i_joueur2)
 
-                        # p_objet_tour.liste_matchs.append(o_nouveau_match)
-                        paire_trouvee = True
-                        break  # Sortir dès qu'une paire valide est trouvée
-
-                if paire_trouvee:
-                    break  # Sort de la boucle principale une fois une paire trouvée
+                    identifiant_match = self._gerer_match_tour(
+                        p_objet_tournoi_choisi,
+                        p_objet_tour,
+                        identifiant_match,
+                        i_joueur1,
+                        i_joueur2,
+                    )
 
         random.shuffle(l_joueur_tries)  # Mélange aléatoire
 
@@ -322,10 +313,6 @@ class TourControleur:
         l_objets_matchs = self.o_gestionnaire_persistance.recuperer_liste_objets_matchs(
             d_dernier_tour
         )
-
-        # for match in l_objets_matchs:
-        # match.joueur_blanc = f"{match.joueur_blanc.prenom} {match.joueur_blanc.nom_famille}"
-        # match.joueur_noir = f"{match.joueur_noir.prenom} {match.joueur_noir.nom_famille}"
 
         # Affiche les matchs et demande à l'utilisateur de saisir les résultats.
         l_resultats = self.o_tour_vue.render_matchs_pour_saisie(
