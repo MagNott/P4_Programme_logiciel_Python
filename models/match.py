@@ -26,4 +26,4 @@ class Match:
         self.score_blanc = p_score_blanc
         self.score_noir = p_score_noir
         self.statut = p_statut
-        self.nom_match = f"Match {p_identifiant} - {p_joueur_blanc} VS {p_joueur_noir}"
+        self.nom_match = f"Match {p_identifiant} - {p_joueur_blanc.identifiant_tinydb} VS {p_joueur_noir.identifiant_tinydb}"
