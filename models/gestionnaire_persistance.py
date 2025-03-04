@@ -404,10 +404,32 @@ class GestionnairePersistance:
             # Copier `data/` dans `sauvegarde/`
             shutil.copytree(dossier_source, dossier_sauvegarde_complet)
 
-            message = f"✅ Sauvegarde réussie dans : {dossier_sauvegarde_complet}"
+            message = f"\n ✅ Sauvegarde réussie dans : {dossier_sauvegarde_complet}\n "
             return message, "success"
 
         except Exception as e:
-            message = f"❌ Erreur lors de la sauvegarde : {e}"
+            message = f"\n ❌ Erreur lors de la sauvegarde : {e}\n "
             return message, "error"
+
+#
+    def restaurer_sauvegarde(self, p_nom_sauvegarde):
+        try:
+            dossier_projet = Path(__file__).parent.parent
+            dossier_source = dossier_projet / "data"
+            dossier_sauvegarde = dossier_projet / "sauvegarde" / p_nom_sauvegarde
+
+            if not dossier_sauvegarde.exists():
+                return "\n ❌ La sauvegarde choisie n'existe pas.\n ", "error"
+
+            # Supprimer `data/` s'il existe
+            if dossier_source.exists():
+                shutil.rmtree(dossier_source)
+
+            # Copier la sauvegarde dans `data/`
+            shutil.copytree(dossier_sauvegarde, dossier_source)
+
+            return f"\n ✅ Restauration réussie depuis : {p_nom_sauvegarde}\n ", "success"
+
+        except Exception as e:
+            return f"\n ❌ Erreur lors de la restauration : {e}\n ", "error"
 

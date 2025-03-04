@@ -1,6 +1,7 @@
 from controllers.joueur_controleur import JoueurControleur
 from controllers.tournoi_controleur import TournoiControleur
 from controllers.tour_controleur import TourControleur
+from controllers.sauvegarde_controleur import SauvegardeControleur
 from rich.console import Console
 from rich.panel import Panel
 import questionary
@@ -141,6 +142,7 @@ if __name__ == "__main__":
     joueur_controleur = JoueurControleur()
     tournoi_controleur = TournoiControleur()
     tour_controleur = TourControleur()
+    sauvegarde_controleur = SauvegardeControleur()
 
     # Pour réafficher systématiquement le menu tant que quitter n'est pas choisi
     while True:
@@ -185,9 +187,9 @@ if __name__ == "__main__":
             while True:
                 choix_donnees = menu_sauvergarder_charger()
                 if choix_donnees == MENU_SAUVEGARDER_DONNEES:
-                    tournoi_controleur.sauvegarder_donnees()
+                    sauvegarde_controleur.sauvegarder_donnees()
                 elif choix_donnees == MENU_CHARGER_DONNEES:
-                    tournoi_controleur.charger_donnees()
+                    sauvegarde_controleur.charger_donnees()
                 elif choix_donnees == RETOUR_MENU_PRINCIPAL:
                     break
         elif choix == MENU_QUITTER:
