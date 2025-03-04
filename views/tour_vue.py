@@ -112,9 +112,9 @@ class TourVue(Vue):
 
         # Création d’un tableau pour l’affichage des joueurs
         table = Table(show_header=True, header_style="bold magenta")
-        table.add_column("🔹 Joueur Blanc", style="bold white", justify="center")
+        table.add_column("⚪ Joueur Blanc", style="bold white", justify="center")
         table.add_column("VS", style="bold yellow", justify="center")
-        table.add_column("🔹 Joueur Noir", style="bold white", justify="center")
+        table.add_column("⚫  Joueur Noir", style="bold white", justify="center")
 
         table.add_row(
             f"[cyan]{p_objet_joueur_blanc.nom_famille} {p_objet_joueur_blanc.prenom}[/cyan]",

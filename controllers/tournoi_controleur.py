@@ -1,7 +1,6 @@
 from models.tournoi import Tournoi
 from models.gestionnaire_persistance import GestionnairePersistance
 from views.tournoi_vue import TournoiVue
-from tinydb import TinyDB
 import re
 
 
@@ -172,3 +171,4 @@ class TournoiControleur:
 
         # Affiche les informations détaillées du tournoi, y compris les joueurs inscrits àce tournoi.
         self.o_tournoi_vue.render_visualiser_tour_match_tournoi(o_tournoi)
+

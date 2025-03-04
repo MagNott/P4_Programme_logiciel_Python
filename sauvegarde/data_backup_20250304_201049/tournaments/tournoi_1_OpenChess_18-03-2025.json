@@ -1,0 +1,70 @@
+{
+    "_default": {
+        "1": {
+            "nom_tournoi": "OpenChess",
+            "lieu_tournoi": "Nice",
+            "date_debut_tournoi": "18-03-2025",
+            "date_fin_tournoi": "18-03-2025",
+            "nombre_tours": "4",
+            "description": "D\u00e9butant",
+            "liste_joueurs": {
+                "3": 0,
+                "4": 0,
+                "7": 1,
+                "8": 1
+            },
+            "liste_tours": [
+                {
+                    "identifiant": 1,
+                    "nom": "Round 1",
+                    "statut": "Termin\u00e9",
+                    "liste_matchs": [
+                        {
+                            "identifiant": 1,
+                            "nom_match": "Match 1 - 7 VS 4",
+                            "joueur_blanc": "7",
+                            "joueur_noir": "4",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 1,
+                            "score_noir": 0
+                        },
+                        {
+                            "identifiant": 2,
+                            "nom_match": "Match 2 - 3 VS 8",
+                            "joueur_blanc": "3",
+                            "joueur_noir": "8",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0,
+                            "score_noir": 1
+                        }
+                    ],
+                    "date_heure_debut": "2025-03-03 10:54:06",
+                    "date_heure_fin": "2025-03-03 10:56:37"
+                },
+                {
+                    "identifiant": 2,
+                    "nom": "Round 2",
+                    "statut": "En cours",
+                    "liste_matchs": [
+                        {
+                            "identifiant": 1,
+                            "nom_match": "Match 1 - 7 VS 8",
+                            "joueur_blanc": "7",
+                            "joueur_noir": "8",
+                            "statut": "En cours"
+                        },
+                        {
+                            "identifiant": 2,
+                            "nom_match": "Match 2 - 3 VS 4",
+                            "joueur_blanc": "3",
+                            "joueur_noir": "4",
+                            "statut": "En cours"
+                        }
+                    ],
+                    "date_heure_debut": "2025-03-03 11:05:22",
+                    "date_heure_fin": null
+                }
+            ]
+        }
+    }
+}
