@@ -172,3 +172,11 @@ class TournoiControleur:
 
         # Affiche les informations détaillées du tournoi, y compris les joueurs inscrits àce tournoi.
         self.o_tournoi_vue.render_visualiser_tour_match_tournoi(o_tournoi)
+
+#
+    def sauvegarder_donnees(self):
+
+        message, message_type = self.o_gestionnaire_persistance.effectuer_sauvegarde()
+        self.o_tournoi_vue.afficher_message(message, message_type)
+
+    # def charger_donnees():

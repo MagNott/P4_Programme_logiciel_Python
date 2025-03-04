@@ -338,3 +338,13 @@ class TournoiVue(Vue):
         }
 
         return d_infos_tournoi
+
+#
+    def afficher_message(self, message, message_type):
+
+        if message_type == "success":
+            self.console.print(message, style="bold green")
+        elif message_type == "error":
+            self.console.print(message, style="bold red")
+        else:
+            self.console.print(message)

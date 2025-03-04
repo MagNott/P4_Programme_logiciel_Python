@@ -20,6 +20,9 @@ MENU_VISUALISER_TOURNOI = "Visualiser un tournoi"
 MENU_CREER_TOUR = "Créer un tour"
 MENU_TERMINER_TOUR = "Terminer un tour"
 MENU_VISUALISER_TOUR_MATCH_TOURNOI = "Visualiser les tours et matchs d'un tournoi"
+MENU_SAUVEGARDER_CHARGER = "Sauvegarder ou charger les données"
+MENU_SAUVEGARDER_DONNEES = "Sauvegarder les données"
+MENU_CHARGER_DONNEES = "Charger les données"
 RETOUR_MENU_PRINCIPAL = "Retour au menu principal"
 MENU_QUITTER = "Quitter"
 
@@ -48,6 +51,7 @@ def menu_principal():
             MENU_GESTION_JOUEUR,
             MENU_GESTION_TOURNOI,
             MENU_GESTION_RAPPORTS,
+            MENU_SAUVEGARDER_CHARGER,
             MENU_QUITTER,
         ],
     ).ask()  # L’utilisateur choisit et la réponse est retournée
@@ -113,6 +117,21 @@ def menu_rapports():
     return choix_rapports
 
 
+def menu_sauvergarder_charger():
+    """
+
+    """
+    choix_donnees = questionary.select(
+        "Que souhaitez-vous faire ?",
+        choices=[
+            MENU_SAUVEGARDER_DONNEES,
+            MENU_CHARGER_DONNEES,
+            RETOUR_MENU_PRINCIPAL,
+        ],
+    ).ask()
+    return choix_donnees
+
+
 # Point d'entrée principal du programme
 # Ce code s'exécute uniquement si ce fichier est lancé directement (et non importé).
 # Il initialise les contrôleurs et lance la boucle du menu principal.
@@ -161,6 +180,15 @@ if __name__ == "__main__":
                 elif choix_rapports == MENU_VISUALISER_TOUR_MATCH_TOURNOI:
                     tournoi_controleur.visualiser_tour_match_tournoi()
                 elif choix_rapports == RETOUR_MENU_PRINCIPAL:
+                    break
+        elif choix == MENU_SAUVEGARDER_CHARGER:
+            while True:
+                choix_donnees = menu_sauvergarder_charger()
+                if choix_donnees == MENU_SAUVEGARDER_DONNEES:
+                    tournoi_controleur.sauvegarder_donnees()
+                elif choix_donnees == MENU_CHARGER_DONNEES:
+                    tournoi_controleur.charger_donnees()
+                elif choix_donnees == RETOUR_MENU_PRINCIPAL:
                     break
         elif choix == MENU_QUITTER:
             console.print(

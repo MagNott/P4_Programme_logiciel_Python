@@ -5,6 +5,8 @@ from models.tour import Tour
 from models.match import Match
 import os
 from datetime import datetime
+from pathlib import Path
+import shutil
 
 
 class GestionnairePersistance:
@@ -380,3 +382,32 @@ class GestionnairePersistance:
         d_scores = d_tournoi["liste_joueurs"]
 
         return d_scores
+
+    def effectuer_sauvegarde(self):
+
+        # Trouver le dossier où se trouve `main.py`
+        dossier_projet = Path(__file__).parent.parent  # Remonte d'un niveau pour aller à la racine du projet
+
+        dossier_source = dossier_projet / "data"
+        dossier_sauvegarde = dossier_projet / "sauvegarde"
+
+        try:
+            dossier_sauvegarde.mkdir(parents=True, exist_ok=True)  # Création du dossier
+            if not dossier_source.exists():
+                message = "❌ Le dossier `data/` n'existe pas, impossible de sauvegarder."
+                return message, "error"
+
+            # Générer un dossier unique pour la sauvegarde
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            dossier_sauvegarde_complet = dossier_sauvegarde / f"data_backup_{timestamp}"
+
+            # Copier `data/` dans `sauvegarde/`
+            shutil.copytree(dossier_source, dossier_sauvegarde_complet)
+
+            message = f"✅ Sauvegarde réussie dans : {dossier_sauvegarde_complet}"
+            return message, "success"
+
+        except Exception as e:
+            message = f"❌ Erreur lors de la sauvegarde : {e}"
+            return message, "error"
+
