@@ -82,7 +82,7 @@ class Vue:
             str: Identifiant du tournoi choisi par l'utilisateur, saisi via l'interface interactive.
         """
 
-        regex = r"tournoi_(\d+)_([^_]+)_(\d{2}-\d{2}-\d{4})\.json"
+        regex = r"tournoi_(\d+)_([^_]+)_(\d{1,2}-\d{1,2}-\d{4})\.json"
 
         liste_choix = []
         liste_tournoi_identifiant = {}

@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import re
 
 
@@ -54,19 +54,21 @@ class Tournoi:
 
         # Préparation de la regex pour extraire le numéro du tournoi à partir du nom du fichier
         regex = r"tournoi_(\d+)_.*\.json"
-        l_fichiers = os.listdir('data/tournaments')
+        dossier_tournois = Path("data/tournaments")
         identifiants = []
 
-        if not l_fichiers:
-            identifiant_a_attribuer = 1
-        else:
-            for fichier in l_fichiers:
-                id = re.search(regex, fichier)
+        # Liste les fichiers dans le dossier `data/tournaments`
+        o_iter_fichiers = dossier_tournois.iterdir()
+
+        for fichier in o_iter_fichiers:
+            if fichier.is_file():
+                id_tournoi = re.search(regex, fichier.name)
                 if id:
                     # group(1) récupère la partie capturée entre les parenthèses de la regex
-                    identifiants.append(int(id.group(1)))
+                    identifiants.append(int(id_tournoi.group(1)))
 
-            identifiant_maximum = max(identifiants)
-            identifiant_a_attribuer = identifiant_maximum + 1
-
-        return identifiant_a_attribuer
+        # return identifiant_a_attribuer
+        if not identifiants:
+            return 1  # Premier tournoi
+        else:
+            return max(identifiants) + 1  # Prochain ID disponible
