@@ -102,11 +102,20 @@ class TournoiVue(Vue):
 
         for i, o_tournoi in enumerate(p_liste_objets_tournois):
             couleur = couleurs_lignes[i % len(couleurs_lignes)]
+
+            # Reformater les dates pour forcer les 0 initiaux
+            date_debut = datetime.strptime(
+                o_tournoi.date_debut_tournoi, "%d-%m-%Y"
+            ).strftime("%d-%m-%Y")
+            date_fin = datetime.strptime(
+                o_tournoi.date_fin_tournoi, "%d-%m-%Y"
+            ).strftime("%d-%m-%Y")
+
             table.add_row(
                 f"[{couleur}]{o_tournoi.identifiant}[/{couleur}]",
                 f"[{couleur}]{o_tournoi.nom_tournoi}[/{couleur}]",
-                f"[{couleur}]{o_tournoi.date_debut_tournoi}[/{couleur}]",
-                f"[{couleur}]{o_tournoi.date_fin_tournoi}[/{couleur}]",
+                f"[{couleur}]{date_debut}[/{couleur}]",
+                f"[{couleur}]{date_fin}[/{couleur}]",
             )
 
         self.console.print(table)
@@ -118,7 +127,7 @@ class TournoiVue(Vue):
         )
 
     def valider_nombre_joueurs(self, saisie):
-        """ Fonction qui vérifie si l'entrée est un nombre pair valide. """
+        """Fonction qui vérifie si l'entrée est un nombre pair valide."""
         if not saisie.isdigit():
             return "Veuillez entrer un **nombre valide** (chiffres uniquement)."
 
@@ -165,8 +174,9 @@ class TournoiVue(Vue):
         l_choix_joueur = []
 
         nombre_joueurs = questionary.text(
-                "Combien souahitez-vous inscrire de joueur à ce tournoi (nombres paires):", validate=self.valider_nombre_joueurs
-            ).ask()
+            "Combien souahitez-vous inscrire de joueur à ce tournoi (nombres paires):",
+            validate=self.valider_nombre_joueurs,
+        ).ask()
 
         for _ in range(int(nombre_joueurs)):
             joueur = questionary.select(
@@ -225,7 +235,11 @@ class TournoiVue(Vue):
         table_tournoi.add_row("🔄 Nombre de tours", str(p_objet_tournoi.nombre_tours))
         table_tournoi.add_row(
             "📝 Description",
-            p_objet_tournoi.description if p_objet_tournoi.description else "Aucune description",
+            (
+                p_objet_tournoi.description
+                if p_objet_tournoi.description
+                else "Aucune description"
+            ),
         )
         table_tournoi.add_row("\n")
         table_tournoi.add_row("👥 Joueurs", "\n".join(joueur_alpha))
@@ -239,23 +253,41 @@ class TournoiVue(Vue):
         print(f"🏆 Déroulé du Tournoi {p_objet_tournoi.nom_tournoi}")
 
         for o_tour in p_objet_tournoi.liste_tours:
-            table_tour = Table(title=f"🔄 {o_tour.nom} ({o_tour.statut})", title_style="bold magenta", show_header=False,)
+            table_tour = Table(
+                title=f"🔄 {o_tour.nom} ({o_tour.statut})",
+                title_style="bold magenta",
+                show_header=False,
+            )
             table_tour.add_column("Détail", style="bold white", justify="left")
             table_tour.add_column("Valeur", style="bold cyan", justify="left")
 
-            table_tour.add_row("📅 Début", o_tour.date_heure_debut if o_tour.date_heure_debut else "Non renseigné")
-            table_tour.add_row("🗓️  Fin", o_tour.date_heure_fin if o_tour.date_heure_fin else "Non terminé")
+            table_tour.add_row(
+                "📅 Début",
+                o_tour.date_heure_debut if o_tour.date_heure_debut else "Non renseigné",
+            )
+            table_tour.add_row(
+                "🗓️  Fin",
+                o_tour.date_heure_fin if o_tour.date_heure_fin else "Non terminé",
+            )
 
             self.console.print(table_tour)
             self.console.print("\n")
 
             # 🎯 Tableau des matchs de ce tour
             table_matchs = Table(title="⚔️  Matchs du Tour", title_style="bold yellow")
-            table_matchs.add_column("🏳️  Joueur Blanc", justify="center", style="bold white")
-            table_matchs.add_column("⚖️  Score Blanc", justify="center", style="bold cyan")
+            table_matchs.add_column(
+                "🏳️  Joueur Blanc", justify="center", style="bold white"
+            )
+            table_matchs.add_column(
+                "⚖️  Score Blanc", justify="center", style="bold cyan"
+            )
             table_matchs.add_column("⚔️  VS", justify="center", style="bold red")
-            table_matchs.add_column("⚖️  Score Noir", justify="center", style="bold cyan")
-            table_matchs.add_column("🏴 Joueur Noir", justify="center", style="bold white")
+            table_matchs.add_column(
+                "⚖️  Score Noir", justify="center", style="bold cyan"
+            )
+            table_matchs.add_column(
+                "🏴 Joueur Noir", justify="center", style="bold white"
+            )
             table_matchs.add_column("📌 Statut", justify="center", style="bold green")
 
             for o_match in o_tour.liste_matchs:
@@ -264,8 +296,7 @@ class TournoiVue(Vue):
                     str(o_match.score_blanc),
                     "🆚",
                     str(o_match.score_noir),
-                    f"{o_match.joueur_noir.nom_famille} {o_match.joueur_noir.prenom}"
-                    ,
+                    f"{o_match.joueur_noir.nom_famille} {o_match.joueur_noir.prenom}",
                     o_match.statut,
                 )
 

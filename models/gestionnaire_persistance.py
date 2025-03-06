@@ -3,7 +3,6 @@ from models.tournoi import Tournoi
 from models.joueur import Joueur
 from models.tour import Tour
 from models.match import Match
-import os
 from datetime import datetime
 from pathlib import Path
 import shutil
@@ -16,6 +15,20 @@ class GestionnairePersistance:
         """Initialise le gestionnaire de persistance en ouvrant la base de données des joueurs."""
         self.db_joueurs = TinyDB("data/players/joueurs_db.json")
 
+        """Initialise les chemins des fichiers"""
+        self.dossier_projet = Path(__file__).parent.parent  # Racine du projet
+        self.dossier_source = self.dossier_projet / "data"  # Dossier principal des données
+        self.dossier_tournois = self.dossier_source / "tournaments"
+        self.dossier_joueurs = self.dossier_source / "players"
+        self.dossier_sauvegarde = self.dossier_projet / "sauvegarde"
+
+        # S'assure que les dossiers existent
+        self.dossier_source.mkdir(parents=True, exist_ok=True)
+        self.dossier_tournois.mkdir(parents=True, exist_ok=True)
+        self.dossier_joueurs.mkdir(parents=True, exist_ok=True)
+        self.dossier_sauvegarde.mkdir(parents=True, exist_ok=True)
+
+#
     # SAUVEGARDE ET CHARGEMENT DES JOUEURS
 
     def sauvegarder_joueur(self, p_joueur_modele: Joueur) -> None:
@@ -57,9 +70,9 @@ class GestionnairePersistance:
                     **joueur,  # Les autres données du joueur
                 }
             )
-
         return joueurs_avec_ids
 
+#
     def recuperer_objet_joueur(self, p_identifiant_joueur: str) -> Joueur:
 
         d_joueurs = self.db_joueurs.get(
@@ -74,7 +87,6 @@ class GestionnairePersistance:
             p_identifiant_tinydb=p_identifiant_joueur,
             p_score=d_joueurs["score"],
         )
-
         return o_joueur
 
     #
@@ -90,6 +102,7 @@ class GestionnairePersistance:
             # Mettre à jour le score du joueur dans TinyDB
             self.db_joueurs.update({"score": score_final}, doc_ids=[int(p_id_tinydb)])
 
+#
     # SAUVEGARDE ET CHARGEMENT DES TOURNOIS
 
     def sauvegarder_tournoi(self, p_tournoi_modele: Tournoi) -> None:
@@ -108,9 +121,11 @@ class GestionnairePersistance:
             "liste_joueurs": p_tournoi_modele.liste_joueurs,
             "liste_tours": p_tournoi_modele.liste_tours,
         }
-        self.db_tournois = TinyDB(
-            f"data/tournaments/tournoi_{p_tournoi_modele.identifiant}_{p_tournoi_modele.nom_tournoi}_{p_tournoi_modele.date_debut_tournoi}.json"
-        )
+
+        # Utilisation de `self.dossier_tournois` défini dans __init__()
+        fichier_tournoi = self.dossier_tournois / f"tournoi_{p_tournoi_modele.identifiant}_{p_tournoi_modele.nom_tournoi}_{p_tournoi_modele.date_debut_tournoi}.json"
+
+        self.db_tournois = TinyDB(str(fichier_tournoi))
         self.db_tournois.insert(d_donnees_tournoi)
 
     #
@@ -126,19 +141,8 @@ class GestionnairePersistance:
         self.db_tournois = TinyDB(
             f"data/tournaments/tournoi_{p_tournoi_modele.identifiant}_{p_tournoi_modele.nom_tournoi}_{p_tournoi_modele.date_debut_tournoi}.json"
         )
+
         self.db_tournois.update(d_liste_joueurs_db_tournoi, doc_ids=[int(1)])
-
-#
-    def trouver_fichier_par_identifiant(self, p_identifiant_tournoi):
-        """Retourne la liste des fichiers commençant par un certain préfixe dans un dossier donné."""
-
-        fichiers = os.listdir("data/tournaments")  # Liste tous les fichiers du dossier
-
-        for fichier in fichiers:  # Boucle sur chaque fichier
-            if fichier.startswith(
-                f"tournoi_{p_identifiant_tournoi}_"
-            ):  # Vérifie si le fichier commence par le préfixe
-                return f"data/tournaments/{fichier}"
 
     #
     def recuperer_objet_tournoi(self, p_identifiant_tournoi: str) -> Tournoi:
@@ -151,7 +155,7 @@ class GestionnairePersistance:
             Tournoi: L'objet Tournoi correspondant.
         """
 
-        fichier_tournoi = self.trouver_fichier_par_identifiant(p_identifiant_tournoi)
+        fichier_tournoi = self._trouver_fichier_par_identifiant(p_identifiant_tournoi)
 
         self.db_tournois = TinyDB(fichier_tournoi)
 
@@ -208,25 +212,27 @@ class GestionnairePersistance:
         Returns:
             list[str]: Liste des noms de fichiers de tournois présents dans le dossier 'data/tournaments'.
         """
-        chemin_dossier = "data/tournaments"
+        # chemin_dossier = "data/tournaments"
         fichiers_tournois = []
 
-        for tournoi in os.listdir(chemin_dossier):
-            fichiers_tournois.append(tournoi)
+        for tournoi in sorted(self.dossier_tournois.iterdir()):
+            if tournoi.is_file():
+                fichiers_tournois.append(tournoi.name)
 
         return fichiers_tournois
 
     #
-    def enregistrer_tour_tournoi(self, p_objet_tour: Tour, p_objet_tournoi: Tournoi) -> None:
+    def enregistrer_tour_tournoi(
+        self, p_objet_tour: Tour, p_objet_tournoi: Tournoi
+    ) -> None:
         """Ajoute un tour à un tournoi existant dans TinyDB.
 
         Args:
             p_tour (Tour): L'objet Tour à ajouter.
             p_tournoi (Tournoi): L'objet Tournoi dans lequel ajouter le tour.
         """
-        self.db_tournois = TinyDB(
-            f"data/tournaments/tournoi_{p_objet_tournoi.identifiant}_{p_objet_tournoi.nom_tournoi}_{p_objet_tournoi.date_debut_tournoi}.json"
-        )
+        fichierTournoi = self.dossier_tournois / f"tournoi_{p_objet_tournoi.identifiant}_{p_objet_tournoi.nom_tournoi}_{p_objet_tournoi.date_debut_tournoi}.json"
+        self.db_tournois = TinyDB(str(fichierTournoi))
 
         # Charge les données actuelles du tournoi
         d_tournoi = self.db_tournois.all()[0]
@@ -275,7 +281,7 @@ class GestionnairePersistance:
             dict: Un dictionnaire contenant les informations du dernier tour du tournoi.
         """
 
-        fichier_tournoi = self.trouver_fichier_par_identifiant(p_identifiant_tournoi)
+        fichier_tournoi = self._trouver_fichier_par_identifiant(p_identifiant_tournoi)
 
         self.db_tournois = TinyDB(fichier_tournoi)
 
@@ -331,7 +337,7 @@ class GestionnairePersistance:
             None: Met à jour la base de données, mais ne retourne pas de valeur.
         """
 
-        fichier_tournoi = self.trouver_fichier_par_identifiant(p_identifiant_tournoi)
+        fichier_tournoi = self._trouver_fichier_par_identifiant(p_identifiant_tournoi)
 
         self.db_tournois = TinyDB(fichier_tournoi)
 
@@ -360,8 +366,12 @@ class GestionnairePersistance:
                 d_liste_match["joueur_noir"], d_resultat["score_noir"]
             )
 
-            d_tournoi["liste_joueurs"][d_liste_match["joueur_blanc"]] += d_resultat["score_blanc"]
-            d_tournoi["liste_joueurs"][d_liste_match["joueur_noir"]] += d_resultat["score_noir"]
+            d_tournoi["liste_joueurs"][d_liste_match["joueur_blanc"]] += d_resultat[
+                "score_blanc"
+            ]
+            d_tournoi["liste_joueurs"][d_liste_match["joueur_noir"]] += d_resultat[
+                "score_noir"
+            ]
 
         # Marque le tour comme "Terminé" et enregistre l'heure de fin.
         d_tournoi["liste_tours"][-1]["statut"] = "Terminé"
@@ -372,10 +382,10 @@ class GestionnairePersistance:
         # Sauvegarde les modifications dans TinyDB.
         self.db_tournois.update(d_tournoi, doc_ids=[1])
 
-#
+    #
     def recuepere_score_joueurs(self, p_identifiant_tournoi):
 
-        fichier_tournoi = self.trouver_fichier_par_identifiant(p_identifiant_tournoi)
+        fichier_tournoi = self._trouver_fichier_par_identifiant(p_identifiant_tournoi)
         self.db_tournois = TinyDB(fichier_tournoi)
         d_tournoi = self.db_tournois.all()[0]
 
@@ -384,52 +394,60 @@ class GestionnairePersistance:
         return d_scores
 
     def effectuer_sauvegarde(self):
-
-        # Trouver le dossier où se trouve `main.py`
-        dossier_projet = Path(__file__).parent.parent  # Remonte d'un niveau pour aller à la racine du projet
-
-        dossier_source = dossier_projet / "data"
-        dossier_sauvegarde = dossier_projet / "sauvegarde"
-
         try:
-            dossier_sauvegarde.mkdir(parents=True, exist_ok=True)  # Création du dossier
-            if not dossier_source.exists():
-                message = "❌ Le dossier `data/` n'existe pas, impossible de sauvegarder."
+            if not self.dossier_source.exists():
+                message = (
+                    "❌ Le dossier `data/` n'existe pas, impossible de sauvegarder."
+                )
                 return message, "error"
 
             # Générer un dossier unique pour la sauvegarde
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            dossier_sauvegarde_complet = dossier_sauvegarde / f"data_backup_{timestamp}"
+            dossier_sauvegarde_unique = self.dossier_sauvegarde / f"data_backup_{timestamp}"
 
             # Copier `data/` dans `sauvegarde/`
-            shutil.copytree(dossier_source, dossier_sauvegarde_complet)
+            shutil.copytree(self.dossier_source, dossier_sauvegarde_unique)
 
-            message = f"\n ✅ Sauvegarde réussie dans : {dossier_sauvegarde_complet}\n "
+            message = f"\n ✅ Sauvegarde réussie dans : {dossier_sauvegarde_unique }\n "
             return message, "success"
 
         except Exception as e:
             message = f"\n ❌ Erreur lors de la sauvegarde : {e}\n "
             return message, "error"
 
-#
+    #
     def restaurer_sauvegarde(self, p_nom_sauvegarde):
         try:
-            dossier_projet = Path(__file__).parent.parent
-            dossier_source = dossier_projet / "data"
-            dossier_sauvegarde = dossier_projet / "sauvegarde" / p_nom_sauvegarde
+            dossier_sauvegarde_cible = self.dossier_sauvegarde / p_nom_sauvegarde
 
-            if not dossier_sauvegarde.exists():
+            if not dossier_sauvegarde_cible.exists():
                 return "\n ❌ La sauvegarde choisie n'existe pas.\n ", "error"
 
             # Supprimer `data/` s'il existe
-            if dossier_source.exists():
-                shutil.rmtree(dossier_source)
+            if self.dossier_source.exists():
+                shutil.rmtree(self.dossier_source)
 
             # Copier la sauvegarde dans `data/`
-            shutil.copytree(dossier_sauvegarde, dossier_source)
+            shutil.copytree(dossier_sauvegarde_cible, self.dossier_source)
 
-            return f"\n ✅ Restauration réussie depuis : {p_nom_sauvegarde}\n ", "success"
+            return (
+                f"\n ✅ Restauration réussie depuis : {p_nom_sauvegarde}\n ",
+                "success",
+            )
 
         except Exception as e:
             return f"\n ❌ Erreur lors de la restauration : {e}\n ", "error"
 
+    # METHODES PRIVEES
+    #
+    def _trouver_fichier_par_identifiant(self, p_identifiant_tournoi):
+        """Retourne la liste des fichiers commençant par un certain préfixe dans un dossier donné."""
+
+        for fichier in self.dossier_tournois.iterdir():
+            if fichier.is_file() and fichier.name.startswith(
+                f"tournoi_{p_identifiant_tournoi}_"
+            ):
+                return str(fichier)
+
+        # Explicite le retour si aucun fichier n'est trouvé
+        return None
