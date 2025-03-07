@@ -11,13 +11,37 @@ import shutil
 class GestionnairePersistance:
     """Gère la persistance des données des joueurs et des tournois avec TinyDB."""
 
+    """
+    Gère la persistance des données des joueurs et des tournois avec TinyDB.
+
+    Cette classe permet d'enregistrer, de charger et de gérer les données
+    des joueurs et des tournois dans des fichiers JSON. Elle assure également
+    la création et la gestion des dossiers de stockage.
+    """
+
     def __init__(self):
-        """Initialise le gestionnaire de persistance en ouvrant la base de données des joueurs."""
+        """
+        Initialise le gestionnaire de persistance et crée les dossiers nécessaires.
+
+        Cette méthode initialise la base de données des joueurs et configure les
+        chemins des dossiers de stockage pour les tournois, les joueurs et les sauvegardes.
+        Si les dossiers n'existent pas, ils sont créés automatiquement.
+
+        Attributs créés:
+            db_joueurs (TinyDB): Base de données TinyDB stockant les informations des joueurs.
+            dossier_projet (Path): Chemin racine du projet.
+            dossier_source (Path): Dossier contenant toutes les données du projet.
+            dossier_tournois (Path): Dossier dédié au stockage des fichiers des tournois.
+            dossier_joueurs (Path): Dossier dédié au stockage des fichiers des joueurs.
+            dossier_sauvegarde (Path): Dossier utilisé pour stocker les sauvegardes.
+        """
         self.db_joueurs = TinyDB("data/players/joueurs_db.json")
 
         """Initialise les chemins des fichiers"""
         self.dossier_projet = Path(__file__).parent.parent  # Racine du projet
-        self.dossier_source = self.dossier_projet / "data"  # Dossier principal des données
+        self.dossier_source = (
+            self.dossier_projet / "data"
+        )  # Dossier principal des données
         self.dossier_tournois = self.dossier_source / "tournaments"
         self.dossier_joueurs = self.dossier_source / "players"
         self.dossier_sauvegarde = self.dossier_projet / "sauvegarde"
@@ -28,15 +52,23 @@ class GestionnairePersistance:
         self.dossier_joueurs.mkdir(parents=True, exist_ok=True)
         self.dossier_sauvegarde.mkdir(parents=True, exist_ok=True)
 
-#
+    #
     # SAUVEGARDE ET CHARGEMENT DES JOUEURS
 
     def sauvegarder_joueur(self, p_joueur_modele: Joueur) -> None:
-        """Enregistre un joueur dans la base de données JSON.
+        """
+        Enregistre un joueur dans la base de données JSON avec TinyDB.
+
+        Cette fonction extrait les informations du joueur depuis l'objet `Joueur`
+        et les insère dans la base de données `joueurs_db.json`.
 
         Args:
-            p_joueur_modele (Joueur): Instance de la classe Joueur contenant les informations du joueur.
+            p_joueur_modele (Joueur): Instance de la classe `Joueur` contenant les informations du joueur.
+
+        Returns:
+            None: Met à jour la base de données mais ne retourne pas de valeur.
         """
+
         d_donnees_joueur = {
             "identifiant_national_echec": p_joueur_modele.identifiant_national_echec,
             "nom_famille": p_joueur_modele.nom_famille,
@@ -47,16 +79,17 @@ class GestionnairePersistance:
         self.db_joueurs.insert(d_donnees_joueur)
 
     #
-    def charger_joueurs(self) -> list[dict[str, str | int]]:
-        """Charge tous les joueurs depuis la base de données TinyDB.
+    def charger_joueurs(self) -> list[dict]:
+        """Charge tous les joueurs depuis la base de données TinyDB et
+        les retourne sous forme de liste de dictionnaire.
 
         Récupère les joueurs stockés dans la table `_default` de TinyDB,
         ajoute leur `doc_id` (ID interne TinyDB), et retourne une liste de dictionnaires
         contenant ces informations.
 
         Returns:
-            list[dict[str, str | int]]: Une liste de dictionnaires où chaque dictionnaire
-            représente un joueur avec son ID TinyDB et ses informations personnelles.
+            list[dict]: Une liste de dictionnaires où chaque dictionnaire
+                        représente un joueur avec son ID TinyDB et ses informations personnelles.
         """
         joueurs = self.db_joueurs.table("_default").all()
         joueurs_avec_ids = []
@@ -72,8 +105,21 @@ class GestionnairePersistance:
             )
         return joueurs_avec_ids
 
-#
+    #
     def recuperer_objet_joueur(self, p_identifiant_joueur: str) -> Joueur:
+        """
+        Récupère un joueur sous forme d'objet `Joueur` à partir du fichier JSON Joueur.
+
+        Cette fonction recherche un joueur dans la base de données en fonction de son
+        identifiant TinyDB, puis reconstruit un objet `Joueur` à partir des informations
+        trouvées.
+
+        Args:
+            p_identifiant_joueur (str): Identifiant du joueur dans la base de données TinyDB.
+
+        Returns:
+            Joueur: L'objet `Joueur` correspondant aux données stockées.
+        """
 
         d_joueurs = self.db_joueurs.get(
             doc_id=int(p_identifiant_joueur)
@@ -90,27 +136,22 @@ class GestionnairePersistance:
         return o_joueur
 
     #
-    def mettre_a_jour_joueur(self, p_id_tinydb, p_score_gagne):
-
-        # Vérifier si le joueur existe dans TinyDB
-        joueur_trouve = self.db_joueurs.get(doc_id=p_id_tinydb)
-
-        if joueur_trouve:
-            # Ajouter le score au total existant
-            score_final = joueur_trouve["score"] + p_score_gagne
-
-            # Mettre à jour le score du joueur dans TinyDB
-            self.db_joueurs.update({"score": score_final}, doc_ids=[int(p_id_tinydb)])
-
-#
     # SAUVEGARDE ET CHARGEMENT DES TOURNOIS
 
     def sauvegarder_tournoi(self, p_tournoi_modele: Tournoi) -> None:
-        """Sauvegarde un tournoi dans un fichier JSON spécifique.
+        """
+        Sauvegarde un tournoi dans un fichier JSON spécifique.
+
+        Cette fonction stocke toutes les informations du tournoi dans un fichier
+        JSON unique sous `data/tournaments/`.
 
         Args:
-            p_tournoi_modele (Tournoi): Objet contenant les informations du tournoi.
+            p_tournoi_modele (Tournoi): Objet `Tournoi` contenant les informations du tournoi.
+
+        Returns:
+            None: Met à jour la base de données mais ne retourne pas de valeur.
         """
+
         d_donnees_tournoi = {
             "nom_tournoi": p_tournoi_modele.nom_tournoi,
             "lieu_tournoi": p_tournoi_modele.lieu_tournoi,
@@ -122,24 +163,45 @@ class GestionnairePersistance:
             "liste_tours": p_tournoi_modele.liste_tours,
         }
 
-        # Utilisation de `self.dossier_tournois` défini dans __init__()
-        fichier_tournoi = self.dossier_tournois / f"tournoi_{p_tournoi_modele.identifiant}_{p_tournoi_modele.nom_tournoi}_{p_tournoi_modele.date_debut_tournoi}.json"
+        # Utilisation de variables intermédiaire pour réduire la taille de la fstring
+        identifiant = p_tournoi_modele.identifiant
+        nom = p_tournoi_modele.nom_tournoi
+        date_debut = p_tournoi_modele.date_debut_tournoi
+
+        fichier_tournoi = (
+            self.dossier_tournois / f"tournoi_{identifiant}_{nom}_{date_debut}.json"
+        )
 
         self.db_tournois = TinyDB(str(fichier_tournoi))
         self.db_tournois.insert(d_donnees_tournoi)
 
     #
     def sauvegarder_joueurs_tournoi(self, p_tournoi_modele: Tournoi) -> None:
-        """Sauvegarde la liste des joueurs associés à un tournoi.
+        """
+        Sauvegarde la liste des joueurs associés à un tournoi dans le fichier JSON du tournoi.
+
+        Cette fonction met à jour le fichier JSON du tournoi en ajoutant ou modifiant
+        la liste des joueurs inscrits.
 
         Args:
-            p_tournoi_modele (Tournoi): Objet contenant les informations du tournoi et la liste des joueurs.
+            p_tournoi_modele (Tournoi): Objet `Tournoi` contenant les informations du tournoi
+                                        et la liste des joueurs.
+
+        Returns:
+            None: Met à jour le fichier du tournoi mais ne retourne pas de valeur.
         """
+
         d_liste_joueurs_db_tournoi = {
             "liste_joueurs": p_tournoi_modele.liste_joueurs,
         }
+
+        # Utilisation de variables intermédiaire pour réduire la taille de la fstring
+        identifiant = p_tournoi_modele.identifiant
+        nom = p_tournoi_modele.nom_tournoi
+        date_debut = p_tournoi_modele.date_debut_tournoi
+
         self.db_tournois = TinyDB(
-            f"data/tournaments/tournoi_{p_tournoi_modele.identifiant}_{p_tournoi_modele.nom_tournoi}_{p_tournoi_modele.date_debut_tournoi}.json"
+            f"data/tournaments/tournoi_{identifiant}_{nom}_{date_debut}.json"
         )
 
         self.db_tournois.update(d_liste_joueurs_db_tournoi, doc_ids=[int(1)])
@@ -147,12 +209,14 @@ class GestionnairePersistance:
     #
     def recuperer_objet_tournoi(self, p_identifiant_tournoi: str) -> Tournoi:
         """Récupère un tournoi sous forme d'objet Tournoi à partir de TinyDB.
+        Cette fonction charge les informations du tournoi depuis son fichier JSON,
+        reconstruit un objet `Tournoi` et y associe les objets `Tour`, `Match` et `Joueur`.
 
         Args:
-            p_identifiant_tournoi (str): L'identifiant du tournoi.
+            p_identifiant_tournoi (str): L'identifiant du tournoi à recupérer.
 
         Returns:
-            Tournoi: L'objet Tournoi correspondant.
+            Tournoi: L'objet Tournoi recontruit avec tous ses tours et ses matchs associés.
         """
 
         fichier_tournoi = self._trouver_fichier_par_identifiant(p_identifiant_tournoi)
@@ -225,13 +289,25 @@ class GestionnairePersistance:
     def enregistrer_tour_tournoi(
         self, p_objet_tour: Tour, p_objet_tournoi: Tournoi
     ) -> None:
-        """Ajoute un tour à un tournoi existant dans TinyDB.
+        """Ajoute un tour à un tournoi existant et met à jour le fichier JSON.
 
         Args:
-            p_tour (Tour): L'objet Tour à ajouter.
-            p_tournoi (Tournoi): L'objet Tournoi dans lequel ajouter le tour.
+            p_objet_tour (Tour): L'objet Tour à ajouter.
+            p_objet_tournoi (Tournoi): L'objet Tournoi dans lequel ajouter le tour.
+
+        Returns:
+            None: Met à jour le fichier JSON mais ne retourne pas de valeur.
         """
-        fichierTournoi = self.dossier_tournois / f"tournoi_{p_objet_tournoi.identifiant}_{p_objet_tournoi.nom_tournoi}_{p_objet_tournoi.date_debut_tournoi}.json"
+
+        # Utilisation de variables intermédiaire pour réduire la taille de la fstring
+        identifiant = p_objet_tournoi.identifiant
+        nom = p_objet_tournoi.nom_tournoi
+        date_debut = p_objet_tournoi.date_debut_tournoi
+
+        fichierTournoi = (
+            self.dossier_tournois
+            / f"tournoi_{identifiant}_{nom}_{date_debut}.json"
+        )
         self.db_tournois = TinyDB(str(fichierTournoi))
 
         # Charge les données actuelles du tournoi
@@ -272,21 +348,20 @@ class GestionnairePersistance:
     #
     def recuperer_dernier_tour(self, p_identifiant_tournoi: str) -> dict:
         """
-        Récupère le dernier tour d'un tournoi à partir de la base de données.
+        Récupère le dernier tour d'un tournoi à partir de son fichier JSON.
 
         Args:
             p_identifiant_tournoi (str): L'identifiant du tournoi dont on veut récupérer le dernier tour.
 
         Returns:
-            dict: Un dictionnaire contenant les informations du dernier tour du tournoi.
+            dict: Un dictionnaire contenant les informations du dernier tour du tournoi
+                  y compris la liste des matchs joués.
         """
 
         fichier_tournoi = self._trouver_fichier_par_identifiant(p_identifiant_tournoi)
-
         self.db_tournois = TinyDB(fichier_tournoi)
 
         d_tournoi = self.db_tournois.all()[0]
-
         d_dernier_tour = d_tournoi.get("liste_tours")[-1]
 
         return d_dernier_tour
@@ -303,7 +378,7 @@ class GestionnairePersistance:
         Returns:
             list[Match]: Une liste d'objets Match reconstitués à partir des données du dernier tour.
         """
-        l_objects_matchs = []
+        l_objets_matchs = []
 
         for d_match in p_dernier_tour.get("liste_matchs", []):
             # Création de l'objet Match
@@ -315,12 +390,15 @@ class GestionnairePersistance:
                 p_score_noir=d_match.get("score_noir", 0),
                 p_statut=d_match["statut"],
             )
-            l_objects_matchs.append(o_match)
+            l_objets_matchs.append(o_match)
+            print(o_match)
 
-        return l_objects_matchs
+        return l_objets_matchs
 
     #
-    def enregistrer_resultat_match(self, p_resultats, p_identifiant_tournoi):
+    def enregistrer_resultat_match(
+        self, p_resultats: list[dict], p_identifiant_tournoi: str
+    ) -> None:
         """
         Enregistre les résultats des matchs d'un tour et met à jour les scores des joueurs.
 
@@ -330,7 +408,7 @@ class GestionnairePersistance:
 
         Args:
             p_resultats (list[dict]): Liste des résultats des matchs sous forme de dictionnaires,
-                                    contenant `score_blanc`, `score_noir`, et `statut`.
+                                    contenant `score_blanc` (float), `score_noir` (float), et `statut` (str).
             p_identifiant_tournoi (str): Identifiant unique du tournoi concerné.
 
         Returns:
@@ -359,10 +437,10 @@ class GestionnairePersistance:
             d_tournoi["liste_tours"][-1]["liste_matchs"][i] = d_nouvelle_liste_match
 
             # Met à jour les scores des joueurs dans la base de données.
-            self.mettre_a_jour_joueur(
+            self._mettre_a_jour_joueur(
                 d_liste_match["joueur_blanc"], d_resultat["score_blanc"]
             )
-            self.mettre_a_jour_joueur(
+            self._mettre_a_jour_joueur(
                 d_liste_match["joueur_noir"], d_resultat["score_noir"]
             )
 
@@ -383,7 +461,20 @@ class GestionnairePersistance:
         self.db_tournois.update(d_tournoi, doc_ids=[1])
 
     #
-    def recuepere_score_joueurs(self, p_identifiant_tournoi):
+    def recuepere_score_joueurs(self, p_identifiant_tournoi: str) -> dict:
+        """
+        Récupère les scores des joueurs d'un tournoi donné.
+
+        Cette fonction recherche le fichier du tournoi correspondant à l'identifiant fourni,
+        charge les données du tournoi depuis TinyDB et extrait les scores des joueurs.
+
+        Args:
+            p_identifiant_tournoi (str): Identifiant du tournoi dont on veut récupérer les scores.
+
+        Returns:
+            dict: Un dictionnaire contenant les scores des joueurs,
+                  où la clé est l'identifiant du joueur et la valeur est son score.
+        """
 
         fichier_tournoi = self._trouver_fichier_par_identifiant(p_identifiant_tournoi)
         self.db_tournois = TinyDB(fichier_tournoi)
@@ -393,7 +484,21 @@ class GestionnairePersistance:
 
         return d_scores
 
-    def effectuer_sauvegarde(self):
+    #
+    def effectuer_sauvegarde(self) -> tuple:
+        """
+        Effectue une sauvegarde complète des données du projet.
+
+        Cette fonction copie le dossier `data/` dans un dossier de sauvegarde unique
+        nommé `data_backup_YYYYMMDD_HHMMSS` sous `sauvegarde/`. Elle vérifie également
+        l'existence du dossier `data/` avant de procéder.
+
+        Returns:
+            tuple:
+                - Un message de succès ou d'erreur.
+                - Une chaîne "success" si la sauvegarde réussit, sinon "error".
+        """
+
         try:
             if not self.dossier_source.exists():
                 message = (
@@ -403,7 +508,9 @@ class GestionnairePersistance:
 
             # Générer un dossier unique pour la sauvegarde
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            dossier_sauvegarde_unique = self.dossier_sauvegarde / f"data_backup_{timestamp}"
+            dossier_sauvegarde_unique = (
+                self.dossier_sauvegarde / f"data_backup_{timestamp}"
+            )
 
             # Copier `data/` dans `sauvegarde/`
             shutil.copytree(self.dossier_source, dossier_sauvegarde_unique)
@@ -416,7 +523,22 @@ class GestionnairePersistance:
             return message, "error"
 
     #
-    def restaurer_sauvegarde(self, p_nom_sauvegarde):
+    def restaurer_sauvegarde(self, p_nom_sauvegarde: str) -> tuple:
+        """
+        Restaure une sauvegarde précédemment créée.
+
+        Cette fonction remplace le dossier `data/` actuel par une sauvegarde choisie.
+        Si le dossier de sauvegarde n'existe pas, elle retourne un message d'erreur.
+
+        Args:
+            p_nom_sauvegarde (str): Nom du dossier de sauvegarde à restaurer.
+
+        Returns:
+            tuple:
+                - Un message de succès ou d'erreur.
+                - Une chaîne "success" si la restauration réussit, sinon "error".
+        """
+
         try:
             dossier_sauvegarde_cible = self.dossier_sauvegarde / p_nom_sauvegarde
 
@@ -438,10 +560,25 @@ class GestionnairePersistance:
         except Exception as e:
             return f"\n ❌ Erreur lors de la restauration : {e}\n ", "error"
 
+    #
     # METHODES PRIVEES
     #
-    def _trouver_fichier_par_identifiant(self, p_identifiant_tournoi):
-        """Retourne la liste des fichiers commençant par un certain préfixe dans un dossier donné."""
+    def _trouver_fichier_par_identifiant(
+        self, p_identifiant_tournoi: str
+    ) -> str | None:
+        """
+        Recherche un fichier tournoi correspondant à l'identifiant fourni.
+
+        Cette fonction parcourt le dossier des tournois et cherche un fichier
+        dont le nom commence par "tournoi_{p_identifiant_tournoi}_".
+        Si un fichier correspondant est trouvé, son chemin est retourné sous forme de chaîne de caractère.
+
+        Args:
+            p_identifiant_tournoi (str): Identifiant unique du tournoi à rechercher.
+
+        Returns:
+            str | None: Le chemin du fichier tournoi trouvé, ou None si aucun fichier correspondant n'est trouvé.
+        """
 
         for fichier in self.dossier_tournois.iterdir():
             if fichier.is_file() and fichier.name.startswith(
@@ -451,3 +588,28 @@ class GestionnairePersistance:
 
         # Explicite le retour si aucun fichier n'est trouvé
         return None
+
+    #
+    def _mettre_a_jour_joueur(self, p_id_tinydb: int, p_score_gagne: float) -> None:
+        """
+        Met à jour le score d'un joueur dans dans le fichier JSON Joueur.
+
+        Cette fonction récupère un joueur en fonction de son identifiant dans TinyDB,
+        ajoute le score gagné à son score actuel, et met à jour la base de données.
+
+        Args:
+            p_id_tinydb (int): Identifiant du joueur dans la base de données TinyDB.
+            p_score_gagne (float): Nombre de points à ajouter au score du joueur.
+
+        Returns:
+            None: Met à jour la base de données mais ne retourne pas de valeur.
+        """
+        # Vérifier si le joueur existe dans TinyDB
+        joueur_trouve = self.db_joueurs.get(doc_id=p_id_tinydb)
+
+        if joueur_trouve:
+            # Ajouter le score au total existant
+            score_final = joueur_trouve["score"] + p_score_gagne
+
+            # Mettre à jour le score du joueur dans TinyDB
+            self.db_joueurs.update({"score": score_final}, doc_ids=[int(p_id_tinydb)])

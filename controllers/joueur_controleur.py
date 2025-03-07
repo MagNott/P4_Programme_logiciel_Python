@@ -4,7 +4,13 @@ from views.joueur_vue import JoueurVue
 
 
 class JoueurControleur:
-    """Gère les interactions entre la vue et le modèle pour les joueurs."""
+    """
+    Gère les interactions entre la vue et le modèle pour les joueurs.
+
+    Ce contrôleur permet :
+    - D'ajouter un joueur en recueillant ses informations et en les enregistrant.
+    - D'afficher la liste des joueurs enregistrés.
+    """
 
     def __init__(self):
         """Initialise le contrôleur des joueurs avec la vue et le gestionnaire de persistance."""
@@ -19,12 +25,9 @@ class JoueurControleur:
         crée une instance de Joueur, puis la sauvegarde dans la base de données.
         et affiche une confirmation à l'utilisateur.
 
-        Steps:
-            1. Demande des informations à l'utilisateur via la vue.
-            2. Crée un objet Joueur avec les données saisies.
-            3. Sauvegarde le joueur dans la base de données.
-            4. Affiche un message de confirmation.
-            """
+        Returns:
+            None: Cette fonction n'a pas de retour explicite.
+        """
 
         d_infos_joueur = self.o_joueur_vue.render_saisie_joueur()
 
@@ -40,16 +43,14 @@ class JoueurControleur:
 
 #
     def lister_joueurs(self) -> None:
-        """Affiche la liste des joueurs enregistrés.
+        """Affiche la liste des joueurs enregistrés dans la base de données JSON.
 
         Cette méthode récupère les données des joueurs stockées dans le JSON,
         les convertit en objets Joueur, puis les affiche via la vue.
 
-        Steps:
-            1. Charge les données des joueurs depuis la base de données.
-            2. Convertit chaque entrée en une instance de Joueur.
-            3. Affiche la liste des joueurs à l'utilisateur.
-            """
+        Returns:
+            None: Affiche la liste des joueurs, mais ne retourne pas de valeur.
+        """
 
         joueurs_data = self.o_gestionnaire_persistance.charger_joueurs()
 

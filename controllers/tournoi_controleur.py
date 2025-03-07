@@ -6,9 +6,27 @@ import re
 
 class TournoiControleur:
     """Contrôleur gérant les interactions entre la vue et le modèle pour les tournois."""
+    """
+    Contrôleur gérant les interactions entre la vue et le modèle pour la gestion des tournois.
+
+    Ce contrôleur fait le lien entre :
+    - **La vue** (`TournoiVue`), qui affiche les informations.
+    - **Le modèle** (`GestionnairePersistance`), qui gère la persistance des données.
+
+    Cette classe assure :
+    - L'ajout d'un nouveau tournoi et son enregistrement en base de données.
+    - L'inscription de joueurs à un tournoi (si celui-ci n'a pas encore commencé).
+    - L'affichage de la liste des tournois enregistrés.
+    - La visualisation détaillée d'un tournoi, y compris les matchs et les joueurs.
+
+    """
 
     def __init__(self) -> None:
-        """Initialise le contrôleur du tournoi avec la vue et le gestionnaire de persistance."""
+        """
+        Initialise le contrôleur du tournoi avec la vue et le gestionnaire de persistance
+        pour la gestion des tournois.
+        """
+
         self.o_tournoi_vue = TournoiVue()
         self.o_gestionnaire_persistance = GestionnairePersistance()
 
@@ -16,6 +34,13 @@ class TournoiControleur:
     def ajouter_tournoi(self) -> None:
         """
         Gère l'ajout d'un nouveau tournoi en collectant les informations et en les sauvegardant.
+
+        Cette méthode génère un identifiant unique pour le tournoi.
+        Demande à l'utilisateur de saisir les informations via la vue puis
+        Crée un objet `Tournoi` avec ces informations.
+        Ensuite, elle Sauvegarde le tournoi dans la base de données et
+        affiche un message de confirmation avec les détails du tournoi.
+
             Args:
                 None
 
@@ -51,7 +76,14 @@ class TournoiControleur:
 
 #
     def inscrire_joueur(self) -> None:
-        """Permet d'inscrire un ou plusieurs joueurs à un tournoi existant.
+        """
+        Permet d'inscrire un ou plusieurs joueurs à un tournoi existant si celui_ci n'a pas commencé.
+
+        Cette méthode charge la liste des tournois disponibles et demande à l'utilisateur d'en choisir un.
+        Vérifie que le tournoi n'a pas encore commencé (aucun tour enregistré) puis
+        charge la liste des joueurs disponibles et permet à l'utilisateur d'en sélectionner plusieurs.
+        Esnuite, elle met à jour la liste des joueurs du tournoi avec leurs scores initiaux (0) et
+        Sauvegarde les informations du tournoi mises à jour dans la base de données.
 
         Args:
             None
@@ -98,7 +130,12 @@ class TournoiControleur:
 
 #
     def lister_tournois(self) -> None:
-        """Affiche la liste des tournois enregistrés dans la base de données.
+        """
+        Affiche la liste des tournois enregistrés dans la base de données (JSON).
+
+        Cette méthode charge la liste des fichiers de tournois existants.
+        Extrait les informations de chaque tournoi et
+        affiche ces informations sous forme de tableau via la vue.
 
         Args:
             None
@@ -123,7 +160,12 @@ class TournoiControleur:
 
 #
     def visualiser_tournoi(self) -> None:
-        """Affiche les détails d'un tournoi sélectionné par l'utilisateur.
+        """
+        Affiche les détails d'un tournoi sélectionné par l'utilisateur.
+
+        Cette méthode charge la liste des tournois existants et demande à l'utilisateur d'en choisir un.
+        Récupère les détails du tournoi sélectionné, y compris les scores des joueurs et
+        affiche ces informations de manière détaillée via la vue.
 
         Args:
             None
@@ -144,13 +186,17 @@ class TournoiControleur:
 
         d_scores_joueurs = self.o_gestionnaire_persistance.recuepere_score_joueurs(i_identifiant_tournoi)
 
-
         # Affiche les informations détaillées du tournoi, y compris les joueurs inscrits àce tournoi.
         self.o_tournoi_vue.render_visualiser_tournoi(o_tournoi, d_scores_joueurs)
 
 #
     def visualiser_tour_match_tournoi(self) -> None:
-        """Affiche les détails d'un tournoi sélectionné par l'utilisateur.
+        """
+        Affiche les détails d'un tournoi sélectionné par l'utilisateur.
+
+        Cette méthode charge la liste des tournois et demande à l'utilisateur d'en choisir un.
+        Récupère les informations du tournoi sélectionné,
+        et affiche les détails des tours et des matchs de ce tournoi via la vue.
 
         Args:
             None
@@ -171,4 +217,3 @@ class TournoiControleur:
 
         # Affiche les informations détaillées du tournoi, y compris les joueurs inscrits àce tournoi.
         self.o_tournoi_vue.render_visualiser_tour_match_tournoi(o_tournoi)
-
