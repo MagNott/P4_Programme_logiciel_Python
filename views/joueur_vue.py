@@ -2,20 +2,29 @@ from rich.table import Table
 import questionary
 import re
 from views.vue import Vue
+from models.joueur import Joueur
 
 
 class JoueurVue(Vue):
-    """Gère l'affichage des informations liées aux joueurs avec la bibliothèque Rich."""
+    """
+    Gère l'affichage des informations liées aux joueurs avec la bibliothèque Rich.
+    Cette classe hérite de `Vue`, qui fournit des fonctionnalités générales d'affichage et de gestion de console.
+
+    Cette classe permet :
+    - De valider les données saisies par l'utilisateur (nom, prénom, identifiant d'échecs, date de naissance).
+    - D'afficher des messages de confirmation lors de l'ajout d'un joueur.
+    - De présenter la liste des joueurs sous forme de tableau stylisé avec la bibliothèque `Rich`.
+
+    """
 
     #
-    def valider_identifiant_echec(self, saisie):
+    def valider_identifiant_echec(self, p_saisie: str) -> bool:
         """
         Vérifie que l'identifiant national d'échecs est valide.
 
         Un identifiant valide :
         - Commence par 2 lettres majuscules ou minuscules.
         - Est suivi de 5 chiffres.
-
         Exemple valide : "AB12345"
 
         Args:
@@ -24,7 +33,7 @@ class JoueurVue(Vue):
         Returns:
             str | bool: Un message d'erreur si invalide, sinon `True` si la saisie est correcte.
         """
-        if not re.match(r"^[A-Za-z]{2}\d{5}$", saisie):
+        if not re.match(r"^[A-Za-z]{2}\d{5}$", p_saisie):
             return "Format invalide, doit contenir 2 lettres au début suivi de 5 chiffres. Exemple valide : AB12345."
         return True
 
@@ -83,11 +92,11 @@ class JoueurVue(Vue):
         )
 
     #
-    def render_lister_joueur(self, p_liste_joueur: list) -> None:
+    def render_lister_joueur(self, p_liste_joueur: list[Joueur]) -> None:
         """Affiche la liste des joueurs trié par ordre alphabétique sous forme de tableau dans la console.
 
         Args:
-            p_liste_joueur (list): Liste des objets Joueur contenant les informations des joueurs.
+            p_liste_joueur (list[Joueur]): Liste des objets Joueur contenant les informations des joueurs.
 
         Returns:
             None: Cette méthode affiche uniquement le tableau dans la console.

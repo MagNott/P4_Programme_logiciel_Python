@@ -5,16 +5,25 @@ import questionary
 
 
 class Vue:
-    """Classe parente pour les vues"""
+    """
+    Classe parente pour les vues, utilisée pour gérer l'affichage et la validation des saisies utilisateur.
+
+    Cette classe fournit des méthodes pour afficher les interfaces interactives et valider
+    les entrées utilisateur, notamment les noms, les dates et la sélection de tournois.
+    """
 
     def __init__(self):
-        """Initialise l'affichage en configurant la console Rich pour une sortie stylisée."""
+        """Initialise l'affichage en configurant la console Rich pour une sortie stylisée.
+
+        Cette méthode configure la console `Rich` pour permettre un affichage amélioré
+        des informations dans le terminal.
+        """
         self.console = Console()
 
 #
     # Préparation des méthodes de validation pour la saisie d'un nouveau joueur
     # Elles sont utilisées dans render_saisie_joueur()
-    def valider_nom(self, p_saisie):
+    def valider_nom(self, p_saisie: str) -> str | bool:
         """
         Vérifie que la saisie du nom et du prénom est valide.
 
@@ -35,7 +44,7 @@ class Vue:
         return True
 
     #
-    def valider_date(self, p_saisie):
+    def valider_date(self, p_saisie: str) -> str | bool:
         """
         Vérifie que la date saisie est valide.
 
@@ -44,7 +53,7 @@ class Vue:
         - Correspond à une vraie date (ex : 31/02/2023 est invalide).
 
         Args:
-            saisie (str): La valeur saisie par l'utilisateur.
+            p_saisie (str): La valeur saisie par l'utilisateur.
 
         Returns:
             str | bool: Un message d'erreur si invalide, sinon `True` si la saisie est correcte.
@@ -57,8 +66,20 @@ class Vue:
             return "Format invalide ou date incorrecte. Utilisez JJ-MM-AAAA."
 
 #
-    def valider_date_fin(self, p_date_fin, p_date_debut):
-        """Valide que la date de fin est postérieure à la date de début."""
+    def valider_date_fin(self, p_date_fin: str, p_date_debut: str) -> str | bool:
+        """
+        Vérifie que la date de fin est valide et postérieure à la date de début.
+
+        Cette fonction s'assure d'abord que la date de fin est bien au format attendu et valide,
+        puis vérifie qu'elle est égale ou postérieure à la date de début.
+
+        Args:
+            p_date_fin (str): La date de fin du tournoi saisie par l'utilisateur.
+            p_date_debut (str): La date de début du tournoi pour la comparaison.
+
+        Returns:
+            str | bool: Un message d'erreur si invalide, sinon `True` si la saisie est correcte.
+        """
         # Vérifier si la date est valide d'abord
         if self.valider_date(p_date_fin) is not True:
             return self.valider_date(p_date_fin)  # Retourner l'erreur de format si nécessaire
@@ -75,6 +96,9 @@ class Vue:
     def render_choix_tournoi(self, p_liste_tournois: list[str]) -> str:
         """Permet à l'utilisateur de choisir un tournoi parmi une liste.
 
+        Cette fonction extrait les identifiants et noms des tournois à partir
+        des fichiers JSON disponibles, puis les affiche sous forme de choix interactifs.
+
         Args:
             liste_tournois (list[str]): Liste des noms de fichiers représentant les tournois disponibles.
 
@@ -82,6 +106,7 @@ class Vue:
             str: Identifiant du tournoi choisi par l'utilisateur, saisi via l'interface interactive.
         """
 
+        # Regex pour extraire l'ID, le nom et la date depuis le nom de fichier
         regex = r"tournoi_(\d+)_([^_]+)_(\d{1,2}-\d{1,2}-\d{4})\.json"
 
         liste_choix = []
@@ -103,5 +128,5 @@ class Vue:
             "Veuillez choisir un tournoi :", choices=sorted(liste_choix)
         ).ask()
 
-        # Retourner uniquement l'ID du tournoi
+        # Retourner uniquement l'ID du tournoi selectionné
         return liste_tournoi_identifiant[choix_utilisateur]

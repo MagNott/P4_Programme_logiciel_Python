@@ -8,30 +8,39 @@ from datetime import datetime
 
 
 class TournoiVue(Vue):
-    """Gère l'affichage des informations liées aux tournois avec la bibliothèque Rich."""
+    """
+    Gère l'affichage des informations liées aux tournois avec la bibliothèque Rich.
+
+    Cette classe hérite de `Vue` et fournit des méthodes pour :
+    - Afficher des informations sur les tournois (liste, détails, matches...).
+    - Valider les saisies utilisateur spécifiques aux tournois.
+    - Gérer les interactions via `questionary`.
+    """
 
     #
     # Surcharge la methode valider_nom() de la classe parente Vue pour accepter les chiffres dans le nom d'un tournoi
-    def valider_nom(self, p_saisie):
+    def valider_nom(self, p_saisie: str) -> str | bool:
         """
-        Vérifie que la saisie du nom et du prénom est valide.
+        Vérifie que la saisie du nom d'un tournoi est valide.
 
-        Un nom ou un prénom valide :
+        Un nom de tournoi valide :
         - Ne doit pas être vide.
-        - Ne doit contenir que des lettres (avec accents), un tiret (-), des chiffres et des espaces.
+        - Ne doit contenir que des lettres (avec accents), des chiffres, des tirets (-) et des espaces.
 
         Args:
-            saisie (str): La valeur saisie par l'utilisateur.
+            p_saisie (str): La valeur saisie par l'utilisateur.
 
         Returns:
             str | bool: Un message d'erreur si invalide, sinon `True` si la saisie est correcte.
         """
+
         if not p_saisie.strip():
             return "Le champ ne peut pas être vide."
         if not re.match(r"^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s-]+$", p_saisie):
             return (
                 "La saisie ne doit contenir que des lettres, des tirets et des espaces."
             )
+
         return True
 
     #
@@ -53,6 +62,8 @@ class TournoiVue(Vue):
             p_date_fin_tournoi (str): Date de fin du tournoi au format JJ/MM/AAAA.
             p_nombre_tour_tournoi (str): Nombre de tour du tournoi.
             p_description_tournoi (str): Description ou informations supplémentaires sur le tournoi.
+        Returns:
+            None
         """
 
         table = Table(
@@ -79,8 +90,13 @@ class TournoiVue(Vue):
     def render_lister_tournois(self, p_liste_objets_tournois: list[Tournoi]) -> None:
         """Affiche la liste des tournois enregistrés dans la base de données.
 
+        Les tournois sont triés par date de début avant affichage.
+
         Args:
-            p_liste_objets_tournois list[Tournoi]: Liste d'objets tournoi
+            p_liste_objets_tournois (list[Tournoi]): Liste d'objets tournoi
+
+        Returns:
+            None
         """
         # Range les tournois par ordre croissant de date
         p_liste_objets_tournois = sorted(
@@ -121,42 +137,36 @@ class TournoiVue(Vue):
         self.console.print(table)
 
     #
-    def render_impossible_inscription(self, p_nom_tournoi: Tournoi):
-        self.console.print(
-            f"\n [bold red] Le tournoi {p_nom_tournoi} a déjà commencé, il n'est pas possible d'y inscrire des joueurs !\n[/bold red]"
+    def render_impossible_inscription(self, p_nom_tournoi: Tournoi) -> None:
+        """
+        Affiche un message d'erreur si l'inscription au tournoi est impossible.
+
+        Args:
+            p_nom_tournoi (Tournoi): L'objet tournoi concerné.
+
+        Returns:
+            None
+        """
+        message = (
+            f"\n [bold red] Le tournoi {p_nom_tournoi} a déjà commencé, "
+            "il n'est pas possible d'y inscrire des joueurs !\n[/bold red]"
         )
-
-    def valider_nombre_joueurs(self, saisie):
-        """Fonction qui vérifie si l'entrée est un nombre pair valide."""
-        if not saisie.isdigit():
-            return "Veuillez entrer un **nombre valide** (chiffres uniquement)."
-
-        nombre = int(saisie)
-
-        if nombre % 2 != 0:
-            return "Le nombre doit être **pair**."
-
-        if nombre < 2:
-            return "Il doit y avoir au **moins 2 joueurs**."
-
-        return True
+        self.console.print(message)
 
     #
     def render_choix_joueur(
         self, p_liste_joueurs: List[dict], p_objet_tournoi: Tournoi
     ) -> List[str]:
-        """Affiche la liste des joueurs disponibles et permet à l'utilisateur d'en choisir 4.
+        """
+        Affiche la liste des joueurs disponibles et permet à l'utilisateur d'en choisir plusieurs.
 
         Args:
-            p_liste_joueurs (List[dict]): Liste des joueurs disponibles,
-                chaque joueur étant représenté sous forme de dictionnaire
-                avec les clés 'id_tinydb', 'identifiant_national_echec',
-                'nom_famille', 'prenom' et 'date_naissance'.
+            p_liste_joueurs (list[dict]): Liste des joueurs disponibles sous forme de dictionnaires
+            p_objet_tournoi (Tournoi): L'objet tournoi auquel les joueurs seront inscrits.
 
         Returns:
-            List[str]: Liste contenant les identifiants des joueurs sélectionnés par l'utilisateur.
+            list[str]: Liste des identifiants des joueurs sélectionnés par l'utilisateur.
         """
-
         # Trie par ordre alphabétique de nom et prénom
         joueurs_trie_nom_prenom = sorted(
             p_liste_joueurs,
@@ -164,7 +174,6 @@ class TournoiVue(Vue):
         )
 
         liste_choix = []
-
         for i, joueur in enumerate(joueurs_trie_nom_prenom):
 
             liste_choix.append(
@@ -175,7 +184,7 @@ class TournoiVue(Vue):
 
         nombre_joueurs = questionary.text(
             "Combien souahitez-vous inscrire de joueur à ce tournoi (nombres paires):",
-            validate=self.valider_nombre_joueurs,
+            validate=self._valider_nombre_joueurs,
         ).ask()
 
         for _ in range(int(nombre_joueurs)):
@@ -202,10 +211,15 @@ class TournoiVue(Vue):
     def render_visualiser_tournoi(
         self, p_objet_tournoi: Tournoi, p_scores_joueurs: dict
     ) -> None:
-        """Affiche les informations du tournoi choisi
+        """
+        Affiche les détails d'un tournoi sélectionné, y compris les joueurs et leurs scores.
 
         Args:
-            p_objet_tournoi Tournoi : objet tournoi
+            p_objet_tournoi (Tournoi): L'objet tournoi à afficher.
+            p_scores_joueurs (dict): Dictionnaire des scores des joueurs.
+
+        Returns:
+            None
         """
 
         liste_nom_joueurs = []
@@ -247,7 +261,16 @@ class TournoiVue(Vue):
         self.console.print(table_tournoi)
 
     #
-    def render_visualiser_tour_match_tournoi(self, p_objet_tournoi: Tournoi):
+    def render_visualiser_tour_match_tournoi(self, p_objet_tournoi: Tournoi) -> None:
+        """
+        Affiche le déroulé des tours et des matchs du tournoi sélectionné.
+
+        Args:
+            p_objet_tournoi (Tournoi): L'objet tournoi à afficher.
+
+        Returns:
+            None
+        """
 
         print("\n")
         print(f"🏆 Déroulé du Tournoi {p_objet_tournoi.nom_tournoi}")
@@ -304,20 +327,21 @@ class TournoiVue(Vue):
             self.console.print("\n")
 
     #
-    def valider_nombre_tour(self, p_saisie):
+    def valider_nombre_tour(self, p_saisie: str) -> str | bool:
         """
-        Vérifie que la saisie du nombre de tour est valide.
+        Vérifie que la saisie du nombre de tours est valide.
 
-        Un nom ou un prénom valide :
-        - Ne doit pas être vide.
-        - Ne doit contenir que des lettres (avec accents), un tiret (-) et des espaces.
+        Un nombre de tours valide :
+        - Doit être un chiffre.
+        - Doit être supérieur à 0.
 
         Args:
-            saisie (str): La valeur saisie par l'utilisateur.
+            p_saisie (str): La valeur saisie par l'utilisateur.
 
         Returns:
             str | bool: Un message d'erreur si invalide, sinon `True` si la saisie est correcte.
         """
+
         if not p_saisie.isdigit() or p_saisie == 0:
             return "Il faut saisir un chiffre et qu'il soit supérieur à 0."
         return True
@@ -361,7 +385,7 @@ class TournoiVue(Vue):
             ).ask(),
             "p_nombre_tour_tournoi": questionary.text(
                 "Entrez le nombre de tour du tournoi (4 par défaut) :",
-                default=Tournoi.nombre_tours_defaut,
+                default=Tournoi.nombre_tours_defaut, validate=self.valider_nombre_tour
             ).ask(),
             "p_description_tournoi": questionary.text(
                 "Entrez la desription du tournoi  :", validate=self.valider_nom
@@ -369,3 +393,30 @@ class TournoiVue(Vue):
         }
 
         return d_infos_tournoi
+
+    #
+    # METHODES PRIVEES
+    #
+    def _valider_nombre_joueurs(self, p_saisie: str) -> str | bool:
+        """
+        Vérifie que l'entrée est un nombre pair valide pour le nombre de joueurs.
+
+        Args:
+            p_saisie (str): La valeur saisie par l'utilisateur.
+
+        Returns:
+            str | bool: Un message d'erreur si invalide, sinon `True` si la saisie est correcte.
+        """
+
+        if not p_saisie.isdigit():
+            return "Veuillez entrer un **nombre valide** (chiffres uniquement)."
+
+        nombre = int(p_saisie)
+
+        if nombre % 2 != 0:
+            return "Le nombre doit être **pair**."
+
+        if nombre < 2:
+            return "Il doit y avoir au **moins 2 joueurs**."
+
+        return True

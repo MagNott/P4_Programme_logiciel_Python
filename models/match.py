@@ -26,4 +26,9 @@ class Match:
         self.score_blanc = p_score_blanc
         self.score_noir = p_score_noir
         self.statut = p_statut
-        self.nom_match = f"Match {p_identifiant} - {p_joueur_blanc.identifiant_tinydb} VS {p_joueur_noir.identifiant_tinydb}"
+
+        # Utilisation de variable pour réduire la taille de la fstring
+        id_joueur_blanc = p_joueur_blanc.identifiant_tinydb
+        id_joueur_noir = p_joueur_noir.identifiant_tinydb
+
+        self.nom_match = f"Match {p_identifiant} - {id_joueur_blanc} VS {id_joueur_noir}"

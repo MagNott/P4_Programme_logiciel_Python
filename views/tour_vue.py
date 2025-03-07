@@ -4,32 +4,18 @@ import questionary
 from models.tournoi import Tournoi
 from views.vue import Vue
 from models.joueur import Joueur
+from models.match import Match
 
 
 class TourVue(Vue):
-    """Gère l'affichage des informations liées aux tour avec la bibliothèque Rich."""
+    """
+    Gère l'affichage des informations liées aux tour d'un tournoi avec la bibliothèque Rich.
 
-    #
-    # def render_choix_tournoi(self, p_liste_tournois: list[str]) -> str:
-    #     """Permet à l'utilisateur de choisir un tournoi parmi une liste.
-
-    #     Args:
-    #         p_liste_tournois (list[str]): Liste des noms de fichiers des tournois disponibles.
-
-    #     Returns:
-    #         str: Identifiant du tournoi choisi par l'utilisateur.
-    #     """
-    #     table = Table(title="Liste des tournois")
-    #     table.add_column("Nom du tournoi")
-
-    #     for tournoi in p_liste_tournois:
-    #         table.add_row(tournoi)
-
-    #     self.console.print(table)
-
-    #     return questionary.text(
-    #         "Veuillez choisir un tournoi par son identifiant : "
-    #     ).ask()
+    Cette classe hérite de `Vue` et utilise la bibliothèque `rich` pour afficher
+    des messages formatés dans la console. Elle permet d'afficher les différentes
+    étapes du tournoi, comme la création des tours, l'affichage des matchs et
+    la saisie des résultats.
+    """
 
     #
     def render_confirmation_ajout_tour(
@@ -38,21 +24,21 @@ class TourVue(Vue):
         p_tournoi_choisi: Tournoi
     ) -> None:
         """
-        Affiche un message confirmant l'ajout d'un tour à un tournoi.
+        Affiche un message confirmant l'ajout d'un tour (round) à un tournoi.
 
         Cette fonction affiche un message de confirmation en console lorsque
         l'utilisateur ajoute un nouveau round à un tournoi existant.
 
         Args:
-            p_numero_tour (str): Numéro du round ajouté.
+            p_numero_tour (str): Numéro du round (tour) ajouté.
             p_tournoi_choisi (Tournoi): Objet Tournoi auquel le round a été ajouté.
 
         Returns:
             None: Cette fonction affiche uniquement un message en console.
         """
-        self.console.print(
-            f"\n[bold green] Le round {p_numero_tour} ajouté au tournoi {p_tournoi_choisi.nom_tournoi}. [/bold green]\n"
-        )
+        message = (f"\n[bold green] Le round {p_numero_tour} "
+                   f"ajouté au tournoi {p_tournoi_choisi.nom_tournoi}. [/bold green]\n")
+        self.console.print(message)
 
     #
     def render_verification(self, p_message: str) -> None:
@@ -70,6 +56,9 @@ class TourVue(Vue):
         Args:
             p_nom_tournoi (str): Nom du tournoi concerné.
             p_nom_tour (str): Nom du tour en cours.
+
+        Returns:
+            None: Affiche un message informatif dans la console.
         """
         self.console.print(
             f"[bold yellow] Impossible de créer un nouveau tour.[/bold yellow]\n"
@@ -96,19 +85,15 @@ class TourVue(Vue):
             p_tournoi_choisi (str): Nom du tournoi en cours.
             p_numero_tour (int): Numéro du round en cours.
             p_identifiant_match (int): Identifiant unique du match.
-            p_joueur_blanc (str): Nom du joueur ayant les pièces blanches.
-            p_joueur_noir (str): Nom du joueur ayant les pièces noires.
+            p_objet_joueur_blanc (str): Nom du joueur ayant les pièces blanches.
+            p_objet_joueur_noir (str): Nom du joueur ayant les pièces noires.
 
         Returns:
             None: Cette fonction affiche le match en console et ne retourne rien.
         """
-        self.console.print(
-            Panel(
-                f"[bold cyan] Match n°{p_identifiant_match} du Round n°{p_numero_tour} du tournoi : {p_tournoi_choisi} [/bold cyan]",
-                border_style="cyan",
-                expand=False,
-            )
-        )
+        message = (f"[bold cyan] Match n°{p_identifiant_match} du Round n°{p_numero_tour} "
+                   f"du tournoi : {p_tournoi_choisi} [/bold cyan]")
+        self.console.print(Panel(message, border_style="cyan", expand=False))
 
         # Création d’un tableau pour l’affichage des joueurs
         table = Table(show_header=True, header_style="bold magenta")
@@ -129,7 +114,7 @@ class TourVue(Vue):
         self,
         p_objet_tournoi: Tournoi,
         p_dernier_tour: dict,
-        p_objets_matchs: list
+        p_objets_matchs: list[Match]
     ) -> list[dict]:
         """
         Affiche les matchs en attente de saisie des résultats et recueille la saisie utilisateur du résultat.
@@ -156,8 +141,12 @@ class TourVue(Vue):
         l_resultats = []
         for o_match in p_objets_matchs:
 
-            texte = (f"[bold cyan] Match N°{o_match.identifiant} : {o_match.joueur_blanc.nom_famille} {o_match.joueur_blanc.prenom} ⚔️  {o_match.joueur_noir.nom_famille} {o_match.joueur_noir.prenom}\n"
-                     f"du {s_dernier_tour_nom} du tournoi : {s_tournoi_nom}[/bold cyan]")
+            texte = (
+                f"[bold cyan] Match N°{o_match.identifiant} : "
+                f"{o_match.joueur_blanc.nom_famille} {o_match.joueur_blanc.prenom} ⚔️  "
+                f"{o_match.joueur_noir.nom_famille} {o_match.joueur_noir.prenom}\n"
+                f"du {s_dernier_tour_nom} du tournoi : {s_tournoi_nom}[/bold cyan]"
+            )
 
             self.console.print(Panel(texte, border_style="cyan", expand=False,))
 
@@ -166,8 +155,11 @@ class TourVue(Vue):
             table.add_column("🏆 Choix", style="bold yellow", justify="center")
             table.add_column("📋 Explication", style="bold white", justify="left")
 
-            table.add_row("[1]", f"Victoire de [cyan]{o_match.joueur_blanc.nom_famille} {o_match.joueur_blanc.prenom}[/cyan]")
-            table.add_row("[2]", f"Victoire de [cyan]{o_match.joueur_noir.nom_famille} {o_match.joueur_noir.prenom}[/cyan]")
+            joueur_blanc = f"[cyan]{o_match.joueur_blanc.nom_famille} {o_match.joueur_blanc.prenom}[/cyan]"
+            joueur_noir = f"[cyan]{o_match.joueur_noir.nom_famille} {o_match.joueur_noir.prenom}[/cyan]"
+
+            table.add_row("[1]", f"Victoire de {joueur_blanc}")
+            table.add_row("[2]", f"Victoire de {joueur_noir}")
             table.add_row("[0]", "Match nul")
 
             self.console.print(table)
