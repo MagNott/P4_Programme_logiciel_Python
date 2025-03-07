@@ -14,8 +14,8 @@ class GestionnairePersistance:
     """
     Gère la persistance des données des joueurs et des tournois avec TinyDB.
 
-    Cette classe permet d'enregistrer, de charger et de gérer les données 
-    des joueurs et des tournois dans des fichiers JSON. Elle assure également 
+    Cette classe permet d'enregistrer, de charger et de gérer les données
+    des joueurs et des tournois dans des fichiers JSON. Elle assure également
     la création et la gestion des dossiers de stockage.
     """
 
