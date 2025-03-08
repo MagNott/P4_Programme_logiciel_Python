@@ -40,6 +40,7 @@ class TournoiControleur:
         Crée un objet `Tournoi` avec ces informations.
         Ensuite, elle Sauvegarde le tournoi dans la base de données et
         affiche un message de confirmation avec les détails du tournoi.
+        Un traitement permet de ne pas créer de fichier tournoi si l'utilisateur ne le saisi pas entièrement.
 
             Args:
                 None
@@ -54,25 +55,32 @@ class TournoiControleur:
         # Demande à l'utilisateur de saisir les informations du tournoi via la vue.
         d_infos_tournoi = self.o_tournoi_vue.render_saisie_tournoi()
 
-        # Crée un objet `Tournoi` avec ces informations.
-        o_tournoi_modele = Tournoi(
-            identifiant_tournoi,
-            d_infos_tournoi["p_nom_tournoi"],
-            d_infos_tournoi["p_lieu_tournoi"],
-            d_infos_tournoi["p_date_debut_tournoi"],
-            d_infos_tournoi["p_date_fin_tournoi"],
-            d_infos_tournoi["p_nombre_tour_tournoi"],
-            d_infos_tournoi["p_description_tournoi"],
-            [],  # initialise à liste tour vide
-            []  # initialise à liste joueur vide
-        )
+        # Traitement pour éviter qu'un fichier tournoi vide ne se créé avec des valeurs à None
+        # si l'utilisateur quitte prématurément la saisie.
+        # Transformation du dictionnaire pour récupérer les valeurs, si None dans les valeurs l'exception s'excecute
+        verification_valeur = list(d_infos_tournoi.values())
+        if None in verification_valeur:
+            self.o_tournoi_vue.afficher_message("Opération annulée", "error")
+        else:
+            # Crée un objet `Tournoi` avec ces informations.
+            o_tournoi_modele = Tournoi(
+                identifiant_tournoi,
+                d_infos_tournoi["p_nom_tournoi"],
+                d_infos_tournoi["p_lieu_tournoi"],
+                d_infos_tournoi["p_date_debut_tournoi"],
+                d_infos_tournoi["p_date_fin_tournoi"],
+                d_infos_tournoi["p_nombre_tour_tournoi"],
+                d_infos_tournoi["p_description_tournoi"],
+                [],  # initialise à liste tour vide
+                []  # initialise à liste joueur vide
+            )
 
-        # Sauvegarde le tournoi dans le gestionnaire de persistance.
-        self.o_gestionnaire_persistance.sauvegarder_tournoi(o_tournoi_modele)
+            # Sauvegarde le tournoi dans le gestionnaire de persistance.
+            self.o_gestionnaire_persistance.sauvegarder_tournoi(o_tournoi_modele)
 
-        # Affiche un message de confirmation avec les informations du tournoi.
-        self.o_tournoi_vue.render_confirm_ajout_tournoi(**d_infos_tournoi)
-        # Les ** permettent de déballer le dictionnaire
+            # Affiche un message de confirmation avec les informations du tournoi.
+            self.o_tournoi_vue.render_confirm_ajout_tournoi(**d_infos_tournoi)
+            # Les ** permettent de déballer le dictionnaire
 
 #
     def inscrire_joueur(self) -> None:

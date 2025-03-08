@@ -119,9 +119,7 @@ def menu_rapports():
 
 
 def menu_sauvergarder_charger():
-    """
-
-    """
+    """ """
     choix_donnees = questionary.select(
         "Que souhaitez-vous faire ?",
         choices=[
@@ -138,68 +136,80 @@ def menu_sauvergarder_charger():
 # Il initialise les contrôleurs et lance la boucle du menu principal.
 if __name__ == "__main__":
 
-    # Instanciation des controlleurs
-    joueur_controleur = JoueurControleur()
-    tournoi_controleur = TournoiControleur()
-    tour_controleur = TourControleur()
-    sauvegarde_controleur = SauvegardeControleur()
+    try:
+        # Instanciation des controlleurs
+        joueur_controleur = JoueurControleur()
+        tournoi_controleur = TournoiControleur()
+        tour_controleur = TourControleur()
+        sauvegarde_controleur = SauvegardeControleur()
 
-    # Pour réafficher systématiquement le menu tant que quitter n'est pas choisi
-    while True:
-        # Affiche le menu et récupère le choix de l’utilisateur
-        choix = (
-            menu_principal()
-        )
-        if choix == MENU_GESTION_JOUEUR:
-            while True:
-                choix_joueur = menu_joueur()
-                if choix_joueur == MENU_AJOUTER_JOUEUR:
-                    joueur_controleur.ajouter_joueur()
-                elif choix_joueur == RETOUR_MENU_PRINCIPAL:
-                    break
-        elif choix == MENU_GESTION_TOURNOI:
-            while True:
-                choix_tournoi = menu_tournoi()
-                if choix_tournoi == MENU_CREER_TOURNOI:
-                    tournoi_controleur.ajouter_tournoi()
-                elif choix_tournoi == MENU_INSCRIRE_JOUEUR:
-                    tournoi_controleur.inscrire_joueur()
-                elif choix_tournoi == MENU_CREER_TOUR:
-                    tour_controleur.creer_tour()
-                elif choix_tournoi == MENU_TERMINER_TOUR:
-                    tour_controleur.terminer_tour()
-                elif choix_tournoi == RETOUR_MENU_PRINCIPAL:
-                    break
-        elif choix == MENU_GESTION_RAPPORTS:
-            while True:
-                choix_rapports = menu_rapports()
-                if choix_rapports == MENU_LISTER_JOUEURS:
-                    joueur_controleur.lister_joueurs()
-                elif choix_rapports == MENU_LISTER_TOURNOI:
-                    tournoi_controleur.lister_tournois()
-                elif choix_rapports == MENU_VISUALISER_TOURNOI:
-                    tournoi_controleur.visualiser_tournoi()
-                elif choix_rapports == MENU_VISUALISER_TOUR_MATCH_TOURNOI:
-                    tournoi_controleur.visualiser_tour_match_tournoi()
-                elif choix_rapports == RETOUR_MENU_PRINCIPAL:
-                    break
-        elif choix == MENU_SAUVEGARDER_CHARGER:
-            while True:
-                choix_donnees = menu_sauvergarder_charger()
-                if choix_donnees == MENU_SAUVEGARDER_DONNEES:
-                    sauvegarde_controleur.sauvegarder_donnees()
-                elif choix_donnees == MENU_CHARGER_DONNEES:
-                    sauvegarde_controleur.charger_donnees()
-                elif choix_donnees == RETOUR_MENU_PRINCIPAL:
-                    break
-        elif choix == MENU_QUITTER:
-            console.print(
-                Panel(
-                    "[bold blue]🔚 Fermeture du programme. Merci d'avoir utilisé Let's Roque ![/bold blue]",
-                    border_style="blue",
-                    expand=False,
+        # Pour réafficher systématiquement le menu tant que quitter n'est pas choisi
+        while True:
+            # Affiche le menu et récupère le choix de l’utilisateur
+            choix = menu_principal()
+            if choix == MENU_GESTION_JOUEUR:
+                while True:
+                    choix_joueur = menu_joueur()
+                    if choix_joueur == MENU_AJOUTER_JOUEUR:
+                        joueur_controleur.ajouter_joueur()
+                    elif choix_joueur == RETOUR_MENU_PRINCIPAL:
+                        break
+            elif choix == MENU_GESTION_TOURNOI:
+                while True:
+                    choix_tournoi = menu_tournoi()
+                    if choix_tournoi == MENU_CREER_TOURNOI:
+                        tournoi_controleur.ajouter_tournoi()
+                    elif choix_tournoi == MENU_INSCRIRE_JOUEUR:
+                        tournoi_controleur.inscrire_joueur()
+                    elif choix_tournoi == MENU_CREER_TOUR:
+                        tour_controleur.creer_tour()
+                    elif choix_tournoi == MENU_TERMINER_TOUR:
+                        tour_controleur.terminer_tour()
+                    elif choix_tournoi == RETOUR_MENU_PRINCIPAL:
+                        break
+            elif choix == MENU_GESTION_RAPPORTS:
+                while True:
+                    choix_rapports = menu_rapports()
+                    if choix_rapports == MENU_LISTER_JOUEURS:
+                        joueur_controleur.lister_joueurs()
+                    elif choix_rapports == MENU_LISTER_TOURNOI:
+                        tournoi_controleur.lister_tournois()
+                    elif choix_rapports == MENU_VISUALISER_TOURNOI:
+                        tournoi_controleur.visualiser_tournoi()
+                    elif choix_rapports == MENU_VISUALISER_TOUR_MATCH_TOURNOI:
+                        tournoi_controleur.visualiser_tour_match_tournoi()
+                    elif choix_rapports == RETOUR_MENU_PRINCIPAL:
+                        break
+            elif choix == MENU_SAUVEGARDER_CHARGER:
+                while True:
+                    choix_donnees = menu_sauvergarder_charger()
+                    if choix_donnees == MENU_SAUVEGARDER_DONNEES:
+                        sauvegarde_controleur.sauvegarder_donnees()
+                    elif choix_donnees == MENU_CHARGER_DONNEES:
+                        sauvegarde_controleur.charger_donnees()
+                    elif choix_donnees == RETOUR_MENU_PRINCIPAL:
+                        break
+            elif choix == MENU_QUITTER:
+                console.print(
+                    Panel(
+                        "[bold blue]\n🔚 Fermeture du programme. Merci d'avoir utilisé Let's Roque !\n[/bold blue]",
+                        border_style="blue",
+                        expand=False,
+                    )
                 )
+                break
+            else:
+                console.print("[bold red]\n Choix inconnu \n[/bold red]")
+
+    # Exception pour éviter que le programme ne plante avec le traitement par défaut et qu'il y ait un message
+    # d'erreur plus "propre"
+    except Exception as error:
+        console.print(
+            Panel(
+                f"[bold red]\n Une erreur est survenue : {error} \n[/bold red]",
+                border_style="red",
+                width=len(
+                    f"[bold red]\n Une erreur est survenue : {error} \n[/bold red]"
+                ),
             )
-            break
-        else:
-            console.print("[bold red]\n Choix inconnu \n[/bold red]")
+        )

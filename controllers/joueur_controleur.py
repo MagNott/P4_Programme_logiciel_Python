@@ -24,6 +24,7 @@ class JoueurControleur:
         Cette méthode récupère les informations d'un joueur via la vue,
         crée une instance de Joueur, puis la sauvegarde dans la base de données.
         et affiche une confirmation à l'utilisateur.
+        Un traitement permet de ne pas créer le joueur si l'utilisateur ne le saisi pas entièrement.
 
         Returns:
             None: Cette fonction n'a pas de retour explicite.
@@ -31,15 +32,22 @@ class JoueurControleur:
 
         d_infos_joueur = self.o_joueur_vue.render_saisie_joueur()
 
-        o_joueur_modele = Joueur(
-            d_infos_joueur["p_identifiant"],
-            d_infos_joueur["p_nom"],
-            d_infos_joueur["p_prenom"],
-            d_infos_joueur["p_date_naissance"],
-        )
+        # Traitement pour éviter qu'un joueur vide avec des valeurs à None ne se créé
+        # si l'utilisateur quitte prématurément la saisie.
+        # Transformation du dictionnaire pour récupérer les valeurs, si None dans les valeurs l'exception s'excecute
+        verification_valeur = list(d_infos_joueur.values())
+        if None in verification_valeur:
+            self.o_joueur_vue.afficher_message("Opération annulée", "error")
+        else:
+            o_joueur_modele = Joueur(
+                d_infos_joueur["p_identifiant"],
+                d_infos_joueur["p_nom"],
+                d_infos_joueur["p_prenom"],
+                d_infos_joueur["p_date_naissance"],
+            )
 
-        self.o_gestionnaire_persistance.sauvegarder_joueur(o_joueur_modele)
-        self.o_joueur_vue.render_confirm_ajout_joueur(**d_infos_joueur)
+            self.o_gestionnaire_persistance.sauvegarder_joueur(o_joueur_modele)
+            self.o_joueur_vue.render_confirm_ajout_joueur(**d_infos_joueur)
 
 #
     def lister_joueurs(self) -> None:

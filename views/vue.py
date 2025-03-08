@@ -130,3 +130,30 @@ class Vue:
 
         # Retourner uniquement l'ID du tournoi selectionné
         return liste_tournoi_identifiant[choix_utilisateur]
+
+    #
+    def afficher_message(self, p_message: str, p_message_type: str) -> None:
+        """
+        Affiche un message coloré en fonction du type de message.
+
+        Args:
+            p_message (str): Le message à afficher.
+            p_message_type (str): Type du message ("success", "error", "info").
+                                - "success" (vert) : Succès.
+                                - "error" (rouge) : Erreur.
+                                - "info" (cyan) : Information.
+
+        Returns:
+            None: Affiche le message formaté dans la console.
+        """
+
+        p_message = f"\n{p_message}\n"
+
+        if p_message_type == "success":
+            self.console.print(p_message, style="bold green")
+        elif p_message_type == "error":
+            self.console.print(p_message, style="bold red")
+        elif p_message_type == "info":
+            self.console.print(p_message, style="bold cyan")
+        else:
+            self.console.print(p_message)
