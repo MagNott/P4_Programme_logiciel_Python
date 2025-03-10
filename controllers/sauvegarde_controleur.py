@@ -62,7 +62,7 @@ class SauvegardeControleur:
             return
 
         choix_sauvegarde = self.o_sauvegarde_vue.demander_sauvegarde_a_restaurer(
-            sauvegardes
+            sorted(sauvegardes)
         )
 
         if choix_sauvegarde is None:
