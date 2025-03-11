@@ -107,7 +107,11 @@ class GestionnairePersistance:
 
 #
     def charger_objets_joueurs(self) -> list[Joueur]:
+        """Charge tous les joueurs depuis la base de données TinyDB et en fait une liste d'objets joueurs
 
+        Returns:
+            list[Joueur]: Liste d'objets joueurs
+        """
         l_joueurs = self.charger_joueurs()
 
         l_objets_joueurs = []
