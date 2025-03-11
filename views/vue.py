@@ -119,7 +119,7 @@ class Vue:
                 nom_tournoi = match.group(2).replace("_", " ")  # Remettre les espaces
                 date_tournoi = match.group(3)
 
-                choix_affichage = f"{tournoi_id} - {nom_tournoi} - {date_tournoi}"
+                choix_affichage = f"{nom_tournoi} - {date_tournoi}"
                 liste_choix.append(choix_affichage)
                 liste_tournoi_identifiant[choix_affichage] = tournoi_id  # Associer le choix à l'ID réel
 
