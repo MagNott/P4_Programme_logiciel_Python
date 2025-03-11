@@ -105,6 +105,18 @@ class GestionnairePersistance:
             )
         return joueurs_avec_ids
 
+#
+    def charger_objets_joueurs(self) -> list[Joueur]:
+
+        l_joueurs = self.charger_joueurs()
+
+        l_objets_joueurs = []
+        for joueur in l_joueurs:
+            o_joueur = self.recuperer_objet_joueur(joueur["id_tinydb"])
+            l_objets_joueurs.append(o_joueur)
+
+        return l_objets_joueurs
+
     #
     def recuperer_objet_joueur(self, p_identifiant_joueur: str) -> Joueur:
         """

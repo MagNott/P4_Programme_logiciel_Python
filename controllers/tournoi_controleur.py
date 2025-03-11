@@ -123,11 +123,11 @@ class TournoiControleur:
             return
 
         # Récupère la liste des joueurs disponibles
-        l_liste_joueurs = self.o_gestionnaire_persistance.charger_joueurs()
+        l_objets_joueurs = self.o_gestionnaire_persistance.charger_objets_joueurs()
 
         # Affiche les joueurs et demande à l'utilisateur de sélectionner ceux à inscrire
         l_choix_joueurs = self.o_tournoi_vue.render_choix_joueur(
-            l_liste_joueurs, o_tournoi_choisi
+            l_objets_joueurs, o_tournoi_choisi
         )
 
         # Construit un dicitonnaire qui va servir de liste de joueur mais avec leurs scores
@@ -139,9 +139,7 @@ class TournoiControleur:
         o_tournoi_choisi.liste_joueurs = d_joueurs_choisis
 
         # Demande à l'utilisateur de définir le nombre de tours
-        i_nombre_tours_tournoi = self.o_tournoi_vue.render_choix_nombre_tour(
-            o_tournoi_choisi
-        )
+        i_nombre_tours_tournoi = self.o_tournoi_vue.render_choix_nombre_tour()
         o_tournoi_choisi.nombre_tours = i_nombre_tours_tournoi
         # Sauvegarde le nombre de tour du tournoi dans le gestionnaire de persistance.
         self.o_gestionnaire_persistance.enregister_nombres_tours_tournoi(

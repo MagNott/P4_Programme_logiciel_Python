@@ -62,7 +62,7 @@ class Tournoi:
         o_iter_fichiers = dossier_tournois.iterdir()
 
         for fichier in o_iter_fichiers:
-            if fichier.is_file():
+            if fichier.is_file() and fichier.name != ".gitkeep":
                 id_tournoi = re.search(regex, fichier.name)
                 if id:
                     # group(1) récupère la partie capturée entre les parenthèses de la regex

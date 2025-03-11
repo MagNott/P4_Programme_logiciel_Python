@@ -2,6 +2,7 @@ from rich.table import Table
 import questionary
 from typing import List
 from models.tournoi import Tournoi
+from models.joueur import Joueur
 from views.vue import Vue
 import re
 from datetime import datetime
@@ -155,7 +156,7 @@ class TournoiVue(Vue):
 
     #
     def render_choix_joueur(
-        self, p_liste_joueurs: List[dict], p_objet_tournoi: Tournoi
+        self, p_objet_joueurs: List[Joueur], p_objet_tournoi: Tournoi
     ) -> List[str]:
         """
         Affiche la liste des joueurs disponibles et permet à l'utilisateur d'en choisir plusieurs.
@@ -169,15 +170,20 @@ class TournoiVue(Vue):
         """
         # Trie par ordre alphabétique de nom et prénom
         joueurs_trie_nom_prenom = sorted(
-            p_liste_joueurs,
-            key=lambda joueur: (joueur["nom_famille"], joueur["prenom"]),
+            p_objet_joueurs,
+            key=lambda joueur: (joueur.nom_famille, joueur.prenom),
         )
 
         liste_choix = []
-        for i, joueur in enumerate(joueurs_trie_nom_prenom):
+        for joueur in joueurs_trie_nom_prenom:
+
+            identifiant_joueur = joueur.identifiant_tinydb
+            nom_joueur = joueur.nom_famille
+            prenom_joueur = joueur.prenom
+            identifiant_echec = joueur.identifiant_national_echec
 
             liste_choix.append(
-                f"{i+1} - {joueur['nom_famille']} {joueur['prenom']} {joueur['identifiant_national_echec']}"
+                f"{identifiant_joueur} - {nom_joueur} {prenom_joueur} {identifiant_echec}"
             )
 
         l_choix_joueur = []
@@ -207,27 +213,24 @@ class TournoiVue(Vue):
 
         return l_choix_joueur
 
-#
-    def render_choix_nombre_tour(self, p_objet_tournoi: Tournoi) -> int:
+    #
+    def render_choix_nombre_tour(self) -> int:
         """
         Affiche une invite pour permettre à l'utilisateur de choisir le nombre de tours du tournoi.
 
         Cette méthode utilise `questionary` pour demander à l'utilisateur de saisir le nombre de tours
         du tournoi. Une validation est effectuée pour s'assurer que l'entrée est un entier valide
-        supérieur à zéro. La valeur choisie est ensuite assignée à l'attribut `nombre_tours` de l'objet
-        `Tournoi` et retournée sous forme d'entier.
-
-        Args:
-            p_objet_tournoi (Tournoi): L'objet tournoi dont on souhaite paramétrer le nombre de tours.
+        supérieur à zéro.
 
         Returns:
             int: Le nombre de tours sélectionné par l'utilisateur.
         """
 
         s_nombre_tours = questionary.text(
-                "Entrez le nombre de tour du tournoi (4 par défaut) :",
-                default=str(Tournoi.nombre_tours_defaut), validate=self.valider_nombre_tour
-            ).ask()
+            "Entrez le nombre de tour du tournoi (4 par défaut) :",
+            default=str(Tournoi.nombre_tours_defaut),
+            validate=self.valider_nombre_tour,
+        ).ask()
 
         return int(s_nombre_tours)
 
