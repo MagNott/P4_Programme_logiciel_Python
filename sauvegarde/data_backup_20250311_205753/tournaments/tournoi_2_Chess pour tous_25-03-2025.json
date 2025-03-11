@@ -1,0 +1,101 @@
+{
+    "_default": {
+        "1": {
+            "nom_tournoi": "Chess pour tous",
+            "lieu_tournoi": "Antibes",
+            "date_debut_tournoi": "25-03-2025",
+            "date_fin_tournoi": "25-3-2025",
+            "nombre_tours": 3,
+            "description": "Tournoi caritatif",
+            "liste_joueurs": {
+                "10": 1,
+                "2": 2.5,
+                "1": 1.5,
+                "9": 1
+            },
+            "liste_tours": [
+                {
+                    "identifiant": 1,
+                    "nom": "Round 1",
+                    "statut": "Termin\u00e9",
+                    "liste_matchs": [
+                        {
+                            "identifiant": 1,
+                            "nom_match": "Match 1 - 2 VS 10",
+                            "joueur_blanc": "2",
+                            "joueur_noir": "10",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 1,
+                            "score_noir": 0
+                        },
+                        {
+                            "identifiant": 2,
+                            "nom_match": "Match 2 - 9 VS 1",
+                            "joueur_blanc": "9",
+                            "joueur_noir": "1",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0,
+                            "score_noir": 1
+                        }
+                    ],
+                    "date_heure_debut": "2025-03-11 20:52:16",
+                    "date_heure_fin": "2025-03-11 20:53:25"
+                },
+                {
+                    "identifiant": 2,
+                    "nom": "Round 2",
+                    "statut": "Termin\u00e9",
+                    "liste_matchs": [
+                        {
+                            "identifiant": 1,
+                            "nom_match": "Match 1 - 2 VS 1",
+                            "joueur_blanc": "2",
+                            "joueur_noir": "1",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0.5,
+                            "score_noir": 0.5
+                        },
+                        {
+                            "identifiant": 2,
+                            "nom_match": "Match 2 - 10 VS 9",
+                            "joueur_blanc": "10",
+                            "joueur_noir": "9",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0,
+                            "score_noir": 1
+                        }
+                    ],
+                    "date_heure_debut": "2025-03-11 20:53:10",
+                    "date_heure_fin": "2025-03-11 20:54:03"
+                },
+                {
+                    "identifiant": 3,
+                    "nom": "Round 3",
+                    "statut": "Termin\u00e9",
+                    "liste_matchs": [
+                        {
+                            "identifiant": 1,
+                            "nom_match": "Match 1 - 2 VS 9",
+                            "joueur_blanc": "2",
+                            "joueur_noir": "9",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 1,
+                            "score_noir": 0
+                        },
+                        {
+                            "identifiant": 2,
+                            "nom_match": "Match 2 - 10 VS 1",
+                            "joueur_blanc": "10",
+                            "joueur_noir": "1",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 1,
+                            "score_noir": 0
+                        }
+                    ],
+                    "date_heure_debut": "2025-03-11 20:53:10",
+                    "date_heure_fin": "2025-03-11 20:54:23"
+                }
+            ]
+        }
+    }
+}

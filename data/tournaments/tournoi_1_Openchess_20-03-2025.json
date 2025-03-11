@@ -1,0 +1,202 @@
+{
+    "_default": {
+        "1": {
+            "nom_tournoi": "Openchess",
+            "lieu_tournoi": "Nice",
+            "date_debut_tournoi": "20-03-2025",
+            "date_fin_tournoi": "20-03-2025",
+            "nombre_tours": 5,
+            "description": "Tournoi interclub",
+            "liste_joueurs": {
+                "3": 2.5,
+                "7": 3.5,
+                "8": 2.5,
+                "4": 2,
+                "6": 1.5,
+                "5": 3.0
+            },
+            "liste_tours": [
+                {
+                    "identifiant": 1,
+                    "nom": "Round 1",
+                    "statut": "Termin\u00e9",
+                    "liste_matchs": [
+                        {
+                            "identifiant": 1,
+                            "nom_match": "Match 1 - 6 VS 4",
+                            "joueur_blanc": "6",
+                            "joueur_noir": "4",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 1,
+                            "score_noir": 0
+                        },
+                        {
+                            "identifiant": 2,
+                            "nom_match": "Match 2 - 3 VS 5",
+                            "joueur_blanc": "3",
+                            "joueur_noir": "5",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0.5,
+                            "score_noir": 0.5
+                        },
+                        {
+                            "identifiant": 3,
+                            "nom_match": "Match 3 - 8 VS 7",
+                            "joueur_blanc": "8",
+                            "joueur_noir": "7",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0,
+                            "score_noir": 1
+                        }
+                    ],
+                    "date_heure_debut": "2025-03-11 20:03:44",
+                    "date_heure_fin": "2025-03-11 20:06:05"
+                },
+                {
+                    "identifiant": 2,
+                    "nom": "Round 2",
+                    "statut": "Termin\u00e9",
+                    "liste_matchs": [
+                        {
+                            "identifiant": 1,
+                            "nom_match": "Match 1 - 7 VS 6",
+                            "joueur_blanc": "7",
+                            "joueur_noir": "6",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 1,
+                            "score_noir": 0
+                        },
+                        {
+                            "identifiant": 2,
+                            "nom_match": "Match 2 - 8 VS 4",
+                            "joueur_blanc": "8",
+                            "joueur_noir": "4",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0,
+                            "score_noir": 1
+                        },
+                        {
+                            "identifiant": 3,
+                            "nom_match": "Match 3 - 5 VS 3",
+                            "joueur_blanc": "5",
+                            "joueur_noir": "3",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0.5,
+                            "score_noir": 0.5
+                        }
+                    ],
+                    "date_heure_debut": "2025-03-11 20:03:44",
+                    "date_heure_fin": "2025-03-11 20:06:16"
+                },
+                {
+                    "identifiant": 3,
+                    "nom": "Round 3",
+                    "statut": "Termin\u00e9",
+                    "liste_matchs": [
+                        {
+                            "identifiant": 1,
+                            "nom_match": "Match 1 - 7 VS 3",
+                            "joueur_blanc": "7",
+                            "joueur_noir": "3",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0.5,
+                            "score_noir": 0.5
+                        },
+                        {
+                            "identifiant": 2,
+                            "nom_match": "Match 2 - 5 VS 8",
+                            "joueur_blanc": "5",
+                            "joueur_noir": "8",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0,
+                            "score_noir": 1
+                        },
+                        {
+                            "identifiant": 3,
+                            "nom_match": "Match 3 - 4 VS 6",
+                            "joueur_blanc": "4",
+                            "joueur_noir": "6",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 1,
+                            "score_noir": 0
+                        }
+                    ],
+                    "date_heure_debut": "2025-03-11 20:03:44",
+                    "date_heure_fin": "2025-03-11 20:06:25"
+                },
+                {
+                    "identifiant": 4,
+                    "nom": "Round 4",
+                    "statut": "Termin\u00e9",
+                    "liste_matchs": [
+                        {
+                            "identifiant": 1,
+                            "nom_match": "Match 1 - 7 VS 4",
+                            "joueur_blanc": "7",
+                            "joueur_noir": "4",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 1,
+                            "score_noir": 0
+                        },
+                        {
+                            "identifiant": 2,
+                            "nom_match": "Match 2 - 6 VS 5",
+                            "joueur_blanc": "6",
+                            "joueur_noir": "5",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0,
+                            "score_noir": 1
+                        },
+                        {
+                            "identifiant": 3,
+                            "nom_match": "Match 3 - 3 VS 8",
+                            "joueur_blanc": "3",
+                            "joueur_noir": "8",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0.5,
+                            "score_noir": 0.5
+                        }
+                    ],
+                    "date_heure_debut": "2025-03-11 20:03:44",
+                    "date_heure_fin": "2025-03-11 20:06:34"
+                },
+                {
+                    "identifiant": 5,
+                    "nom": "Round 5",
+                    "statut": "Termin\u00e9",
+                    "liste_matchs": [
+                        {
+                            "identifiant": 1,
+                            "nom_match": "Match 1 - 4 VS 5",
+                            "joueur_blanc": "4",
+                            "joueur_noir": "5",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0,
+                            "score_noir": 1
+                        },
+                        {
+                            "identifiant": 2,
+                            "nom_match": "Match 2 - 3 VS 6",
+                            "joueur_blanc": "3",
+                            "joueur_noir": "6",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0.5,
+                            "score_noir": 0.5
+                        },
+                        {
+                            "identifiant": 3,
+                            "nom_match": "Match 3 - 7 VS 8",
+                            "joueur_blanc": "7",
+                            "joueur_noir": "8",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0,
+                            "score_noir": 1
+                        }
+                    ],
+                    "date_heure_debut": "2025-03-11 20:03:44",
+                    "date_heure_fin": "2025-03-11 20:06:41"
+                }
+            ]
+        }
+    }
+}
