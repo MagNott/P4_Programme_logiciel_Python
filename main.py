@@ -15,7 +15,7 @@ MENU_GESTION_RAPPORTS = "Gestion des rapports"
 MENU_AJOUTER_JOUEUR = "Ajouter un joueur"
 MENU_LISTER_JOUEURS = "Lister les joueurs"
 MENU_CREER_TOURNOI = "Créer un tournoi"
-MENU_INSCRIRE_JOUEUR = "Inscrire un joueur"
+MENU_INSCRIRE_JOUEUR_DEFINIR_TOURS = "Inscrire les joueurs et définir les tours"
 MENU_LISTER_TOURNOI = "Lister les tournois"
 MENU_VISUALISER_TOURNOI = "Visualiser un tournoi"
 MENU_CREER_TOUR = "Créer un tour"
@@ -89,7 +89,7 @@ def menu_tournoi():
         "Que souhaitez-vous faire ?",
         choices=[
             MENU_CREER_TOURNOI,
-            MENU_INSCRIRE_JOUEUR,
+            MENU_INSCRIRE_JOUEUR_DEFINIR_TOURS,
             MENU_CREER_TOUR,
             MENU_TERMINER_TOUR,
             RETOUR_MENU_PRINCIPAL,
@@ -159,8 +159,8 @@ if __name__ == "__main__":
                     choix_tournoi = menu_tournoi()
                     if choix_tournoi == MENU_CREER_TOURNOI:
                         tournoi_controleur.ajouter_tournoi()
-                    elif choix_tournoi == MENU_INSCRIRE_JOUEUR:
-                        tournoi_controleur.inscrire_joueur()
+                    elif choix_tournoi == MENU_INSCRIRE_JOUEUR_DEFINIR_TOURS:
+                        tournoi_controleur.inscrire_joueur_definir_tours()
                     elif choix_tournoi == MENU_CREER_TOUR:
                         tour_controleur.creer_tour()
                     elif choix_tournoi == MENU_TERMINER_TOUR:

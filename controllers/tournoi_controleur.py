@@ -83,15 +83,17 @@ class TournoiControleur:
             # Les ** permettent de déballer le dictionnaire
 
 #
-    def inscrire_joueur(self) -> None:
+    def inscrire_joueur_definir_tours(self) -> None:
         """
-        Permet d'inscrire un ou plusieurs joueurs à un tournoi existant si celui_ci n'a pas commencé.
+        Permet d'inscrire un ou plusieurs joueurs à un tournoi existant si celui_ci n'a pas commencé et
+        permet de paramétrer le nombre de tour du tournoi concerné
 
         Cette méthode charge la liste des tournois disponibles et demande à l'utilisateur d'en choisir un.
         Vérifie que le tournoi n'a pas encore commencé (aucun tour enregistré) puis
         charge la liste des joueurs disponibles et permet à l'utilisateur d'en sélectionner plusieurs.
         Esnuite, elle met à jour la liste des joueurs du tournoi avec leurs scores initiaux (0) et
-        Sauvegarde les informations du tournoi mises à jour dans la base de données.
+        récupère le nombre de tours du tournoi défini par l'utilisateur puis 
+        sauvegarde les informations du tournoi mises à jour dans la base de données.
 
         Args:
             None
@@ -131,7 +133,11 @@ class TournoiControleur:
         # Met à jour le dictionnaire des joueurs du tournoi
         o_tournoi_choisi.liste_joueurs = d_joueurs_choisis
 
-        print(o_tournoi_choisi.liste_joueurs)
+        # Demande à l'utilisateur de définir le nombre de tours
+        i_nombre_tours_tournoi = self.o_tournoi_vue.render_choix_nombre_tour(o_tournoi_choisi)
+        o_tournoi_choisi.nombre_tours = i_nombre_tours_tournoi
+        # Sauvegarde le nombre de tour du tournoi dans le gestionnaire de persistance.
+        self.o_gestionnaire_persistance.enregister_nombres_tours_tournoi(o_tournoi_choisi, i_nombre_tours_tournoi)
 
         # Sauvegarde la mise à jour du tournoi dans la base de données
         self.o_gestionnaire_persistance.sauvegarder_joueurs_tournoi(o_tournoi_choisi)

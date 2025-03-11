@@ -3,6 +3,7 @@ import re
 
 
 class Tournoi:
+    # Attribut de classe pour y accéder de partout
     nombre_tours_defaut: int = "4"
 
     def __init__(
