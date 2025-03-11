@@ -1,0 +1,101 @@
+{
+    "_default": {
+        "1": {
+            "nom_tournoi": "Junior Chess",
+            "lieu_tournoi": "Antibes",
+            "date_debut_tournoi": "20-03-2025",
+            "date_fin_tournoi": "21-03-2025",
+            "nombre_tours": 3,
+            "description": "Tournoi pour les enfants",
+            "liste_joueurs": {
+                "6": 2,
+                "7": 1.5,
+                "12": 1.5,
+                "8": 1.0
+            },
+            "liste_tours": [
+                {
+                    "identifiant": 1,
+                    "nom": "Round 1",
+                    "statut": "Termin\u00e9",
+                    "liste_matchs": [
+                        {
+                            "identifiant": 1,
+                            "nom_match": "Match 1 - 7 VS 8",
+                            "joueur_blanc": "7",
+                            "joueur_noir": "8",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0.5,
+                            "score_noir": 0.5
+                        },
+                        {
+                            "identifiant": 2,
+                            "nom_match": "Match 2 - 6 VS 12",
+                            "joueur_blanc": "6",
+                            "joueur_noir": "12",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0,
+                            "score_noir": 1
+                        }
+                    ],
+                    "date_heure_debut": "2025-03-11 18:39:49",
+                    "date_heure_fin": "2025-03-11 18:41:45"
+                },
+                {
+                    "identifiant": 2,
+                    "nom": "Round 2",
+                    "statut": "Termin\u00e9",
+                    "liste_matchs": [
+                        {
+                            "identifiant": 1,
+                            "nom_match": "Match 1 - 12 VS 7",
+                            "joueur_blanc": "12",
+                            "joueur_noir": "7",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0,
+                            "score_noir": 1
+                        },
+                        {
+                            "identifiant": 2,
+                            "nom_match": "Match 2 - 8 VS 6",
+                            "joueur_blanc": "8",
+                            "joueur_noir": "6",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0,
+                            "score_noir": 1
+                        }
+                    ],
+                    "date_heure_debut": "2025-03-11 18:39:49",
+                    "date_heure_fin": "2025-03-11 18:41:56"
+                },
+                {
+                    "identifiant": 3,
+                    "nom": "Round 3",
+                    "statut": "Termin\u00e9",
+                    "liste_matchs": [
+                        {
+                            "identifiant": 1,
+                            "nom_match": "Match 1 - 7 VS 6",
+                            "joueur_blanc": "7",
+                            "joueur_noir": "6",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0,
+                            "score_noir": 1
+                        },
+                        {
+                            "identifiant": 2,
+                            "nom_match": "Match 2 - 12 VS 8",
+                            "joueur_blanc": "12",
+                            "joueur_noir": "8",
+                            "statut": "Termin\u00e9",
+                            "score_blanc": 0.5,
+                            "score_noir": 0.5
+                        }
+                    ],
+                    "date_heure_debut": "2025-03-11 18:39:49",
+                    "date_heure_fin": "2025-03-11 18:42:06"
+                }
+            ]
+        }
+    }
+}

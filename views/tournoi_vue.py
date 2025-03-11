@@ -183,7 +183,7 @@ class TournoiVue(Vue):
         l_choix_joueur = []
 
         nombre_joueurs = questionary.text(
-            "Combien souahitez-vous inscrire de joueur à ce tournoi (nombres paires):",
+            "Combien de joueurs souhaitez-vous inscrire à ce tournoi (nombres paires):",
             validate=self._valider_nombre_joueurs,
         ).ask()
 
@@ -206,6 +206,30 @@ class TournoiVue(Vue):
             liste_choix.remove(joueur)
 
         return l_choix_joueur
+
+#
+    def render_choix_nombre_tour(self, p_objet_tournoi: Tournoi) -> int:
+        """
+        Affiche une invite pour permettre à l'utilisateur de choisir le nombre de tours du tournoi.
+
+        Cette méthode utilise `questionary` pour demander à l'utilisateur de saisir le nombre de tours
+        du tournoi. Une validation est effectuée pour s'assurer que l'entrée est un entier valide
+        supérieur à zéro. La valeur choisie est ensuite assignée à l'attribut `nombre_tours` de l'objet
+        `Tournoi` et retournée sous forme d'entier.
+
+        Args:
+            p_objet_tournoi (Tournoi): L'objet tournoi dont on souhaite paramétrer le nombre de tours.
+
+        Returns:
+            int: Le nombre de tours sélectionné par l'utilisateur.
+        """
+
+        s_nombre_tours = questionary.text(
+                "Entrez le nombre de tour du tournoi (4 par défaut) :",
+                default=str(Tournoi.nombre_tours_defaut), validate=self.valider_nombre_tour
+            ).ask()
+
+        return int(s_nombre_tours)
 
     #
     def render_visualiser_tournoi(
@@ -383,10 +407,7 @@ class TournoiVue(Vue):
                     date_fin, p_date_debut_tournoi
                 ),
             ).ask(),
-            "p_nombre_tour_tournoi": questionary.text(
-                "Entrez le nombre de tour du tournoi (4 par défaut) :",
-                default=Tournoi.nombre_tours_defaut, validate=self.valider_nombre_tour
-            ).ask(),
+            "p_nombre_tour_tournoi": "A déterminer",
             "p_description_tournoi": questionary.text(
                 "Entrez la desription du tournoi  :", validate=self.valider_nom
             ).ask(),

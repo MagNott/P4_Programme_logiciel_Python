@@ -206,6 +206,36 @@ class GestionnairePersistance:
 
         self.db_tournois.update(d_liste_joueurs_db_tournoi, doc_ids=[int(1)])
 
+    def enregister_nombres_tours_tournoi(self, p_objet_tournoi: Tournoi, p_nombre_tour: int) -> None:
+        """
+        Met à jour et enregistre le nombre de tours d'un tournoi dans la base de données.
+
+        Cette méthode met à jour la valeur du nombre de tours (`nombre_tours`) d'un tournoi
+        spécifique dans son fichier de stockage (`TinyDB`). Elle récupère l'identifiant, le nom
+        et la date de début du tournoi pour reconstruire le chemin d'accès à son fichier JSON,
+        puis met à jour uniquement le champ `nombre_tours`.
+
+        Args:
+            p_objet_tournoi (Tournoi): L'objet tournoi dont on souhaite modifier le nombre de tours.
+            p_nombre_tour (int): Le nombre de tours à enregistrer.
+
+        Returns:
+            None: Cette fonction ne retourne rien, elle met simplement à jour la base de données.
+        """
+
+        nombres_tours_tournoi = {"nombre_tours": p_nombre_tour}
+
+        # Utilisation de variables intermédiaire pour réduire la taille de la fstring
+        identifiant = p_objet_tournoi.identifiant
+        nom = p_objet_tournoi.nom_tournoi
+        date_debut = p_objet_tournoi.date_debut_tournoi
+
+        self.db_tournois = TinyDB(
+            f"data/tournaments/tournoi_{identifiant}_{nom}_{date_debut}.json"
+        )
+
+        self.db_tournois.update(nombres_tours_tournoi, doc_ids=[int(1)])
+
     #
     def recuperer_objet_tournoi(self, p_identifiant_tournoi: str) -> Tournoi:
         """Récupère un tournoi sous forme d'objet Tournoi à partir de TinyDB.
