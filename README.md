@@ -145,3 +145,7 @@ Le projet utilise Black pour formater automatiquement le code avec la même limi
 Pour formater le code avec Black :
 `black .`
 
+# Note pour l'évaluateur
+Le projet sur main ne contient aucun document JSON pour la base de données, afin de faciliter l'évaluation, une branche contenant le projet fini et un jeu de données a été créé :
+https://github.com/MagNott/P4_Programme_logiciel_Python/tree/projet_fini_jeux_de_donnees
+

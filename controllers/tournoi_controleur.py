@@ -6,6 +6,7 @@ import re
 
 class TournoiControleur:
     """Contrôleur gérant les interactions entre la vue et le modèle pour les tournois."""
+
     """
     Contrôleur gérant les interactions entre la vue et le modèle pour la gestion des tournois.
 
@@ -30,7 +31,7 @@ class TournoiControleur:
         self.o_tournoi_vue = TournoiVue()
         self.o_gestionnaire_persistance = GestionnairePersistance()
 
-#
+    #
     def ajouter_tournoi(self) -> None:
         """
         Gère l'ajout d'un nouveau tournoi en collectant les informations et en les sauvegardant.
@@ -72,7 +73,7 @@ class TournoiControleur:
                 d_infos_tournoi["p_nombre_tour_tournoi"],
                 d_infos_tournoi["p_description_tournoi"],
                 [],  # initialise à liste tour vide
-                []  # initialise à liste joueur vide
+                [],  # initialise à liste joueur vide
             )
 
             # Sauvegarde le tournoi dans le gestionnaire de persistance.
@@ -82,7 +83,7 @@ class TournoiControleur:
             self.o_tournoi_vue.render_confirm_ajout_tournoi(**d_infos_tournoi)
             # Les ** permettent de déballer le dictionnaire
 
-#
+    #
     def inscrire_joueur_definir_tours(self) -> None:
         """
         Permet d'inscrire un ou plusieurs joueurs à un tournoi existant si celui_ci n'a pas commencé et
@@ -92,7 +93,7 @@ class TournoiControleur:
         Vérifie que le tournoi n'a pas encore commencé (aucun tour enregistré) puis
         charge la liste des joueurs disponibles et permet à l'utilisateur d'en sélectionner plusieurs.
         Esnuite, elle met à jour la liste des joueurs du tournoi avec leurs scores initiaux (0) et
-        récupère le nombre de tours du tournoi défini par l'utilisateur puis 
+        récupère le nombre de tours du tournoi défini par l'utilisateur puis
         sauvegarde les informations du tournoi mises à jour dans la base de données.
 
         Args:
@@ -116,14 +117,18 @@ class TournoiControleur:
 
         # Vérifie si le tournoi a déjà commencé pour empecher l'inscription des joueurs
         if not len(o_tournoi_choisi.liste_tours) == 0:
-            self.o_tournoi_vue.render_impossible_inscription(o_tournoi_choisi.nom_tournoi)
+            self.o_tournoi_vue.render_impossible_inscription(
+                o_tournoi_choisi.nom_tournoi
+            )
             return
 
         # Récupère la liste des joueurs disponibles
         l_liste_joueurs = self.o_gestionnaire_persistance.charger_joueurs()
 
         # Affiche les joueurs et demande à l'utilisateur de sélectionner ceux à inscrire
-        l_choix_joueurs = self.o_tournoi_vue.render_choix_joueur(l_liste_joueurs, o_tournoi_choisi)
+        l_choix_joueurs = self.o_tournoi_vue.render_choix_joueur(
+            l_liste_joueurs, o_tournoi_choisi
+        )
 
         # Construit un dicitonnaire qui va servir de liste de joueur mais avec leurs scores
         d_joueurs_choisis = {}
@@ -134,15 +139,19 @@ class TournoiControleur:
         o_tournoi_choisi.liste_joueurs = d_joueurs_choisis
 
         # Demande à l'utilisateur de définir le nombre de tours
-        i_nombre_tours_tournoi = self.o_tournoi_vue.render_choix_nombre_tour(o_tournoi_choisi)
+        i_nombre_tours_tournoi = self.o_tournoi_vue.render_choix_nombre_tour(
+            o_tournoi_choisi
+        )
         o_tournoi_choisi.nombre_tours = i_nombre_tours_tournoi
         # Sauvegarde le nombre de tour du tournoi dans le gestionnaire de persistance.
-        self.o_gestionnaire_persistance.enregister_nombres_tours_tournoi(o_tournoi_choisi, i_nombre_tours_tournoi)
+        self.o_gestionnaire_persistance.enregister_nombres_tours_tournoi(
+            o_tournoi_choisi, i_nombre_tours_tournoi
+        )
 
         # Sauvegarde la mise à jour du tournoi dans la base de données
         self.o_gestionnaire_persistance.sauvegarder_joueurs_tournoi(o_tournoi_choisi)
 
-#
+    #
     def lister_tournois(self) -> None:
         """
         Affiche la liste des tournois enregistrés dans la base de données (JSON).
@@ -167,12 +176,16 @@ class TournoiControleur:
             match = re.match(regex, s_tournoi)
             if match:
                 i_identifiant_tournoi = match.group(1)
-                l_objets_tournoi.append(self.o_gestionnaire_persistance.recuperer_objet_tournoi(i_identifiant_tournoi))
+                l_objets_tournoi.append(
+                    self.o_gestionnaire_persistance.recuperer_objet_tournoi(
+                        i_identifiant_tournoi
+                    )
+                )
 
         # Affiche les informations de chaque tournoi dans la console
         self.o_tournoi_vue.render_lister_tournois(l_objets_tournoi)
 
-#
+    #
     def visualiser_tournoi(self) -> None:
         """
         Affiche les détails d'un tournoi sélectionné par l'utilisateur.
@@ -196,14 +209,18 @@ class TournoiControleur:
             l_liste_tournois
         )
 
-        o_tournoi = self.o_gestionnaire_persistance.recuperer_objet_tournoi(i_identifiant_tournoi)
+        o_tournoi = self.o_gestionnaire_persistance.recuperer_objet_tournoi(
+            i_identifiant_tournoi
+        )
 
-        d_scores_joueurs = self.o_gestionnaire_persistance.recuepere_score_joueurs(i_identifiant_tournoi)
+        d_scores_joueurs = self.o_gestionnaire_persistance.recuepere_score_joueurs(
+            i_identifiant_tournoi
+        )
 
         # Affiche les informations détaillées du tournoi, y compris les joueurs inscrits àce tournoi.
         self.o_tournoi_vue.render_visualiser_tournoi(o_tournoi, d_scores_joueurs)
 
-#
+    #
     def visualiser_tour_match_tournoi(self) -> None:
         """
         Affiche les détails d'un tournoi sélectionné par l'utilisateur.
@@ -227,7 +244,9 @@ class TournoiControleur:
             l_liste_tournois
         )
 
-        o_tournoi = self.o_gestionnaire_persistance.recuperer_objet_tournoi(i_identifiant_tournoi)
+        o_tournoi = self.o_gestionnaire_persistance.recuperer_objet_tournoi(
+            i_identifiant_tournoi
+        )
 
         # Affiche les informations détaillées du tournoi, y compris les joueurs inscrits àce tournoi.
         self.o_tournoi_vue.render_visualiser_tour_match_tournoi(o_tournoi)
